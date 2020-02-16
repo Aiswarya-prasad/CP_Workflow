@@ -16,17 +16,16 @@ Below is a list of tools used by this pipeline with a link to their page/repo wh
 - [qcat](https://github.com/nanoporetech/qcat)
 - [Kraken 2](https://ccb.jhu.edu/software/kraken2/index.shtml?t=manual)
 - [Centrifuge](https://ccb.jhu.edu/software/centrifuge/)
-
+- [NanoFilt](https://github.com/wdecoster/nanofilt/)
 
 If anybody will find this useful if polished, please let me know. Also, if you are a veteran and somehow come across this repo I will be thrilled to hear your sugesstions and more so if someone has the time to help me polish it. Finally, if you find any part of this repo useful for your work, do let me know. I will be very happy to hear!
-
 
 --------------------------------------------------------------------------------------------------------------------------
 
 
 Most of the information about output and input formats can be found as comments in the code.
 
-### directory structure of output as a classification<br/>
+### directory structure of output after classification<br/>
 classified<br/>
 └── <sample#><br/>
     ├── bracken<br/>
@@ -45,3 +44,6 @@ classified<br/>
     └── kraken2_Minidb<br/>
         ├── report<br/>
         └── result<br/>
+
+### NanoFilt added<br/>
+input of rule kraken2_human and following need to be edited depending on which fastq files (filtered Q > 7, Q > 10 or unfiltered) are to be used for downstream analysis. Edit this rule (filterSamples) as needed. Refere to the NanoFilt repository for more details.
