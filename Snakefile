@@ -163,7 +163,7 @@ rule demultiplex_trim:
     run:
         args = {
         "input":input.raw_fastq,
-        "outputTrimmed":output.trimmed_dir,
+        "outputTrimmed":join(config['ROOT'], "qcat_trimmed", wildcards.runnames),
         "kit":config['barcode_kit'],
         "tsvPath":join(config['ROOT'], "qcat_trimmed", wildcards.runnames)
         }
