@@ -148,12 +148,13 @@ rule runQC:
         command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
         shell(command_nanoP.format(**args)+" || touch {output}")
 #
+BARCODES = config['sample_dict'].keys().keys()
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 rule demultiplex_trim:
     input:
         raw_fastq="fastq/{runnames}.fastq"
     output:
-        trimmed_dir=directory(join(config['ROOT'], "qcat_trimmed", "{runnames}")),
+        trimmed=expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "{barcodes}.fastq"), barcodes=BARCODES),
         tsv=join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv")
     run:
         args = {
@@ -212,8 +213,7 @@ rule demultiplex_summary:
 #
 rule collectSamples:
     input:
-        fastqPath=lambda wildcards: findSampleFastq(wildcards.samples),
-        checktsv=expand(rules.demultiplex_trim.output.tsv, runnames = config['runnames'])
+        fastqPath=lambda wildcards: findSampleFastq(wildcards.samples)
     output:
         fastq=join("fastq", "samples", "{samples}.fastq.gz"),
     run:
