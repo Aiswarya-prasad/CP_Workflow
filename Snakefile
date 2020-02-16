@@ -213,9 +213,9 @@ rule demultiplex_summary:
 rule collectSamples:
     input:
         fastqPath=lambda wildcards: findSampleFastq(wildcards.samples),
-        checktsv=rules.demultiplex_trim.output.tsv
+        checktsv=expand(rules.demultiplex_trim.output.tsv, runnames = config['runnames'])
     output:
-        join("fastq", "samples", "{samples}.fastq.gz")
+        fastq=join("fastq", "samples", "{samples}.fastq.gz"),
     run:
         try:
             makedirs(join("fastq", "samples"))
