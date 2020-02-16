@@ -154,7 +154,7 @@ rule demultiplex_trim:
         raw_fastq="fastq/{runnames}.fastq"
     output:
         trimmed_dir=directory(join(config['ROOT'], "qcat_trimmed", "{runnames}")),
-        tsv=join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv"),
+        tsv=join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv")
     run:
         args = {
         "input":input.raw_fastq,
@@ -213,6 +213,7 @@ rule demultiplex_summary:
 rule collectSamples:
     input:
         fastqPath=lambda wildcards: findSampleFastq(wildcards.samples),
+        checktsv=expand(join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv"), runnames = config['runnames'])
     output:
         join("fastq", "samples", "{samples}.fastq.gz")
     run:
