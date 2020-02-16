@@ -156,7 +156,7 @@ rule runQC:
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 rule demultiplex_trim:
     input:
-        raw_fastq="fastq/{runnames}.fastq"
+        raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
     output:
         trimmed=ListOfExpectedBarcodes,
         # tsv=join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv")
