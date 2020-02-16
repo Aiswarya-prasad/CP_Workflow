@@ -163,9 +163,9 @@ rule demultiplex_trim:
     run:
         args = {
         "input":input.raw_fastq,
-        "outputTrimmed":join(config['ROOT'], "qcat_trimmed", input.runnames),
+        "outputTrimmed":join(config['ROOT'], "qcat_trimmed", wildcards.runnames),
         "kit":config['barcode_kit'],
-        "tsvPath":join(config['ROOT'], "qcat_trimmed", input.runnames)
+        "tsvPath":join(config['ROOT'], "qcat_trimmed", wildcards.runnames)
         }
         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
         command = command.format(**args)
