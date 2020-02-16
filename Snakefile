@@ -148,7 +148,12 @@ rule runQC:
         command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
         shell(command_nanoP.format(**args)+" || touch {output}")
 #
-BARCODES = config['sample_dict'].keys().keys()
+BARCODES = []
+for mydict in config['sample_dict']:
+    for key in mydict.keys():
+        BARCODES.append(key)
+
+
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 rule demultiplex_trim:
     input:
