@@ -154,6 +154,7 @@ rule runQC:
         shell(command_nanoP.format(**args)+" || touch {output}")
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
+# below rule does not use wildcards. Written this way to keep the dag intact
 rule demultiplex_trim:
     input:
         raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
@@ -161,15 +162,16 @@ rule demultiplex_trim:
         trimmed=ListOfExpectedBarcodes,
         # tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
-        args = {
-        "input":input.raw_fastq,
-        "outputTrimmed":join(config['ROOT'], "qcat_trimmed", config['runnames']),
-        "kit":config['barcode_kit'],
-        "tsvPath":join(config['ROOT'], "qcat_trimmed", config['runnames'])
-        }
-        command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
-        command = command.format(**args)
-        shell(command)
+        for Run in config['runnames']:
+            args = {
+            "input":join("fastq", Run+".fastq"),
+            "outputTrimmed":join(config['ROOT'], "qcat_trimmed", Run),
+            "kit":config['barcode_kit'],
+            "tsvPath":join(config['ROOT'], "qcat_trimmed", Run)
+            }
+            command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
+            command = command.format(**args)
+            shell(command)
 
 rule demultiplex_summary:
     input:
