@@ -158,7 +158,7 @@ rule demultiplex_trim:
     input:
         raw_fastq="fastq/{runnames}.fastq"
     output:
-        trimmed=ListOfExpectedBarcodes,
+        trimmed=touch(ListOfExpectedBarcodes),
         tsv=join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv")
     run:
         args = {
