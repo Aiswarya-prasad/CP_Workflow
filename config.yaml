@@ -1,3 +1,4 @@
 ROOT: "path_to_project"
 raw: "paths_to_raw_data"
-run_to_sample: "dict_of_runs_and_samples"
+# run_to_sample: "dict_of_runs_and_samples"
+metadata: "path_to_metadata.csv"
