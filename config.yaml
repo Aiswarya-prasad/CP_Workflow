@@ -2,3 +2,8 @@ ROOT: "path_to_project"
 raw: "paths_to_raw_data"
 # run_to_sample: "dict_of_runs_and_samples"
 metadata: "path_to_metadata.csv"
+rundirs:
+  - "test/temp1"
+  - "test/temp2"
+  - "test/temp3"
+  - "test/temp4"
