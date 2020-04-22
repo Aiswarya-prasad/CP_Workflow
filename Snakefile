@@ -73,7 +73,7 @@ rule basecalling:
         # conditionally allow for --resume figure out how later
         # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
         # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
-        flag = checkForGuppyLog(input.raw_dir)
+        flag = checkForGuppyLog(output.basecalled_dir)
         args={
         "input":input.raw_dir,
         "output":output.basecalled_dir
