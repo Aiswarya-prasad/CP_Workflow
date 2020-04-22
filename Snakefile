@@ -8,33 +8,6 @@ import os
 # --- Importing Configuration File --- #
 configfile: "config.yaml"
 
-# def FindFast5(run_path_list):
-#     """
-#     when provided with a list of directory paths with
-#     raw data (per run), it returns a list of paths to
-#     the fast5 directories in them which contain fast5 files
-#
-#     it can handle multiple fast5 directories in each
-#     parent given
-#     the path will contain the parent directory (run name)
-#     """
-#     # for root, dirs, files in os.walk(run_path, topdown=False):
-#     #     for name in dirs:
-#     #         if os.path.basename(dirpath) == "fast5":
-#     #             print(name)
-#
-#     fast5_path_list=[]
-#     for run_path in run_path_list:
-#         for dirpath, dirnames, filenames in os.walk(run_path, topdown = False):
-#             if os.path.basename(dirpath) == "fast5":
-#                 for file in os.listdir(dirpath):
-#                     if os.path.splitext(file)[1] == ".fast5":
-#                         fast5_path_list.append(dirpath)
-#                     else:
-#                         print(dirpath, "contains NO fast5 files")
-#     return fast5_path_list
-
-
 
 # --- Some rules --- #
 
@@ -49,15 +22,15 @@ threads:2
 #         expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=RUNNAMES)
 # threads:2
 #
-# rule basecalling:
-#     input:
-#         os.path.join(config['RAWDIR'], "{runnames}")
-#     output:
-#         directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
-#     run:
-#         os.makedirs(os.path.join(config['RAWDIR'], "guppy_output", wildcards.runnames))
-#         print(input)
-#         print(output)
+rule basecalling:
+    input:
+        os.path.join(config['RAWDIR'], "{runnames}")
+    output:
+        directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
+    run:
+        os.makedirs(os.path.join(config['RAWDIR'], "guppy_output", wildcards.runnames))
+        print(input)
+        print(output)
 
 # rule parse_metadata:
     # somehow parse metadata and make it available to all the other rules as needed
@@ -82,14 +55,17 @@ threads:2
 #             "scripts/find_sumary.py"
 #
 # make sure to consider multiple fast5 files per run in following steps
-rule basecalling:
-    input:
-        os.path.join(config['RAWDIR'], "{runnames}")
-    output:
-        directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
-    shell:
-        # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4)
-        "guppy_basecaller --input_path {input} --save_path {output} --config guppy_config.cfg --recursive --records_per_fastq 0 --calib"
+# rule basecalling:
+#     input:
+#         os.path.join(config['RAWDIR'], "{runnames}")
+#     output:
+#         directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
+#     shell:
+#         # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
+#         # conditionally allow for --resume figure out how later
+#         # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
+#         # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
+#         "guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
 #
 # rule fastq_QC_run:
 #     input:
@@ -100,7 +76,7 @@ rule basecalling:
 #     shell:
 #         "appropriate program to do QC. If minionQC works, drop this"
 #
-# include run/s that are/were live basecalled or were only available as fastq?
+# include run/s that are/were live basecalled or were only available as fastq? USE qcat
 #
 # rule demultiplex:
 #     input:
