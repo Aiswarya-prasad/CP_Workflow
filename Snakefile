@@ -79,6 +79,7 @@ rule basecalling:
         "output":output.basecalled_dir
         }
         if flag:
+            print("log file was found in {input}".format(input.raw_dir))
             command="guppy_basecaller --resume --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
         else:
             command="guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
