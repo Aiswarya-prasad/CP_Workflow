@@ -8,28 +8,56 @@ import os
 # --- Importing Configuration File --- #
 configfile: "config.yaml"
 
-def FindFast5(run_path_list):
-    """
-    when provided with path to directory containing the
-    raw data, it returns the path to the fast5 folder
-    """
-    fast5_path_list=[]
-    for run_path in run_path_list:
-        for dirpath, dirnames, filenames in os.walk(run_path):
-            if os.path.basename(dirpath) == "fast5":
-                for file in os.listdir(dirpath):
-                    if os.path.splitext(file)[1] == ".fast5":
-                        fast5_path_list.append(dirpath)
-                    else:
-                        print(dirpath, "contains NO fast5 files")
-    return fast5_path_list
-# RAWDIR="/media/utlab/DATA"
-RAWDIR="/home/aiswarya/UtpalTatu_MS/Metagenomics/CP_Workflow/test"
-# RUNNAMES=['Exp1_25Oct', 'Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
-RUNNAMES=['temp1', 'temp2', 'temp3', 'temp4']
-SAMPLES=['01', '03', '06', '07', '10', '11', '12', '13', '14', '15', '17', '18', '19', '20', '21', '22']
+# def FindFast5(run_path_list):
+#     """
+#     when provided with a list of directory paths with
+#     raw data (per run), it returns a list of paths to
+#     the fast5 directories in them which contain fast5 files
+#
+#     it can handle multiple fast5 directories in each
+#     parent given
+#     the path will contain the parent directory (run name)
+#     """
+#     # for root, dirs, files in os.walk(run_path, topdown=False):
+#     #     for name in dirs:
+#     #         if os.path.basename(dirpath) == "fast5":
+#     #             print(name)
+#
+#     fast5_path_list=[]
+#     for run_path in run_path_list:
+#         for dirpath, dirnames, filenames in os.walk(run_path, topdown = False):
+#             if os.path.basename(dirpath) == "fast5":
+#                 for file in os.listdir(dirpath):
+#                     if os.path.splitext(file)[1] == ".fast5":
+#                         fast5_path_list.append(dirpath)
+#                     else:
+#                         print(dirpath, "contains NO fast5 files")
+#     return fast5_path_list
+
+
 
 # --- Some rules --- #
+
+rule all:
+    input:
+        expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=config['runnames'])
+threads:2
+
+# JUAT 2 RULES THAT WORK
+# rule all:
+#     input:
+#         expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=RUNNAMES)
+# threads:2
+#
+# rule basecalling:
+#     input:
+#         os.path.join(config['RAWDIR'], "{runnames}")
+#     output:
+#         directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
+#     run:
+#         os.makedirs(os.path.join(config['RAWDIR'], "guppy_output", wildcards.runnames))
+#         print(input)
+#         print(output)
 
 # rule parse_metadata:
     # somehow parse metadata and make it available to all the other rules as needed
@@ -53,13 +81,15 @@ SAMPLES=['01', '03', '06', '07', '10', '11', '12', '13', '14', '15', '17', '18',
 #         script:
 #             "scripts/find_sumary.py"
 #
+# make sure to consider multiple fast5 files per run in following steps
 rule basecalling:
     input:
-        FindFast5(expand(os.path.join(RAWDIR, "{run_names}"), run_names=RUNNAMES))
-    # output:
-    #     "consider syntax and documentation"
+        os.path.join(config['RAWDIR'], "{runnames}")
+    output:
+        directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
     shell:
-        "echo {input}"
+        # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4)
+        "guppy_basecaller --input_path {input} --save_path {output} --config guppy_config.cfg --recursive --records_per_fastq 0 --calib"
 #
 # rule fastq_QC_run:
 #     input:
@@ -69,6 +99,8 @@ rule basecalling:
 #         "text or csv"
 #     shell:
 #         "appropriate program to do QC. If minionQC works, drop this"
+#
+# include run/s that are/were live basecalled or were only available as fastq?
 #
 # rule demultiplex:
 #     input:
@@ -87,6 +119,8 @@ rule basecalling:
 #                 "fastq for each sample"
 #             script:
 #                 "script/seggregate_fastq.py"
+#
+# include run/s that are/were live basecalled or were only available as fastq?
 #
 # rule run_kraken2:
 #     input:
