@@ -16,22 +16,22 @@ rule all:
         expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=config['runnames'])
 threads:2
 
-# JUAT 2 RULES THAT WORK
+# JUST 2 RULES THAT WORK
 # rule all:
 #     input:
 #         expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=RUNNAMES)
 # threads:2
 #
-rule basecalling:
-    input:
-        os.path.join(config['RAWDIR'], "{runnames}")
-    output:
-        directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
-    run:
-        os.makedirs(os.path.join(config['RAWDIR'], "guppy_output", wildcards.runnames))
-        print(input)
-        print(output)
-
+# rule basecalling:
+#     input:
+#         os.path.join(config['RAWDIR'], "{runnames}")
+#     output:
+#         directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
+#     run:
+#         os.makedirs(os.path.join(config['RAWDIR'], "guppy_output", wildcards.runnames))
+#         print(input)
+#         print(output)
+#
 # rule parse_metadata:
     # somehow parse metadata and make it available to all the other rules as needed
     # do this in config?
@@ -55,17 +55,17 @@ rule basecalling:
 #             "scripts/find_sumary.py"
 #
 # make sure to consider multiple fast5 files per run in following steps
-# rule basecalling:
-#     input:
-#         os.path.join(config['RAWDIR'], "{runnames}")
-#     output:
-#         directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
-#     shell:
-#         # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
-#         # conditionally allow for --resume figure out how later
-#         # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
-#         # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
-#         "guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
+rule basecalling:
+    input:
+        os.path.join(config['RAWDIR'], "{runnames}")
+    output:
+        directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
+    shell:
+        # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
+        # conditionally allow for --resume figure out how later
+        # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
+        # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
+        "guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
 #
 # rule fastq_QC_run:
 #     input:
