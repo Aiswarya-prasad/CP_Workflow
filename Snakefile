@@ -77,9 +77,12 @@ rule basecalling:
         command = command.format(**args)
         if flag:
            shell(command)
-           shell("mv "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/"+wildcards.runnames+".fastq")
-           shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
+           for dirpath, dirlist, filenames in os.walk(os.path.join(guppy_output_dir, wildcards.runnames)):
+               for name in filenames:
+                   if name.endswith('.fastq'):
+                       os.rename(os.path.join(dirpath, name), os.path.join(dirpath, wildcards.runnames+".fastq"))
            shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
+           shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
            # try:
            #     shell("mv "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/"+wildcards.runnames+".fastq")
            #     shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
@@ -96,7 +99,11 @@ rule basecalling:
             command = "guppy_basecaller --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
             command = command.format(**args)
             shell(command)
-            shell("mv "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/"+wildcards.runnames+".fastq")
+            for dirpath, dirlist, filenames in os.walk(os.path.join(guppy_output_dir, wildcards.runnames)):
+                for name in filenames:
+                    if name.endswith('.fastq'):
+                        os.rename(os.path.join(dirpath, name), os.path.join(dirpath, wildcards.runnames+".fastq"))
+            shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
             shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
             # try:
             #     shell(command)
