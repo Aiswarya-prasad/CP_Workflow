@@ -81,19 +81,11 @@ rule basecalling:
                for name in filenames:
                    if name.endswith('.fastq'):
                        os.rename(os.path.join(dirpath, name), os.path.join(dirpath, wildcards.runnames+".fastq"))
-           shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
-           shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
-           # try:
-           #     shell("mv "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/"+wildcards.runnames+".fastq")
-           #     shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
-           #     shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
-           # except:
-           #     print("no basecalling happened")
-           #     shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
-           # else:
-           #     pass
-           # shell("mv "+guppy_output_dir"+/pass/*.fastq "+guppy_output_dir"+/"+wildcards.runnames+".fastq")
-           # shell("rsync -v "+guppy_output_dir"+/pass/*.fastq fastq")
+           try:
+               shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
+           except:
+               print("no basecalling happened")
+               shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
         else:
             print("No log file to resume from. Starting fresh instance of basecallig")
             command = "guppy_basecaller --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
@@ -103,17 +95,11 @@ rule basecalling:
                 for name in filenames:
                     if name.endswith('.fastq'):
                         os.rename(os.path.join(dirpath, name), os.path.join(dirpath, wildcards.runnames+".fastq"))
-            shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
-            shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
-            # try:
-            #     shell(command)
-            #     shell("mv "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/"+wildcards.runnames+".fastq")
-            #     shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
-            # except:
-            #     print("no basecalling happened")
-            #     shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
-            # else:
-            #     pass
+            try:
+                shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
+            except:
+                print("no basecalling happened")
+                shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
 #
 # remove empty fastq files to avoid errors later
 #
