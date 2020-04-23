@@ -65,8 +65,11 @@ rule basecalling:
                 shell(command)
                 shell("rsync -v {output.basecalled_dir}/*.log logs")
                 shell("rsync -v {output.basecalled_dir}/*.fastq fastq")
+            except:
+                pass
+
 #
-# 
+#
 # For run1 copy seq summary into output dir
 # find sequencing summary
 # rule runQC:
