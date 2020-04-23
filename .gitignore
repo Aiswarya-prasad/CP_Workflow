@@ -139,3 +139,4 @@ dmypy.json
 # Do not want data to be uploaded (or even outputs)
 *.fast5
 *.fastq
+test/
