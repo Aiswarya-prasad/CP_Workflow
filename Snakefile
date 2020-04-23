@@ -59,9 +59,9 @@ rule basecalling:
         flag = checkForGuppyLog(guppy_output_dir)
         args = {
         "input":input.raw_dir,
-        "output":guppy_output_dir
+        "output_dir":guppy_output_dir
         }
-        command = "guppy_basecaller --resume --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
+        command = "guppy_basecaller --resume --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
         command = command.format(**args)
         if flag:
            shell(command)
@@ -69,7 +69,7 @@ rule basecalling:
            # shell("rsync -v "+guppy_output_dir"+/pass/*.fastq fastq")
         else:
             print("No log file to resume from. Starting fresh instance of basecallig")
-            command = "guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
+            command = "guppy_basecaller --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
             command = command.format(**args)
             try:
                 shell(command)
