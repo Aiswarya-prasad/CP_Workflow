@@ -23,7 +23,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=config['runnames']))
+        expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=config['runnames'])
     threads: 2
 
 
