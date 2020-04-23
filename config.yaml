@@ -6,3 +6,5 @@ RAWDIR: '/media/utlab/DATA_HDD2/student/Nanopore_Metagenomics/CP_Workflow/test'
 runnames: ['temp1', 'temp2', 'temp3', 'temp4', 'mini_fast5']
 # runnames: ['Exp1_25Oct', 'Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 samples: ['01', '03', '06', '07', '10', '11', '12', '13', '14', '15', '17', '18', '19', '20', '21', '22']
+# for qcat
+barcode_kit: 'NBD103/NBD104'
