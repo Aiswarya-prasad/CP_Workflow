@@ -55,8 +55,13 @@ rule basecalling:
         # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
         # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
         guppy_output_dir = os.path.join(config['RAWDIR'], "guppy_output", wildcards.runnames)
-        os.makedirs(guppy_output_dir)
-        flag = checkForGuppyLog(guppy_output_dir)
+        try:
+            os.makedirs(guppy_output_dir)
+        except FileExistsError:
+            flag = checkForGuppyLog(guppy_output_dir)
+            pass
+        else:
+            flag = False
         args = {
         "input":input.raw_dir,
         "output_dir":guppy_output_dir
