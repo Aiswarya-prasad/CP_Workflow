@@ -4,7 +4,6 @@
 
 # --- Importing Some Packages --- #
 import os
-import shlex
 
 
 # --- Defining Some Functions --- #
@@ -38,29 +37,7 @@ rule all:
 #         print(input)
 #         print(output)
 #
-# rule parse_metadata:
-    # somehow parse metadata and make it available to all the other rules as needed
-    # do this in config?
-
 #
-# rule run_QC:
-#     input:
-#         "path to sequencing_summary.txt"
-#     output:
-#         "figures",
-#         "text"
-#     shell:
-#         "program for doing that minionQC (?????)"
-#
-#         ######## --- will depend on --- ########
-#         rule find_sumary:
-#             "path to Run dir"
-#         output:
-#             "path to seq summary"
-#         script:
-#             "scripts/find_sumary.py"
-#
-# make sure to consider multiple fast5 files per run in following steps
 rule basecalling:
     input:
         raw_dir=os.path.join(config['RAWDIR'], "{runnames}")
@@ -84,46 +61,51 @@ rule basecalling:
             print("No log file to resume from. Starting fresh instance of basecallig")
             command = "guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
             command = command.format(**args)
-            shell(command)
-#
-# rule fastq_QC_run:
+            try:
+                shell(command)
+            except:
+
+# For run1 copy seq summary into output dir
+# find sequencing summary
+# rule runQC:
 #     input:
-#         "basecalled fastq files per run"
+#         seq_summary=os.path.join(rules.basecalling.output.basecalled_dir, "sequencing_summary.txt")
 #     output:
-#         "figures",
-#         "text or csv"
+#         "reports per run"
 #     shell:
-#         "appropriate program to do QC. If minionQC works, drop this"
+#         MinionQC
+#         Nanocomp
 #
 # include run/s that are/were live basecalled or were only available as fastq? USE qcat
 #
-rule demultiplex:
-    input:
-        raw_fastq=rules.basecalling.output.basecalled_dir
-    output:
-        demux_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/demuxd", "{runnames}")),
-        trimmed_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/trimmed", "{runnames}"))
-    run:
-        args = {
-        "input":input.raw_fastq,
-        "output.demux_dir":output.demux_dir,
-        "output.trimmed_dir":output.trimmed_dir,
-        "kit":config['barcode_kit']
-        }
-        command = "qcat -fastq {input} --barcode_dir {output.demux_dir} --output {output.trimmed_dir} --trim -k {kit} --detect-middle"
-        command = command.format(**args)
-        shell(print)
-        shell(command)
+# rule demultiplex:
+#     input:
+#         raw_fastq=rules.basecalling.output.basecalled_dir
+#     output:
+#         demux_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/demuxd", "{runnames}")),
+#         trimmed_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/trimmed", "{runnames}"))
+#     run:
+#         args = {
+#         "input":input.raw_fastq,
+#         "output.demux_dir":output.demux_dir,
+#         "output.trimmed_dir":output.trimmed_dir,
+#         "kit":config['barcode_kit']
+#         }
+#         command = "qcat -fastq {input} --barcode_dir {output.demux_dir} --output {output.trimmed_dir} --trim -k {kit} --detect-middle"
+#         command = command.format(**args)
+#         shell(print)
+#         shell(command)
 #
-#         ######## --- will depend on --- ########
-#         # sample, run, barcode correlation from config or metadata (latter better)
-#         rule seggregate_fastq:
-#             input:
-#                 "result of demux per run"
-#             output:
-#                 "fastq for each sample"
-#             script:
-#                 "script/seggregate_fastq.py"
+# QC of fastq files
+# rule sampleQC:
+#     input:
+#         "each sample fastq"
+#     output:
+#         "reports per sample"
+#     run:
+#         Nanoplot
+#         Nanostat
+#
 #
 # include run/s that are/were live basecalled or were only available as fastq?
 #
