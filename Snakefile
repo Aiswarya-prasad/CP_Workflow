@@ -97,23 +97,23 @@ rule basecalling:
 #
 # include run/s that are/were live basecalled or were only available as fastq? USE qcat
 #
-# rule demultiplex:
-#     input:
-#         raw_fastq=rules.basecalling.output.basecalled_dir
-#     output:
-#         demux_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/demuxd", "{runnames}")),
-#         trimmed_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/trimmed", "{runnames}"))
-#     run:
-#         args = {
-#         "input":input.raw_fastq,
-#         "output.demux_dir":output.demux_dir,
-#         "output.trimmed_dir":output.trimmed_dir,
-#         "kit":config['barcode_kit']
-#         }
-#         command = "qcat -fastq {input} --barcode_dir {output.demux_dir} --output {output.trimmed_dir} --trim -k {kit} --detect-middle"
-#         command = command.format(**args)
-#         shell(print)
-#         shell(command)
+rule demultiplex:
+    input:
+        raw_fastq=rules.basecalling.output.basecalled_dir
+    output:
+        demux_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/demuxd", "{runnames}")),
+        trimmed_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/trimmed", "{runnames}"))
+    run:
+        args = {
+        "input":input.raw_fastq,
+        "output.demux_dir":output.demux_dir,
+        "output.trimmed_dir":output.trimmed_dir,
+        "kit":config['barcode_kit']
+        }
+        command = "qcat -fastq {input} --barcode_dir {output.demux_dir} --output {output.trimmed_dir} --trim -k {kit} --detect-middle"
+        command = command.format(**args)
+        shell(print)
+        shell(command)
 #
 #         ######## --- will depend on --- ########
 #         # sample, run, barcode correlation from config or metadata (latter better)
