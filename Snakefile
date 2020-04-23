@@ -74,15 +74,15 @@ rule basecalling:
         # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
         # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
         flag = checkForGuppyLog(output.basecalled_dir)
-        args={
+        args = {
         "input":input.raw_dir,
         "output":output.basecalled_dir
         }
         if flag:
             print("log file was found in {input}".format(input.raw_dir))
-            command="guppy_basecaller --resume --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
+            command = "guppy_basecaller --resume --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
         else:
-            command="guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
+            command = "guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
         command = command.format(**args)
         print(command)
         shell(command)
@@ -98,13 +98,23 @@ rule basecalling:
 #
 # include run/s that are/were live basecalled or were only available as fastq? USE qcat
 #
-# rule demultiplex:
-#     input:
-#         "basecalled fastq files per run"
-#     output:
-#         "all barcodes for each run"
-#     shell:
-#         "guppy_barcoder (ok? -- other options)"
+rule demultiplex:
+    input:
+        raw_fastq=rules.output.basecalled_dir
+    output:
+        demux_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/demuxd", "{runnames}"))
+        trimmed_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/trimmed", "{runnames}"))
+    run:
+        args = {
+        "input":input.raw_fastq
+        "output.demux_dir":output.demux_dir
+        "output.trimmed_dir":output.trimmed_dir
+        "kit":config['barcode_kit']
+        }
+        command = "qcat -fastq {input} --barcode_dir {output.demux_dir} --output {output.trimmed_dir} --trim -k {kit} --detect-middle"
+        command = command.format(**args)
+        shell(print)
+        shell(command)
 #
 #         ######## --- will depend on --- ########
 #         # sample, run, barcode correlation from config or metadata (latter better)
