@@ -106,9 +106,9 @@ rule demultiplex:
         trimmed_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/trimmed", "{runnames}"))
     run:
         args = {
-        "input":input.raw_fastq
-        "output.demux_dir":output.demux_dir
-        "output.trimmed_dir":output.trimmed_dir
+        "input":input.raw_fastq,
+        "output.demux_dir":output.demux_dir,
+        "output.trimmed_dir":output.trimmed_dir,
         "kit":config['barcode_kit']
         }
         command = "qcat -fastq {input} --barcode_dir {output.demux_dir} --output {output.trimmed_dir} --trim -k {kit} --detect-middle"
