@@ -21,7 +21,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=config['runnames'])
+        ancient(expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=config['runnames']))
 threads:2
 
 # JUST 2 RULES THAT WORK
@@ -67,7 +67,7 @@ rule basecalling:
     input:
         raw_dir=os.path.join(config['RAWDIR'], "{runnames}")
     output:
-        basecalled_dir=ancient(directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}")))
+        basecalled_dir=directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
     run:
         # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
         # conditionally allow for --resume figure out how later
@@ -100,7 +100,7 @@ rule basecalling:
 #
 rule demultiplex:
     input:
-        raw_fastq=rules.output.basecalled_dir
+        raw_fastq=rules.basecalling.output.basecalled_dir
     output:
         demux_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/demuxd", "{runnames}")),
         trimmed_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/trimmed", "{runnames}"))
