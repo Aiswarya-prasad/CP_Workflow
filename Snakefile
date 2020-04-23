@@ -42,7 +42,7 @@ rule basecalling:
     input:
         raw_dir=os.path.join(config['RAWDIR'], "{runnames}")
     output:
-        basecalled_dir=protected(directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}")))
+        basecalled_dir=directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
     run:
         # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
         # conditionally allow for --resume figure out how later
@@ -61,11 +61,9 @@ rule basecalling:
             print("No log file to resume from. Starting fresh instance of basecallig")
             command = "guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
             command = command.format(**args)
-            try:
-                shell(command)
-            except:
-                print("failed to run fresh instance")
-                pass
+            shell(command)
+            shell("rsync -v {output.basecalled_dir}/*.log logs")
+            shell("rsync -v {output.basecalled_dir}/*.fastq fastq")
 
 # For run1 copy seq summary into output dir
 # find sequencing summary
