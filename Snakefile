@@ -70,6 +70,14 @@ rule basecalling:
         command = command.format(**args)
         if flag:
            shell(command)
+           try:
+               shell("rename "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/{runnames}.fastq")
+               shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
+           except:
+               print("no basecalling happened")
+               shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
+           else:
+               pass
            # shell("rename "+guppy_output_dir"+/pass/*.fastq "+guppy_output_dir"+/{runnames}.fastq")
            # shell("rsync -v "+guppy_output_dir"+/pass/*.fastq fastq")
         else:
