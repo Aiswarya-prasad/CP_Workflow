@@ -61,10 +61,12 @@ rule basecalling:
             print("No log file to resume from. Starting fresh instance of basecallig")
             command = "guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
             command = command.format(**args)
-            shell(command)
-            shell("rsync -v {output.basecalled_dir}/*.log logs")
-            shell("rsync -v {output.basecalled_dir}/*.fastq fastq")
-
+            try:
+                shell(command)
+                shell("rsync -v {output.basecalled_dir}/*.log logs")
+                shell("rsync -v {output.basecalled_dir}/*.fastq fastq")
+#
+# 
 # For run1 copy seq summary into output dir
 # find sequencing summary
 # rule runQC:
