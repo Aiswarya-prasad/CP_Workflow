@@ -4,6 +4,7 @@
 
 # --- Importing Some Packages --- #
 import os
+import shlex
 
 
 # --- Defining Some Functions --- #
@@ -77,19 +78,20 @@ rule basecalling:
         # conditionally allow for --resume figure out how later
         # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
         # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
-        flag = checkForGuppyLog(output.basecalled_dir)
+        # flag = checkForGuppyLog(output.basecalled_dir)
         args = {
         "input":input.raw_dir,
         "output":output.basecalled_dir
         }
-        if flag:
-            print("log file was found in {input}".format(input.raw_dir))
-            command = "guppy_basecaller --resume --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
-        else:
-            command = "guppy_basecaller --resume --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
+        command = "guppy_basecaller --resume --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
         command = command.format(**args)
-        print(command)
-        shell(command)
+        try:
+           shell(command)
+        # an exception is raised by check_output() for non-zero exit codes (usually returned to indicate failure)
+        except:
+            command = "guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
+            command = command.format(**args)
+            shell(command)
 #
 # rule fastq_QC_run:
 #     input:
