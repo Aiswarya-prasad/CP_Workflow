@@ -17,10 +17,8 @@ def checkForGuppyLog(path):
 def remove_empty_fastq(fastq):
     for dirpath, dirlist, filenames in os.walk(fastq):
         for name in filenames:
-            if os.stat(os.path.join(dirpath, name).st_size == 0:
+            if os.stat(os.path.join(dirpath, name)).st_size == 0:
                 os.remove(os.path.join(dirpath, name))
-            else:
-                pass
 
 # --- Importing Configuration File --- #
 configfile: "config.yaml"
