@@ -5,6 +5,7 @@
 # --- Importing Some Packages --- #
 import os
 
+
 # --- Defining Some Functions --- #
 def checkForGuppyLog(path):
     for dirpath, dirlist, filenames in os.walk(path):
@@ -12,6 +13,7 @@ def checkForGuppyLog(path):
             if name.endswith('.log') and name.startswith('guppy'):
                 return True
     return False
+
 
 # --- Importing Configuration File --- #
 configfile: "config.yaml"
@@ -21,14 +23,15 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        ancient(expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=config['runnames']))
-threads:2
+        expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=config['runnames']))
+    threads: 2
+
 
 # JUST 2 RULES THAT WORK
 # rule all:
 #     input:
 #         expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=RUNNAMES)
-# threads:2
+#     threads:2
 #
 # rule basecalling:
 #     input:
@@ -146,4 +149,4 @@ rule demultiplex:
 #     shell:
 #         "call run_centrifuge"
 #
-# ###########--figure out how to do comparative analysis--###########
+###########--figure out how to do comparative analysis--###########
