@@ -65,19 +65,19 @@ rule basecalling:
         command = command.format(**args)
         if flag:
            shell(command)
-           # shell("rename {output.basecalled_dir}/pass/*.fastq {output.basecalled_dir}/{runnames}.fastq")
-           # shell("rsync -v {output.basecalled_dir}/pass/*.fastq fastq")
+           # shell("rename "+guppy_output_dir"+/pass/*.fastq "+guppy_output_dir"+/{runnames}.fastq")
+           # shell("rsync -v "+guppy_output_dir"+/pass/*.fastq fastq")
         else:
             print("No log file to resume from. Starting fresh instance of basecallig")
             command = "guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
             command = command.format(**args)
             try:
                 shell(command)
-                shell("rename {output.basecalled_dir}/pass/*.fastq {output.basecalled_dir}/{runnames}.fastq")
-                shell("rsync -v {output.basecalled_dir}/pass/*.fastq fastq")
+                shell("rename "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/{runnames}.fastq")
+                shell("rsync -v "+guppy_output_dir+"/pass/*.fastq fastq")
             except:
                 print("no basecalling happened")
-                shell("touch {output.basecalled_dir}/{runnames}.fastq")
+                shell("touch "+guppy_output_dir+"/"+wildcards.runnames+".fastq")
                 pass
 
 #
