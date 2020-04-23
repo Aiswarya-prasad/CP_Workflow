@@ -102,7 +102,7 @@ rule demultiplex:
     input:
         raw_fastq=rules.output.basecalled_dir
     output:
-        demux_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/demuxd", "{runnames}"))
+        demux_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/demuxd", "{runnames}")),
         trimmed_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/trimmed", "{runnames}"))
     run:
         args = {
