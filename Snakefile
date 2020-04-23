@@ -30,8 +30,8 @@ rule all:
     input:
         expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames'])
     threads: 2
-    run:
-        remove_empty_fastq("fastq")
+    # run:
+    #     remove_empty_fastq("fastq")
 
 # JUST 2 RULES THAT WORK
 # rule all:
