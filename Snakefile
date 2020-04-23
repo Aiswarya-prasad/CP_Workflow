@@ -79,10 +79,11 @@ rule basecalling:
             try:
                 shell(command)
                 shell("rename "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/{runnames}.fastq")
-                shell("rsync -v "+guppy_output_dir+"/pass/*.fastq fastq")
+                shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
             except:
                 print("no basecalling happened")
-                shell("touch "+guppy_output_dir+"/"+wildcards.runnames+".fastq")
+                shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
+            else:
                 pass
 
 #
