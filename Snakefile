@@ -7,7 +7,12 @@ import os
 
 
 # --- Defining Some Functions --- #
-
+def checkForGuppyLog(path):
+    for dirpath, dirlist, filenames in os.walk(path):
+        for name in filenames:
+            if name.endswith('.log'):
+                return True
+    return False
 
 
 # --- Importing Configuration File --- #
@@ -18,7 +23,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=config['runnames'])
+        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames'])
     threads: 2
 
 # JUST 2 RULES THAT WORK
@@ -42,30 +47,36 @@ rule basecalling:
     input:
         raw_dir=os.path.join(config['RAWDIR'], "{runnames}")
     output:
-        basecalled_dir=directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
+        # basecalled_dir=directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
+        run_fastq=os.path.join("fastq", "{runnames}.fastq")
     run:
         # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
         # conditionally allow for --resume figure out how later
         # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
         # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
-        # flag = checkForGuppyLog(output.basecalled_dir)
+        guppy_output_dir = os.path.join(config['RAWDIR'], "guppy_output", "{runnames}")
+        shell("mkdir {guppy_output_dir}")
+        flag = checkForGuppyLog(guppy_output_dir)
         args = {
         "input":input.raw_dir,
-        "output":output.basecalled_dir
+        "output":guppy_output_dir
         }
         command = "guppy_basecaller --resume --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
         command = command.format(**args)
-        try:
+        if flag:
            shell(command)
-        except:
+           # shell("rename {output.basecalled_dir}/pass/*.fastq {output.basecalled_dir}/{runnames}.fastq")
+           # shell("rsync -v {output.basecalled_dir}/pass/*.fastq fastq")
+        else:
             print("No log file to resume from. Starting fresh instance of basecallig")
             command = "guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
             command = command.format(**args)
             try:
                 shell(command)
-                shell("rsync -v {output.basecalled_dir}/*.log logs")
-                shell("rsync -v {output.basecalled_dir}/*.fastq fastq")
+                shell("rename {output.basecalled_dir}/pass/*.fastq {output.basecalled_dir}/{runnames}.fastq")
+                shell("rsync -v {output.basecalled_dir}/pass/*.fastq fastq")
             except:
+                print("no basecalling happened")
                 pass
 
 #
