@@ -64,6 +64,8 @@ rule basecalling:
             try:
                 shell(command)
             except:
+                print("failed to run fresh instance")
+                pass
 
 # For run1 copy seq summary into output dir
 # find sequencing summary
