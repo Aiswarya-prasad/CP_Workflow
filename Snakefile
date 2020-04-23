@@ -77,11 +77,11 @@ rule basecalling:
         command = command.format(**args)
         if flag:
            shell(command)
-           shell("rename "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/{runnames}.fastq")
+           shell("rename "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/"+wildcards.runnames+".fastq")
            shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
            shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
            # try:
-           #     shell("rename "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/{runnames}.fastq")
+           #     shell("rename "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/"+wildcards.runnames+".fastq")
            #     shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
            #     shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
            # except:
@@ -89,18 +89,18 @@ rule basecalling:
            #     shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
            # else:
            #     pass
-           # shell("rename "+guppy_output_dir"+/pass/*.fastq "+guppy_output_dir"+/{runnames}.fastq")
+           # shell("rename "+guppy_output_dir"+/pass/*.fastq "+guppy_output_dir"+/"+wildcards.runnames+".fastq")
            # shell("rsync -v "+guppy_output_dir"+/pass/*.fastq fastq")
         else:
             print("No log file to resume from. Starting fresh instance of basecallig")
             command = "guppy_basecaller --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
             command = command.format(**args)
             shell(command)
-            shell("rename "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/{runnames}.fastq")
+            shell("rename "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/"+wildcards.runnames+".fastq")
             shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
             # try:
             #     shell(command)
-            #     shell("rename "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/{runnames}.fastq")
+            #     shell("rename "+guppy_output_dir+"/pass/*.fastq "+guppy_output_dir+"/"+wildcards.runnames+".fastq")
             #     shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
             # except:
             #     print("no basecalling happened")
