@@ -8,13 +8,7 @@ import shlex
 
 
 # --- Defining Some Functions --- #
-def checkForGuppyLog(path):
-    for dirpath, dirlist, filenames in os.walk(path):
-        for name in filenames:
-            if name.endswith('.log') and name.startswith('guppy'):
-                print(name)
-                return True
-    return False
+
 
 
 # --- Importing Configuration File --- #
@@ -87,8 +81,8 @@ rule basecalling:
         command = command.format(**args)
         try:
            shell(command)
-        # an exception is raised by check_output() for non-zero exit codes (usually returned to indicate failure)
         except:
+            print("No log file to resume from. Starting fresh instance of basecallig")
             command = "guppy_basecaller --input_path {input} --save_path {output} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
             command = command.format(**args)
             shell(command)
