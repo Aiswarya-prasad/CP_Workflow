@@ -65,7 +65,7 @@ rule basecalling:
     input:
         raw_dir=os.path.join(config['RAWDIR'], "{runnames}")
     output:
-        basecalled_dir=directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"))
+        basecalled_dir=protected(directory(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}")))
     run:
         # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
         # conditionally allow for --resume figure out how later
