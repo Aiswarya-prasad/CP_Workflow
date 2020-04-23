@@ -21,7 +21,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        ancient(expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=config['runnames']))
+        expand(os.path.join(config['RAWDIR'], "guppy_output", "{runnames}"), runnames=config['runnames'])
 threads:2
 
 # JUST 2 RULES THAT WORK
