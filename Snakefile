@@ -14,6 +14,11 @@ def checkForGuppyLog(path):
                 return True
     return False
 
+def remove_empty_fastq(fastq):
+    for dirpath, dirlist, filenames in os.walk(fastq):
+        for name in filenames:
+            if os.stat(os.path.join(dirpath, name).st_size == 0:
+                os.remove(os.path.join(dirpath, name))
 
 # --- Importing Configuration File --- #
 configfile: "config.yaml"
@@ -95,10 +100,6 @@ rule basecalling:
                 pass
 #
 # remove empty fastq files to avoid errors later
-for dirpath, dirlist, filenames in os.walk(fastq):
-    for name in filenames:
-        if os.stat(os.path.join(dirpath, name).st_size == 0:
-            os.remove(os.path.join(dirpath, name))
 #
 # For run1 copy seq summary into output dir
 # find sequencing summary
