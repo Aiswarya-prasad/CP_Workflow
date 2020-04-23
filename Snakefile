@@ -14,11 +14,6 @@ def checkForGuppyLog(path):
                 return True
     return False
 
-def remove_empty_fastq(fastq):
-    for dirpath, dirlist, filenames in os.walk(fastq):
-        for name in filenames:
-            if os.stat(os.path.join(dirpath, name)).st_size == 0:
-                os.remove(os.path.join(dirpath, name))
 
 # --- Importing Configuration File --- #
 configfile: "config.yaml"
@@ -30,8 +25,6 @@ rule all:
     input:
         expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames'])
     threads: 2
-    run:
-        remove_empty_fastq("fastq")
 
 # JUST 2 RULES THAT WORK
 # rule all:
