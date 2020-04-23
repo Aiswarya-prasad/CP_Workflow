@@ -93,8 +93,12 @@ rule basecalling:
                 shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
             else:
                 pass
-
 #
+# remove empty fastq files to avoid errors later
+for dirpath, dirlist, filenames in os.walk(fastq):
+    for name in filenames:
+        if os.stat(os.path.join(dirpath, name).st_size == 0:
+            os.remove(os.path.join(dirpath, name))
 #
 # For run1 copy seq summary into output dir
 # find sequencing summary
