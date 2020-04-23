@@ -127,4 +127,4 @@ rule basecalling:
 #     shell:
 #         "call run_centrifuge"
 #
-###########--figure out how to do comparative analysis--###########
+###########--figure out how to do comparative analysis--##########
