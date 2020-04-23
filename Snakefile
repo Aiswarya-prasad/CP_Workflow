@@ -77,6 +77,7 @@ rule basecalling:
                 shell("rsync -v {output.basecalled_dir}/pass/*.fastq fastq")
             except:
                 print("no basecalling happened")
+                shell("touch {output.basecalled_dir}/{runnames}.fastq")
                 pass
 
 #
