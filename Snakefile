@@ -4,7 +4,7 @@
 
 # --- Importing Some Packages --- #
 import os
-
+from snakemake.shell import shell
 
 # --- Defining Some Functions --- #
 def checkForGuppyLog(path):
@@ -55,7 +55,7 @@ rule basecalling:
         # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
         # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
         guppy_output_dir = os.path.join(config['RAWDIR'], "guppy_output", "{runnames}")
-        shell("mkdir {guppy_output_dir}")
+        shell("mkdir "+guppy_output_dir)
         flag = checkForGuppyLog(guppy_output_dir)
         args = {
         "input":input.raw_dir,
