@@ -23,7 +23,8 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames'])
+        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+        "fastq/Run4_1_mixed.fastq"
     threads: 8
 
 
@@ -92,23 +93,24 @@ rule basecalling:
 #
 # include run/s that are/were live basecalled or were only available as fastq? USE qcat
 #
-# rule demultiplex:
-#     input:
-#         raw_fastq=rules.basecalling.output.basecalled_dir
-#     output:
-#         demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{runnames}")),
-#         trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{runnames}"))
-#     run:
-#         args = {
-#         "input":input.raw_fastq,
-#         "output.demux_dir":output.demux_dir,
-#         "output.trimmed_dir":output.trimmed_dir,
-#         "kit":config['barcode_kit']
-#         }
-#         command = "qcat -fastq {input} --barcode_dir {output.demux_dir} --output {output.trimmed_dir} --trim -k {kit} --detect-middle"
-#         command = command.format(**args)
-#         shell(print)
-#         shell(command)
+rule demultiplex:
+    input:
+        # raw_fastq="fastq/{runnames}"
+        raw_fastq="fastq/Run4_1_mixed.fastq"
+    output:
+        demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{runnames}")),
+        trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{runnames}"))
+    run:
+        args = {
+        "input":input.raw_fastq,
+        "output.demux_dir":output.demux_dir,
+        "output.trimmed_dir":output.trimmed_dir,
+        "kit":config['barcode_kit']
+        }
+        command = "qcat -fastq {input} --barcode_dir {output.demux_dir} --output {output.trimmed_dir} --trim -k {kit} --detect-middle"
+        command = command.format(**args)
+        shell(print)
+        shell(command)
 #
 # QC of fastq files
 # rule sampleQC:
