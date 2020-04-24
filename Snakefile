@@ -110,7 +110,7 @@ rule demultiplex:
         "outputTrimmed":output.trimmed_dir,
         "kit":config['barcode_kit']
         }
-        command = "qcat --fastq {input} --barcode_dir {outputDemux} --output {outputTrimmed} --trim -k {kit} --detect-middle"
+        command = "qcat --fastq {input} --barcode_dir {outputDemux}/ --output {outputTrimmed}/ --trim -k {kit} --detect-middle"
         command = command.format(**args)
         shell(command)
 #
