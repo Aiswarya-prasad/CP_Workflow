@@ -111,7 +111,6 @@ rule demultiplex:
         }
         command = "qcat -fastq {input} --barcode_dir {outputDemux} --output {outputTrimmed} --trim -k {kit} --detect-middle"
         command = command.format(**args)
-        shell(print)
         shell(command)
 #
 # QC of fastq files
