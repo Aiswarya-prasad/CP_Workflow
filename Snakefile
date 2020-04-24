@@ -24,7 +24,7 @@ configfile: "config.yaml"
 rule all:
     input:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        expand(os.path.join(config['ROOT'], "qcat_output/demuxd", "{qcat_test_name}"), qcat_test_name="Run4_1_mixed"),
+        # expand(os.path.join(config['ROOT'], "qcat_output/demuxd", "{qcat_test_name}"), qcat_test_name="Run4_1_mixed"),
         expand(os.path.join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}"), qcat_test_name="Run4_1_mixed")
     threads: 8
 
@@ -99,18 +99,16 @@ rule demultiplex:
     input:
         raw_fastq="fastq/{qcat_test_name}.fastq"
     output:
-        demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{qcat_test_name}")),
+        # demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{qcat_test_name}")),
         trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}"))
     run:
-        # os.makedirs(os.path.join(config['ROOT'], "qcat_output/demuxd", "{qcat_test_name}"))
-        # os.makedirs(os.path.join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}"))
         args = {
         "input":input.raw_fastq,
-        "outputDemux":output.demux_dir,
+        # "outputDemux":output.demux_dir,
         "outputTrimmed":output.trimmed_dir,
         "kit":config['barcode_kit']
         }
-        command = "qcat --fastq {input} --barcode_dir {outputDemux}/ --output {outputTrimmed}/ --trim -k {kit} --detect-middle"
+        command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle"
         command = command.format(**args)
         shell(command)
 #
