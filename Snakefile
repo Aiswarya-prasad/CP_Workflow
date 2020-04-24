@@ -101,6 +101,8 @@ rule demultiplex:
         demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{qcat_test_name}")),
         trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}"))
     run:
+        os.makedirs(output.demux_dir)
+        os.makedirs(output.trimmed_dir)
         args = {
         "input":input.raw_fastq,
         "output.demux_dir":output.demux_dir,
