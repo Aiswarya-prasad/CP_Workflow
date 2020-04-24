@@ -96,8 +96,8 @@ rule basecalling:
 #     input:
 #         raw_fastq=rules.basecalling.output.basecalled_dir
 #     output:
-#         demux_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/demuxd", "{runnames}")),
-#         trimmed_dir=directory(os.path.join(config['RAWDIR'], "qcat_output/trimmed", "{runnames}"))
+#         demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{runnames}")),
+#         trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{runnames}"))
 #     run:
 #         args = {
 #         "input":input.raw_fastq,
