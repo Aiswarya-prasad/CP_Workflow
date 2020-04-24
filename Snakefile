@@ -23,7 +23,7 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+        # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         "fastq/Run4_1_mixed.fastq"
     threads: 8
 
