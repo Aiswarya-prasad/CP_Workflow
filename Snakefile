@@ -104,10 +104,10 @@ rule demultiplex:
         # os.makedirs(os.path.join(config['ROOT'], "qcat_output/demuxd", "{qcat_test_name}"))
         # os.makedirs(os.path.join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}"))
         args = {
-        "input":"input.raw_fastq",
-        "outputDemux":"output.demux_dir",
-        "outputTrimmed":"output.trimmed_dir",
-        "kit":"config['barcode_kit']"
+        "input":input.raw_fastq,
+        "outputDemux":output.demux_dir,
+        "outputTrimmed":output.trimmed_dir,
+        "kit":config['barcode_kit']
         }
         command = "qcat -fastq {input} --barcode_dir {outputDemux} --output {outputTrimmed} --trim -k {kit} --detect-middle"
         command = command.format(**args)
