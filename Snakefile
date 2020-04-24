@@ -24,7 +24,7 @@ configfile: "config.yaml"
 rule all:
     input:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        "fastq/Run4_1_mixed.fastq"
+        expand(directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}")), qcat_test_name="Run4_1_mixed.fastq")
     threads: 8
 
 
@@ -93,13 +93,13 @@ rule basecalling:
 #
 # include run/s that are/were live basecalled or were only available as fastq? USE qcat
 #
+
 rule demultiplex:
     input:
-        # raw_fastq="fastq/{runnames}"
-        raw_fastq="fastq/Run4_1_mixed.fastq"
+        raw_fastq="fastq/{qcat_test_name}"
     output:
-        demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{runnames}")),
-        trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{runnames}"))
+        demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{qcat_test_name}")),
+        trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}"))
     run:
         args = {
         "input":input.raw_fastq,
