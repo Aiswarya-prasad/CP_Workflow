@@ -24,7 +24,7 @@ configfile: "config.yaml"
 rule all:
     input:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name="Run4_1_mixed")
+        expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name="Run4_mixed")
     threads: 8
 
 
