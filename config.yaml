@@ -1,7 +1,8 @@
 # ROOT: "path_to_project"
 # metadata: "path_to_metadata.csv"
 
-RAWDIR: '/home/aiswarya/UtpalTatu_MS/Metagenomics/CP_Workflow/test'
+RAWDIR: '/home/aiswarya/UtpalTatu_MS/Metagenomics/CP_Workflow/RawData'
+ROOT: '/home/aiswarya/UtpalTatu_MS/Metagenomics/CP_Workflow/'
 # RAWDIR="/media/utlab/DATA"
 runnames: ['temp1', 'temp2', 'temp3', 'temp4']
 # RUNNAMES=['Exp1_25Oct', 'Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
