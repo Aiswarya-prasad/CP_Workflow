@@ -1,7 +1,6 @@
 # ROOT: "path_to_project"
 # metadata: "path_to_metadata.csv"
 
-<<<<<<< HEAD
 # RAWDIR: '/home/aiswarya/UtpalTatu_MS/Metagenomics/CP_Workflow/test'
 RAWDIR: '/media/utlab/DATA_HDD2/student/Nanopore_Metagenomics/CP_Workflow/RawData'
 ROOT: '/media/utlab/DATA_HDD2/student/Nanopore_Metagenomics/CP_Workflow/'
