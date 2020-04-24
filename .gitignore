@@ -140,3 +140,4 @@ dmypy.json
 *.fast5
 *.fastq
 test/
+RawData/
