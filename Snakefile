@@ -24,7 +24,7 @@ configfile: "config.yaml"
 rule all:
     input:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        expand(directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}")), qcat_test_name="Run4_1_mixed.fastq")
+        expand(directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}")), qcat_test_name="Run4_1_mixed")
     threads: 8
 
 
@@ -96,7 +96,7 @@ rule basecalling:
 
 rule demultiplex:
     input:
-        raw_fastq="fastq/{qcat_test_name}"
+        raw_fastq="fastq/{qcat_test_name}.fastq"
     output:
         demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{qcat_test_name}")),
         trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}"))
