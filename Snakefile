@@ -109,7 +109,7 @@ rule demultiplex_trim:
         }
         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle"
         command = command.format(**args)
-        shell(command)
+        shell(command+" > "+os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}","qcat.res"))
 #
 # qcat does trimming simultaneaously so uncomment demultiplex_keep_trim
 # if untrimmed files are needed specifically
