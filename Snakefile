@@ -15,8 +15,10 @@ def checkForGuppyLog(path):
     return False
 
 
-# --- Importing Configuration File --- #
+# --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
+# Only for pre-basecalled unfiltered guppy reads
+MY_RUNNAMES = ["Run1_pf_mixed", "Run2_mixed", "Run3_mixed", "Run4_mixed"]
 
 
 # --- Some rules --- #
@@ -24,7 +26,7 @@ configfile: "config.yaml"
 rule all:
     input:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name="Run4_mixed")
+        expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES)
     threads: 8
 
 
