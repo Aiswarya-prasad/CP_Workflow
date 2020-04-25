@@ -107,7 +107,7 @@ rule demultiplex_trim:
         "outputTrimmed":output.trimmed_dir,
         "kit":config['barcode_kit']
         }
-        command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > "+wildcards.qcat_test_name"+.tsv
+        command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > "+wildcards.qcat_test_name"+.tsv"
         command = command.format(**args)
         shell(command)
 #
