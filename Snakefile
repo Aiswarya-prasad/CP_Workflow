@@ -135,6 +135,7 @@ rule demultiplex_trim:
 #         shell(command)
 #
 #         command = "qcat --fastq {input} --trim -k {kit} --detect-middle"
+# Run 0 (sample 01) trimmed in qcat seperately. Will be combined from this point on
 #
 # QC of fastq files
 # rule sampleQC:
