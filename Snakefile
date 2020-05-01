@@ -18,7 +18,7 @@ def checkForGuppyLog(path):
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
 # Only for pre-basecalled unfiltered guppy reads
-MY_RUNNAMES = ["Run1_pf_mixed", "Run2_mixed", "Run3_mixed", "Run4_mixed"]
+MY_RUNNAMES = ["Run0", "Run1_pf_mixed", "Run2_mixed", "Run3_mixed", "Run4_mixed"]
 
 
 # --- Some rules --- #
@@ -109,7 +109,7 @@ rule demultiplex_trim:
         "outputTrimmed":output.trimmed_dir,
         "kit":config['barcode_kit']
         }
-        command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > "+wildcards.qcat_test_name+".tsv"
+        command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > "+os.path.join(config['ROOT'], "qcat_trimmed")+wildcards.qcat_test_name+".tsv"
         command = command.format(**args)
         shell(command)
 #
