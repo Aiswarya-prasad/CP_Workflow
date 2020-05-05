@@ -94,26 +94,24 @@ rule runQC:
     output:
         MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
         Nanocomp_out=directory(os.path.join("QC", "runs", "Nanocomp", "{runnames}"))
-    shell:
-        # try:
-        #     os.makedirs(os.path.join("QC", "runs", "MinionQC", wildcards.runnames))
-        # except:
-        #     pass
-        # try:
-        #     os.makedirs(os.path.join("QC", "runs", "Nanocomp", wildcards.runnames))
-        # except:
-        #     pass
-        # os.makedirs(os.path.join("QC", "runs", "MinionQC"))
-        # os.makedirs(os.path.join("QC", "runs", "Nanocomp"))
+    run:
+        try:
+            os.makedirs(os.path.join("QC", "runs", "MinionQC", wildcards.runnames))
+        except FileExistsError:
+            pass
+        try:
+            os.makedirs(os.path.join("QC", "runs", "Nanocomp", wildcards.runnames))
+        except FileExistsError:
+            pass
         args = {
         "input":input.seq_summary,
         "outputMin":output.MinionQC_out,
         "outputNano":output.Nanocomp_out
         }
         #  -s makes small figures suitable for export rather than optimised for screen
-        # commandMin = "Rscript MinIONQC.R -i {input} -o {outputMin} -s TRUE"
-        # commandMin = commandMin.format(**args)
-        # shell(commandMin)
+        commandMin = "Rscript MinIONQC.R -i {input} -o {outputMin} -s TRUE"
+        commandMin = commandMin.format(**args)
+        shell(commandMin)
         commandNano = "Rscript MinIONQC.R -i {input} -o {outputNano} -s TRUE"
         commandNano = commandNano.format(**args)
         shell(commandNano)
