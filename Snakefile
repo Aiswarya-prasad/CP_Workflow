@@ -16,7 +16,7 @@ def checkForGuppyLog(path):
 
 
 # --- Importing Configuration File --- #
-configfile: "config.yaml"
+configfile: "configRunQC.yaml"
 
 
 # --- Some rules --- #
