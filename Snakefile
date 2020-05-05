@@ -88,7 +88,7 @@ rule runQC:
     input:
         seq_summary=os.path.join("guppy_output", "{runnames}", "sequencing_summary.old.txt")
     output:
-        MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
+        MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC")),
         Nanocomp_out=directory(os.path.join("QC", "runs", "Nanocomp", "{runnames}"))
     run:
         try:
@@ -109,7 +109,7 @@ rule runQC:
         #  -s makes small figures suitable for export rather than optimised for screen
         commandMin = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
         commandMin = commandMin.format(**args)
-        shell(commandMin)
+        # shell(commandMin)
         commandNano = "Rscript {minionQCpath} -i {input} -o {outputNano} -s TRUE"
         commandNano = commandNano.format(**args)
         shell(commandNano)
