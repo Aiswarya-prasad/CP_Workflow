@@ -92,8 +92,8 @@ rule runQC:
     input:
         seq_summary=os.path.join("guppy_output", "{runnames}", "sequencing_summary.old.txt")
     output:
-        MinionQC_out=os.path.join("QC", "runs", "MinionQC", "{runnames}"),
-        Nanocomp_out=os.path.join("QC", "runs", "Nanocomp", "{runnames}")
+        MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
+        Nanocomp_out=directory(os.path.join("QC", "runs", "Nanocomp", "{runnames}"))
     shell:
         try:
             os.makedirs(os.path.join("QC", "runs", "MinionQC", "{runnames}"))
