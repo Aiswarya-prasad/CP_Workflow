@@ -95,16 +95,14 @@ rule runQC:
         MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
         Nanocomp_out=directory(os.path.join("QC", "runs", "Nanocomp", "{runnames}"))
     shell:
-        # try:
-        #     os.makedirs(os.path.join("QC", "runs", "MinionQC", "{runnames}"))
-        # except:
-        #     pass
-        # try:
-        #     os.makedirs(os.path.join("QC", "runs", "Nanocomp", "{runnames}"))
-        # except:
-        #     pass
-        os.makedirs(os.path.join("QC", "runs", "MinionQC", "{runnames}"))
-        os.makedirs(os.path.join("QC", "runs", "Nanocomp", "{runnames}"))
+        try:
+            os.makedirs(os.path.join("QC", "runs", "MinionQC", wildcards.runnames))
+        except:
+            pass
+        try:
+            os.makedirs(os.path.join("QC", "runs", "Nanocomp", wildcards.runnames))
+        except:
+            pass
         args = {
         "input":input.seq_summary
         "outputMin":output.MinionQC_out
