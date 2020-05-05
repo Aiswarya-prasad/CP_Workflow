@@ -16,16 +16,16 @@ def checkForGuppyLog(path):
 
 
 # --- Importing Configuration File --- #
-configfile: "configRunQC.yaml"
+configfile: "config.yaml"
 
 
 # --- Some rules --- #
 
 rule all:
     input:
-        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames']),
-        expand(os.path.join("QC", "runs", "Nanocomp", "{runnames}"), runnames=config['runnames'])
+        # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+        expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'], allow_missing=True),
+        expand(os.path.join("QC", "runs", "Nanocomp", "{runnames}"), runnames=config['runnames'], allow_missing=True)
     threads: 8
 
 
