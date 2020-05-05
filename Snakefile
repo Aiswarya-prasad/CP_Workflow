@@ -97,11 +97,11 @@ rule runQC:
     shell:
         try:
             os.makedirs(os.path.join("QC", "runs", "MinionQC", "{runnames}"))
-        except FileExistsError:
+        except:
             pass
         try:
             os.makedirs(os.path.join("QC", "runs", "Nanocomp", "{runnames}"))
-        except FileExistsError:
+        except:
             pass
         args = {
         "input":input.seq_summary
