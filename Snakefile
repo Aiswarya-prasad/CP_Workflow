@@ -102,7 +102,7 @@ rule runQC:
         args = {
         "input":input.seq_summary,
         "outputMin":output.MinionQC_out,
-        "outputNano":output.Nanocomp_out
+        "outputNano":output.Nanocomp_out,
         "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R"
         }
         # shift minionQCpath to config
