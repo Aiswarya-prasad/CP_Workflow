@@ -103,12 +103,14 @@ rule runQC:
         "input":input.seq_summary,
         "outputMin":output.MinionQC_out,
         "outputNano":output.Nanocomp_out
+        "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R"
         }
+        # shift minionQCpath to config
         #  -s makes small figures suitable for export rather than optimised for screen
-        commandMin = "Rscript MinIONQC.R -i {input} -o {outputMin} -s TRUE"
+        commandMin = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
         commandMin = commandMin.format(**args)
         shell(commandMin)
-        commandNano = "Rscript MinIONQC.R -i {input} -o {outputNano} -s TRUE"
+        commandNano = "Rscript {minionQCpath} -i {input} -o {outputNano} -s TRUE"
         commandNano = commandNano.format(**args)
         shell(commandNano)
 #
