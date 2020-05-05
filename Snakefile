@@ -24,8 +24,8 @@ configfile: "configRunQC.yaml"
 rule all:
     input:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        # expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'])
-        expand(os.path.join("QC", "runs", "MinionQC"))
+        expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'])
+        # expand(os.path.join("QC", "runs", "MinionQC"))
     threads: 8
 
 
@@ -89,7 +89,7 @@ rule runQC:
         # can also be a directory with multiple for the same input. Use if basecalling was resumed.
         seq_summary=os.path.join("guppy_output", "{runnames}", "sequencing_summary.old.txt")
     output:
-        MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC")),
+        MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
     run:
         try:
             os.makedirs(os.path.join("QC", "runs", "MinionQC"))
@@ -97,7 +97,7 @@ rule runQC:
             pass
         args = {
         "input":input.seq_summary,
-        "outputMin":output.MinionQC_out,
+        "outputMin":os.path.join("QC", "runs", "MinionQC"),
         "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R"
         }
         # shift minionQCpath to config
