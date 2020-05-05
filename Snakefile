@@ -111,6 +111,8 @@ rule runQC:
         #  -s makes small figures suitable for export rather than optimised for screen
         commandMin="Rscript MinIONQC.R -i {input} -o {outputMin} -s TRUE"
         commandNano="Rscript MinIONQC.R -i {input} -o {outputNano} -s TRUE"
+        commandMin = commandMin.format(**args)
+        commandNano = commandNano.format(**args)
         shell(commandMin)
         shell(commandNano)
 #
