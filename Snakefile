@@ -106,16 +106,16 @@ rule runQC:
         # os.makedirs(os.path.join("QC", "runs", "MinionQC"))
         # os.makedirs(os.path.join("QC", "runs", "Nanocomp"))
         args = {
-        "input":input.seq_summary
-        "outputMin":output.MinionQC_out
+        "input":input.seq_summary,
+        "outputMin":output.MinionQC_out,
         "outputNano":output.Nanocomp_out
         }
         #  -s makes small figures suitable for export rather than optimised for screen
         commandMin="Rscript MinIONQC.R -i {input} -o {outputMin} -s TRUE"
-        commandNano="Rscript MinIONQC.R -i {input} -o {outputNano} -s TRUE"
         commandMin = commandMin.format(**args)
-        commandNano = commandNano.format(**args)
         shell(commandMin)
+        commandNano="Rscript MinIONQC.R -i {input} -o {outputNano} -s TRUE"
+        commandNano = commandNano.format(**args)
         shell(commandNano)
 #
 # include run/s that are/were live basecalled or were only available as fastq? USE qcat
