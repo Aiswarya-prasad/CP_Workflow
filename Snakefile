@@ -23,11 +23,13 @@ configfile: "config.yaml"
 
 rule all:
     input:
-        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames'])
-        expand(os.path.join("QC", "runs", "MinionQC", "{runnames}")+/, runnames=config['runnames'])
-        expand(os.path.join("QC", "runs", "Nanocomp", "{runnames}")+/, runnames=config['runnames'])
+        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+        # expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'])
+        # expand(os.path.join("QC", "runs", "Nanocomp", "{runnames}"), runnames=config['runnames'])
         # expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'], allow_missing=True)
         # expand(os.path.join("QC", "runs", "Nanocomp", "{runnames}"), runnames=config['runnames'], allow_missing=True)
+        expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames']),
+        expand(os.path.join("QC", "runs", "Nanocomp", "{runnames}"), runnames=config['runnames'])
     threads: 8
 
 
@@ -90,8 +92,8 @@ rule runQC:
     input:
         seq_summary=os.path.join("guppy_output", "{runnames}", "sequencing_summary.old.txt")
     output:
-        MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}"))
-        Nanocomp_out=directory(os.path.join("QC", "runs", "Nanocomp", "{runnames}"))
+        MinionQC_out=os.path.join("QC", "runs", "MinionQC", "{runnames}")
+        Nanocomp_out=os.path.join("QC", "runs", "Nanocomp", "{runnames}")
     shell:
         try:
             os.makedirs(os.path.join("QC", "runs", "MinionQC", "{runnames}"))
