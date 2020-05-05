@@ -24,8 +24,7 @@ configfile: "configRunQC.yaml"
 rule all:
     input:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'], allow_missing=True),
-        expand(os.path.join("QC", "runs", "Nanocomp", "{runnames}"), runnames=config['runnames'], allow_missing=True)
+        expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'])
     threads: 8
 
 
@@ -86,33 +85,25 @@ rule all:
 # find sequencing summary
 rule runQC:
     input:
+        # can also be a directory with multiple for the same input. Use if basecalling was resumed.
         seq_summary=os.path.join("guppy_output", "{runnames}", "sequencing_summary.old.txt")
     output:
         MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC")),
-        Nanocomp_out=directory(os.path.join("QC", "runs", "Nanocomp", "{runnames}"))
     run:
         try:
-            os.makedirs(os.path.join("QC", "runs", "MinionQC", wildcards.runnames))
-        except FileExistsError:
-            pass
-        try:
-            os.makedirs(os.path.join("QC", "runs", "Nanocomp", wildcards.runnames))
+            os.makedirs(os.path.join("QC", "runs", "MinionQC"))
         except FileExistsError:
             pass
         args = {
         "input":input.seq_summary,
         "outputMin":output.MinionQC_out,
-        "outputNano":output.Nanocomp_out,
         "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R"
         }
         # shift minionQCpath to config
         #  -s makes small figures suitable for export rather than optimised for screen
-        commandMin = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
-        commandMin = commandMin.format(**args)
-        # shell(commandMin)
-        commandNano = "Rscript {minionQCpath} -i {input} -o {outputNano} -s TRUE"
-        commandNano = commandNano.format(**args)
-        shell(commandNano)
+        command = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
+        command = command.format(**args)
+        shell(command)
 #
 # include run/s that are/were live basecalled or were only available as fastq? USE qcat
 #
