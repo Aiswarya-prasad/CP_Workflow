@@ -115,11 +115,8 @@ rule runQC:
         command = command.format(**args)
         shell(command)
 #
-# include run/s that are/were live basecalled or were only available as fastq? USE qcat
 #
-#
-# qcat does trimming simultaneaously if untrimmed files are needed specifically
-# comment demultiplex_trim and use uncomment demultiplex_keep_trim out unless
+# qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 rule demultiplex_trim:
     input:
         raw_fastq="fastq/{qcat_test_name}.fastq"
@@ -135,10 +132,11 @@ rule demultiplex_trim:
         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
         command = command.format(**args)
         shell(command)
-#
+############################################################################################################
+# BELOW RULE DOES NOT WORK AT ALL. IMPLEMENT ONLY IF NEEDED
+############################################################################################################
 # qcat does trimming simultaneaously so uncomment demultiplex_keep_trim
 # if untrimmed files are needed specifically
-# BELOW RULE DOES NOT WORK AT ALL. IMPLEMENT ONLY IF NEEDED
 # BARCODES=[01,02,...]
 # rule demultiplex_keep_trim:
 #     input:
@@ -159,6 +157,8 @@ rule demultiplex_trim:
 #
 #         command = "qcat --fastq {input} --trim -k {kit} --detect-middle"
 # Run 0 (sample 01) trimmed in qcat seperately. Will be combined from this point on
+############################################################################################################
+############################################################################################################
 #
 # QC of fastq files
 # rule sampleQC:
