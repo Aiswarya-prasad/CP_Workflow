@@ -15,8 +15,10 @@ def checkForGuppyLog(path):
     return False
 
 
-# --- Importing Configuration File --- #
+# --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
+# Only for pre-basecalled unfiltered guppy reads
+MY_RUNNAMES = ["Run0", "Run1_pf_mixed", "Run2_mixed", "Run3_mixed", "Run4_mixed"]
 
 
 # --- Some rules --- #
@@ -27,6 +29,9 @@ rule all:
         expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         # for runQC
         expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'])
+        # for qcat
+        # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+        expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES)
     threads: 8
 
 
@@ -110,23 +115,48 @@ rule runQC:
 #
 # include run/s that are/were live basecalled or were only available as fastq? USE qcat
 #
-# rule demultiplex:
+#
+# qcat does trimming simultaneaously if untrimmed files are needed specifically
+# comment demultiplex_trim and use uncomment demultiplex_keep_trim out unless
+rule demultiplex_trim:
+    input:
+        raw_fastq="fastq/{qcat_test_name}.fastq"
+    output:
+        trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"))
+    run:
+        args = {
+        "input":input.raw_fastq,
+        "outputTrimmed":output.trimmed_dir,
+        "kit":config['barcode_kit'],
+        "tsvPath":os.path.join(config['ROOT'], "qcat_trimmed", wildcards.qcat_test_name)
+        }
+        command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
+        command = command.format(**args)
+        shell(command)
+#
+# qcat does trimming simultaneaously so uncomment demultiplex_keep_trim
+# if untrimmed files are needed specifically
+# BELOW RULE DOES NOT WORK AT ALL. IMPLEMENT ONLY IF NEEDED
+# BARCODES=[01,02,...]
+# rule demultiplex_keep_trim:
 #     input:
-#         raw_fastq=rules.basecalling.output.basecalled_dir
+#         raw_fastq="fastq/{qcat_test_name}.fastq"
 #     output:
-#         demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{runnames}")),
-#         trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{runnames}"))
+#         demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{qcat_test_name}")),
+#         trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}"))
 #     run:
 #         args = {
-#         "input":input.raw_fastq,
-#         "output.demux_dir":output.demux_dir,
-#         "output.trimmed_dir":output.trimmed_dir,
+#         "input":os.path.join(output.demux_dir, {qcat_test_name}),
+#         # "outputDemux":output.demux_dir,
+#         "outputTrimmed":output.trimmed_dir,
 #         "kit":config['barcode_kit']
 #         }
-#         command = "qcat -fastq {input} --barcode_dir {output.demux_dir} --output {output.trimmed_dir} --trim -k {kit} --detect-middle"
+#         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} -k {kit} --detect-middle"
 #         command = command.format(**args)
-#         shell(print)
 #         shell(command)
+#
+#         command = "qcat --fastq {input} --trim -k {kit} --detect-middle"
+# Run 0 (sample 01) trimmed in qcat seperately. Will be combined from this point on
 #
 # QC of fastq files
 # rule sampleQC:
