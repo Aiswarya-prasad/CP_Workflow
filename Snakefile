@@ -19,7 +19,7 @@ def checkForGuppyLog(path):
 configfile: "config.yaml"
 # Only for pre-basecalled unfiltered guppy reads
 MY_RUNNAMES = ["Run0", "Run1_pf_mixed", "Run2_mixed", "Run3_mixed", "Run4_mixed"]
-MY_RUNNAMES_QC = ['Exp1_25Oct', 'Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
+MY_RUNNAMES_QC = ['Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 
 
 # --- Some rules --- #
@@ -94,9 +94,9 @@ rule all:
 # find sequencing summary
 rule runQC:
     input:
-        seq_summary=os.path.join("guppy_output", "{runnames}", "sequencing_summary.old.txt")
+        seq_summary=os.path.join("guppy_output", "{runnamesQC}", "sequencing_summary.old.txt")
     output:
-        MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
+        MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnamesQC}")),
     run:
         try:
             os.makedirs(os.path.join("QC", "runs", "MinionQC"))
