@@ -16,7 +16,7 @@ def checkForGuppyLog(path):
 
 
 # --- Importing Configuration File --- #
-configfile: "configRunQC.yaml"
+configfile: "config.yaml"
 
 
 # --- Some rules --- #
@@ -99,6 +99,8 @@ rule runQC:
         "input":input.seq_summary,
         "outputMin":os.path.join("QC", "runs", "MinionQC"),
         "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R"
+        # "minionQCpath":snakemake.config["minionQCpath"]
+
         }
         # shift minionQCpath to config
         #  -s makes small figures suitable for export rather than optimised for screen
