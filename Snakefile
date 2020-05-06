@@ -19,6 +19,7 @@ def checkForGuppyLog(path):
 configfile: "config.yaml"
 # Only for pre-basecalled unfiltered guppy reads
 MY_RUNNAMES = ["Run0", "Run1_pf_mixed", "Run2_mixed", "Run3_mixed", "Run4_mixed"]
+MY_RUNNAMES_QC = ['Exp1_25Oct', 'Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 
 
 # --- Some rules --- #
@@ -29,7 +30,7 @@ rule all:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         expand(os.path.join("fastq", "{runnames}.fastq"), runnames=MY_RUNNAMES),
         # for runQC
-        expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames']),
+        expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=MY_RUNNAMES_QC),
         # for qcat
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES)
