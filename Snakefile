@@ -30,7 +30,7 @@ rule all:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         expand(os.path.join("fastq", "{runnames}.fastq"), runnames=MY_RUNNAMES),
         # for runQC
-        expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=MY_RUNNAMES_QC),
+        expand(os.path.join("QC", "runs", "MinionQC", "{runnamesQC}"), runnamesQC=MY_RUNNAMES_QC),
         # for qcat
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES)
