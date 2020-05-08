@@ -34,6 +34,10 @@ rule all:
         # for qcat
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES)
+        # accumulate samples
+        expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
+        # for sample QC
+        #  ?
     threads: 8
 
 
@@ -115,7 +119,6 @@ rule runQC:
         command = command.format(**args)
         shell(command)
 #
-#
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 rule demultiplex_trim:
     input:
@@ -159,16 +162,33 @@ rule demultiplex_trim:
 # Run 0 (sample 01) trimmed in qcat seperately. Will be combined from this point on
 ############################################################################################################
 ############################################################################################################
+# move to config
+# dict of sample name and barcode (called sample_dict) in each run
+# X:
+#  'barcode': 'sample ID'}
+# added to config (X is 0 to 4 for run number)
+#
+#
+rule collectSamples:
+    # input:
+        # os.path.join("qcat_trimmed", "{MY_RUNNAMES}", the corresponding barcode, ".fastq")
+    # output:
+        # os.path.join("fastq", "samples", "{samples}.fastq")
+    run:
+        dictOfSamples = config['samaple_dict']
+        print(dictOfSamples)
+
 #
 # QC of fastq files
 # rule sampleQC:
 #     input:
-#         "each sample fastq"
-#     output:
-#         "reports per sample"
+#         # "each sample fastq"
+#         # sampleFastq = 'os.path.join("fastq", "samples", "{samples}")'
+#     # output:
+#         # "reports per sample"
 #     run:
-#         Nanoplot
-#         Nanostat
+#         # Nanoplot
+#         # Nanostat
 #
 #
 # include run/s that are/were live basecalled or were only available as fastq?
