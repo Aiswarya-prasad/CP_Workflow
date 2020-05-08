@@ -175,7 +175,7 @@ rule collectSamples:
     # output:
         # os.path.join("fastq", "samples", "{samples}.fastq")
     run:
-        dictOfSamples = config['samaple_dict']
+        dictOfSamples = config['sample_dict']
         print(dictOfSamples)
 
 #
