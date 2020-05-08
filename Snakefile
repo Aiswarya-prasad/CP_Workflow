@@ -35,7 +35,7 @@ rule all:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES)
         # accumulate samples
-        expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
+        # expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
         # for sample QC
         #  ?
     threads: 8
