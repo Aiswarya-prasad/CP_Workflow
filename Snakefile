@@ -27,8 +27,8 @@ MY_RUNNAMES_QC = ['Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 rule all:
     input:
         # for basecalling
-        # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=MY_RUNNAMES),
+        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames'])
+        # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=MY_RUNNAMES),
         # for runQC
         # expand(os.path.join("QC", "runs", "MinionQC", "{runnamesQC}"), runnamesQC=MY_RUNNAMES_QC),
         # for qcat
