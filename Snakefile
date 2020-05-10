@@ -30,10 +30,10 @@ rule all:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=MY_RUNNAMES),
         # for runQC
-        expand(os.path.join("QC", "runs", "MinionQC", "{runnamesQC}"), runnamesQC=MY_RUNNAMES_QC),
+        # expand(os.path.join("QC", "runs", "MinionQC", "{runnamesQC}"), runnamesQC=MY_RUNNAMES_QC),
         # for qcat
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
+        # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
         # accumulate samples
         expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
         # for sample QC
@@ -96,45 +96,45 @@ rule all:
 # For run1 no seq summary into output dir copying MinionQC results. Skip Nanocomp QC.
 # For run4 considering only first section (> 1/2 of the data) of run other section basecalled as seperate set
 # find sequencing summary
-rule runQC:
-    input:
-        seq_summary=os.path.join("guppy_output", "{runnamesQC}", "sequencing_summary.old.txt")
-    output:
-        MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnamesQC}")),
-    run:
-        try:
-            os.makedirs(os.path.join("QC", "runs", "MinionQC"))
-        except FileExistsError:
-            pass
-        args = {
-        "input":input.seq_summary,
-        "outputMin":os.path.join("QC", "runs", "MinionQC"),
-        # "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R"
-        "minionQCpath":config["minionQCpath"]
-
-        }
-        # shift minionQCpath to config
-        #  -s makes small figures suitable for export rather than optimised for screen
-        command = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
-        command = command.format(**args)
-        shell(command)
+# rule runQC:
+#     input:
+#         seq_summary=os.path.join("guppy_output", "{runnamesQC}", "sequencing_summary.old.txt")
+#     output:
+#         MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnamesQC}")),
+#     run:
+#         try:
+#             os.makedirs(os.path.join("QC", "runs", "MinionQC"))
+#         except FileExistsError:
+#             pass
+#         args = {
+#         "input":input.seq_summary,
+#         "outputMin":os.path.join("QC", "runs", "MinionQC"),
+#         # "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R"
+#         "minionQCpath":config["minionQCpath"]
+#
+#         }
+#         # shift minionQCpath to config
+#         #  -s makes small figures suitable for export rather than optimised for screen
+#         command = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
+#         command = command.format(**args)
+#         shell(command)
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
-rule demultiplex_trim:
-    input:
-        raw_fastq="fastq/{qcat_test_name}.fastq"
-    output:
-        trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"))
-    run:
-        args = {
-        "input":input.raw_fastq,
-        "outputTrimmed":output.trimmed_dir,
-        "kit":config['barcode_kit'],
-        "tsvPath":os.path.join(config['ROOT'], "qcat_trimmed", wildcards.qcat_test_name)
-        }
-        command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
-        command = command.format(**args)
-        shell(command)
+# rule demultiplex_trim:
+#     input:
+#         raw_fastq="fastq/{qcat_test_name}.fastq"
+#     output:
+#         trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"))
+#     run:
+#         args = {
+#         "input":input.raw_fastq,
+#         "outputTrimmed":output.trimmed_dir,
+#         "kit":config['barcode_kit'],
+#         "tsvPath":os.path.join(config['ROOT'], "qcat_trimmed", wildcards.qcat_test_name)
+#         }
+#         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
+#         command = command.format(**args)
+#         shell(command)
 ############################################################################################################
 # BELOW RULE DOES NOT WORK AT ALL. IMPLEMENT ONLY IF NEEDED
 ############################################################################################################
@@ -172,6 +172,7 @@ rule demultiplex_trim:
 rule collectSamples:
     # input:
         # os.path.join("qcat_trimmed", "{MY_RUNNAMES}", the corresponding barcode, ".fastq")
+        # expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
     # output:
         # os.path.join("fastq", "samples", "{samples}.fastq")
     run:
