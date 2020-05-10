@@ -42,8 +42,8 @@ rule all:
 
 
 rule basecalling:
-    # input:
-    #     raw_dir=os.path.join(config['RAWDIR'], "{runnames}/")
+    input:
+        raw_dir=os.path.join(config['RAWDIR'], "{runnames}/")
     output:
         run_fastq=os.path.join("fastq", "{runnames}.fastq")
     run:
