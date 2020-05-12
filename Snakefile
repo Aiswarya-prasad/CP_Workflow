@@ -190,6 +190,9 @@ rule collectSamples:
         except FileExistsError:
             pass
         print(findSampleFastq(wildcards.samples))
+        for runName, barcode in findSampleFastq(wildcards.samples):
+            if os.path.exists(os.path.join("qcat_trimmed", "runName", "barcode"+barcode+".fastq"))
+        # file =
         # shell("file > "+ output)
 
 #
