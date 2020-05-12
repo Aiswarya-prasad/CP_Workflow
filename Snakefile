@@ -204,8 +204,8 @@ rule sampleQC:
     input:
         sampleFastq = os.path.join("fastq", "samples", "{samples}.fastq.gz")
     # output:
-        nanostat=directory("QC/NanoStat/{samples}/")
-        nanoplot=directory("QC/NanoPlot/{samples}/")
+        nanostat=directory(os.path.join("QC", "NanoStat", "{samples}")),
+        nanoplot=directory(os.path.join("QC", "NanoPlot", "{samples}"))
     run:
         args = {
             "input":input.sampleFastq,
