@@ -198,20 +198,18 @@ rule collectSamples:
             else:
                 print("\n {} NO file exists".format(fastqPath))
                 shell("touch "+fastqPath)
-        # file =
-        # shell("file > "+ output)
-
+        # zips all files. Unxip as needed for further use
+        shell("gzip fastq/samples/*.fastq")
 #
 # QC of fastq files
-# rule sampleQC:
-#     input:
-#         # "each sample fastq"
-#         # sampleFastq = 'os.path.join("fastq", "samples", "{samples}")'
-#     # output:
-#         # "reports per sample"
-#     run:
-#         # Nanoplot
-#         # Nanostat
+rule sampleQC:
+    input:
+        sampleFastq = os.path.join("fastq", "samples", "{samples}.fastq")
+    # output:
+        # "reports per sample"
+    run:
+        # Nanoplot
+        # Nanostat
 #
 #
 # include run/s that are/were live basecalled or were only available as fastq?
