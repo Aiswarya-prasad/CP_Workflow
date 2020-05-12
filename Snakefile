@@ -35,6 +35,7 @@ rule all:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         # accumulate samples
         expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
+        done
         # input for indiv. samples
         # expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
         # for sample QC
@@ -174,11 +175,13 @@ rule collectSamples:
     # input:
         # os.path.join("qcat_trimmed", "{MY_RUNNAMES}", the corresponding barcode, ".fastq")
         # expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
-    # output:
+    output:
+        done
         # os.path.join("fastq", "samples", "{samples}.fastq")
     run:
         dictOfSamples = config['sample_dict']
         print(dictOfSamples)
+        touch done
 
 #
 # QC of fastq files
