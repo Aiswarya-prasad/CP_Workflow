@@ -22,7 +22,7 @@ def findSampleFastq(sampleID):
     for runName in sample_dict:
         for barcode in sample_dict[runName]:
             if sample_dict[runName][barcode] == sampleID:
-                return(runName, barcode)
+                return {'runName': runName, 'barcode': barcode}
 
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
@@ -190,9 +190,10 @@ rule collectSamples:
         except FileExistsError:
             pass
         print(findSampleFastq(wildcards.samples))
-        for runName, barcode in findSampleFastq(wildcards.samples):
-            if os.path.exists(os.path.join("qcat_trimmed", "runName", "barcode"+barcode+".fastq")):
-                print("\n file exists")
+        for runName, barcode in findSampleFastq(wildcards.samples).values():
+            fastqPath = os.path.join("qcat_trimmed", runName, "barcode"+barcode+".fastq")
+            if os.path.exists(fastqPath):
+                print("\n {} file exists".format(fastqPath))
         # file =
         # shell("file > "+ output)
 
