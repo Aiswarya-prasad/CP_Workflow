@@ -194,7 +194,7 @@ rule collectSamples:
             fastqPath = os.path.join("qcat_trimmed", runName, "barcode"+barcode+".fastq")
             if os.path.exists(fastqPath):
                 print("\n {} file exists".format(fastqPath))
-                shell("cat "+fastqPath+" > "+output)
+                shell("cat "+fastqPath+" > {output}")
             else:
                 print("\n {} NO file exists".format(fastqPath))
                 shell("touch "+fastqPath)
