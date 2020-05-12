@@ -203,7 +203,7 @@ rule collectSamples:
 rule sampleQC:
     input:
         sampleFastq = os.path.join("fastq", "samples", "{samples}.fastq.gz")
-    # output:
+    output:
         nanostat=directory(os.path.join("QC", "NanoStat", "{samples}")),
         nanoplot=directory(os.path.join("QC", "NanoPlot", "{samples}"))
     run:
