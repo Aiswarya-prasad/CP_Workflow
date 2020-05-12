@@ -44,9 +44,10 @@ rule all:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
         # accumulate samples
-        expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
+        expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples'])
         # for sample QC
-        #  ?
+        expand(directory("QC/NanoStat/{samples}/"), samples=config['samples'])
+        expand(directory("QC/NanoPlot/{samples}/"), samples=config['samples'])
     threads: 8
 
 
@@ -179,11 +180,8 @@ rule all:
 #
 #
 rule collectSamples:
-    # input:
-    #     os.path.join("qcat_trimmed", "{MY_RUNNAMES}", the corresponding barcode, ".fastq")
-    #     expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
     output:
-        os.path.join("fastq", "samples", "{samples}.fastq")
+        os.path.join("fastq", "samples", "{samples}.fastq.gz")
     run:
         try:
             os.makedirs(os.path.join("fastq", "samples"))
@@ -204,12 +202,20 @@ rule collectSamples:
 # QC of fastq files
 rule sampleQC:
     input:
-        sampleFastq = os.path.join("fastq", "samples", "{samples}.fastq")
+        sampleFastq = os.path.join("fastq", "samples", "{samples}.fastq.gz")
     # output:
-        # "reports per sample"
+        nanostat=directory("QC/NanoStat/{samples}/")
+        nanoplot=directory("QC/NanoPlot/{samples}/")
     run:
-        # Nanoplot
-        # Nanostat
+        args = {
+            "input":input.sampleFastq,
+            "output_stat":output.nanostat,
+            "output_plot":output.nanoplot
+        }
+        command_stat = "NanoStat --fastq {input} --outdir {output_stat}"
+        shell(command_stat.format(**args))
+        command_plot = "NanoPlot --fastq reads.fastq.gz --outdir {output_plot}"
+        shell(command_stat.format(**args))
 #
 #
 # include run/s that are/were live basecalled or were only available as fastq?
