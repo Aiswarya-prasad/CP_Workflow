@@ -31,13 +31,11 @@ rule all:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=MY_RUNNAMES),
         # for runQC
         # expand(os.path.join("QC", "runs", "MinionQC", "{runnamesQC}"), runnamesQC=MY_RUNNAMES_QC),
-        # output for qcat
+        # for qcat
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+        # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
         # accumulate samples
-        expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
-        done
-        # input for indiv. samples
-        # expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
+        expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
         # for sample QC
         #  ?
     threads: 8
@@ -173,15 +171,15 @@ rule all:
 #
 rule collectSamples:
     # input:
-        # os.path.join("qcat_trimmed", "{MY_RUNNAMES}", the corresponding barcode, ".fastq")
-        # expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
+    #     os.path.join("qcat_trimmed", "{MY_RUNNAMES}", the corresponding barcode, ".fastq")
+    #     expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
     output:
-        done
-        # os.path.join("fastq", "samples", "{samples}.fastq")
+        os.path.join("fastq", "samples", "{samples}.fastq")
     run:
-        dictOfSamples = config['sample_dict']
-        print(dictOfSamples)
-        shell("touch done")
+        try:
+            os.makedirs(os.path.join("fastq", "samples"))
+        except FileExistsError:
+            pass
 
 #
 # QC of fastq files
