@@ -18,6 +18,7 @@ def checkForGuppyLog(path):
 # nested dictonary where values are sampleIDs and
 # nested keys are run names
 def findSampleFastq(sampleID):
+    sample_dict = config['sample_dict']
     for runName in sample_dict:
         for barcode in sample_dict[runName]:
             if sample_dict[runName][barcode] == sampleID:
@@ -188,7 +189,6 @@ rule collectSamples:
             os.makedirs(os.path.join("fastq", "samples"))
         except FileExistsError:
             pass
-        my_dict = config['sample_dict']
         print(findSampleFastq(wildcards.samples))
         # shell("file > "+ output)
 
