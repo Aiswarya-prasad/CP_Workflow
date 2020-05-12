@@ -46,8 +46,8 @@ rule all:
         # accumulate samples
         expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples'])
         # for sample QC
-        expand(directory("QC/NanoStat/{samples}/"), samples=config['samples'])
-        expand(directory("QC/NanoPlot/{samples}/"), samples=config['samples'])
+        expand(os.path.join("QC", "NanoStat", "{samples}"), samples=config['samples'])
+        expand(os.path.join("QC", "NanoPlot", "{samples}"), samples=config['samples'])
     threads: 8
 
 
