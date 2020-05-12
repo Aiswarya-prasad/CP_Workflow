@@ -22,7 +22,7 @@ def findSampleFastq(sampleID):
     for runName in sample_dict:
         for barcode in sample_dict[runName]:
             if sample_dict[runName][barcode] == sampleID:
-                return runName, barcode
+                return(runName, barcode)
 
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
