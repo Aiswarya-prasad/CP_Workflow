@@ -44,9 +44,9 @@ rule all:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
         # accumulate samples
-        expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples'])
+        expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         # for sample QC
-        expand(os.path.join("QC", "NanoStat", "{samples}"), samples=config['samples'])
+        expand(os.path.join("QC", "NanoStat", "{samples}"), samples=config['samples']),
         expand(os.path.join("QC", "NanoPlot", "{samples}"), samples=config['samples'])
     threads: 8
 
