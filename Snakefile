@@ -181,7 +181,7 @@ rule collectSamples:
     run:
         dictOfSamples = config['sample_dict']
         print(dictOfSamples)
-        touch done
+        shell("touch done")
 
 #
 # QC of fastq files
