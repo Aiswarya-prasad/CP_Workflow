@@ -210,9 +210,10 @@ rule sampleQC:
         args = {
             "input":input.sampleFastq,
             "output_stat":output.nanostat,
-            "output_plot":output.nanoplot
+            "output_plot":output.nanoplot,
+            "name":wildcards.samples
         }
-        command_stat = "NanoStat --fastq {input} --outdir {output_stat}"
+        command_stat = "NanoStat --fastq {input} --outdir {output_stat} -n {name}"
         shell(command_stat.format(**args))
         command_plot = "NanoPlot --fastq reads.fastq.gz --outdir {output_plot}"
         shell(command_stat.format(**args))
