@@ -28,6 +28,7 @@ rule all:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         # expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'])
         expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=MY_RUNNAMES_QC)
+        expand(os.path.join("QC", "runs", "NanoStat", "{runnames}"), runnames=MY_RUNNAMES_QC)
         # expand(os.path.join("QC", "runs", "MinionQC"))
     threads: 8
 
