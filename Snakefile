@@ -46,8 +46,8 @@ rule all:
         # accumulate samples
         expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         # for sample QC
-        expand(os.path.join("QC", "NanoStat", "{samples}"), samples=config['samples']),
-        expand(os.path.join("QC", "NanoPlot", "{samples}"), samples=config['samples'])
+        # expand(os.path.join("QC", "NanoStat", "{samples}"), samples=config['samples']),
+        # expand(os.path.join("QC", "NanoPlot", "{samples}"), samples=config['samples'])
     threads: 8
 
 
@@ -203,9 +203,9 @@ rule collectSamples:
 rule sampleQC:
     input:
         sampleFastq=os.path.join("fastq", "samples", "{samples}.fastq.gz")
-    output:
-        nanostat=directory(os.path.join("QC", "NanoStat", "{samples}")),
-        nanoplot=directory(os.path.join("QC", "NanoPlot", "{samples}"))
+    # output:
+    #     nanostat=directory(os.path.join("QC", "NanoStat", "{samples}")),
+    #     nanoplot=directory(os.path.join("QC", "NanoPlot", "{samples}"))
     run:
         args = {
             "input":input.sampleFastq,
