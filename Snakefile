@@ -218,7 +218,6 @@ rule sampleQC:
         command_plot = "NanoPlot --fastq reads.fastq.gz --outdir {output_plot}"
         shell(command_stat.format(**args))
 #
-#
 # include run/s that are/were live basecalled or were only available as fastq?
 #
 # rule run_kraken2:
