@@ -211,10 +211,10 @@ rule sampleQC:
             "input":input.sampleFastq,
             "output_stat":os.path.join("QC", "NanoStat"),
             "output_plot":os.path.join("QC", "NanoPlot", "{samples}"),
-            "name":wildcards.samples
+            "name":wildcards.samples+'_'
         }
         os.makedirs(args['output_plot'])
-        shell("touch "+os.path.join("QC", "NanoStat", "{samples}"))
+        shell("touch "+args['output_plot'])
         command_stat = "NanoStat --fastq {input} --outdir {output_stat} -n {name}"
         shell(command_stat.format(**args))
         command_plot = "NanoPlot --verbose --fastq reads.fastq.gz --outdir {output_plot} --prefix {name}"
