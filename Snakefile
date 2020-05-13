@@ -209,8 +209,8 @@ rule sampleQC:
     run:
         args = {
             "input":input.sampleFastq,
-            "output_stat":output.nanostat,
-            "output_plot":output.nanoplot,
+            "output_stat":os.path.join("QC", "NanoStat"),
+            "output_plot":os.path.join("QC", "NanoPlot"),
             "name":wildcards.samples
         }
         command_stat = "NanoStat --fastq {input} --outdir {output_stat} -n {name}"
