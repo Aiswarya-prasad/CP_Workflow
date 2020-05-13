@@ -210,7 +210,7 @@ rule sampleQC:
         args = {
             "input":input.sampleFastq,
             "output_stat":os.path.join("QC", "NanoStat"),
-            "output_plot":os.path.join("QC", "NanoPlot", "{samples}"),
+            "output_plot":os.path.join("QC", "NanoPlot", wildcards.samples),
             "name":wildcards.samples+'_'
         }
         try:
