@@ -211,7 +211,8 @@ rule sampleQC:
             "input":input.sampleFastq,
             "output_stat":os.path.join("QC", "NanoStat"),
             "output_plot":os.path.join("QC", "NanoPlot", wildcards.samples),
-            "name":wildcards.samples+'_'
+            "name":wildcards.samples
+            "prefix":wildcards.samples+'_'
         }
         try:
             os.makedirs(args['output_plot'])
@@ -220,7 +221,7 @@ rule sampleQC:
         shell("touch "+os.path.join("QC", "NanoStat", wildcards.samples))
         command_stat = "NanoStat --fastq {input} --outdir {output_stat} -n {name}"
         shell(command_stat.format(**args))
-        command_plot = "NanoPlot --verbose --fastq reads.fastq.gz --outdir {output_plot} --prefix {name}"
+        command_plot = "NanoPlot --verbose --fastq reads.fastq.gz --outdir {output_plot} --prefix {prefix}"
         shell(command_stat.format(**args))
 #
 # include run/s that are/were live basecalled or were only available as fastq?
