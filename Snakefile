@@ -205,17 +205,19 @@ rule sampleQC:
         sampleFastq=os.path.join("fastq", "samples", "{samples}.fastq.gz")
     output:
         nanostat=os.path.join("QC", "NanoStat", "{samples}"),
-        nanoplot=os.path.join("QC", "NanoPlot", "{samples}")
+        nanoplot=directory(os.path.join("QC", "NanoPlot", "{samples}"))
     run:
         args = {
             "input":input.sampleFastq,
             "output_stat":os.path.join("QC", "NanoStat"),
-            "output_plot":os.path.join("QC", "NanoPlot"),
+            "output_plot":os.path.join("QC", "NanoPlot", "{samples}"),
             "name":wildcards.samples
         }
+        os.makedirs(args['output_plot'])
+        shell("touch "+os.path.join("QC", "NanoStat", "{samples}"))
         command_stat = "NanoStat --fastq {input} --outdir {output_stat} -n {name}"
         shell(command_stat.format(**args))
-        command_plot = "NanoPlot --fastq reads.fastq.gz --outdir {output_plot}"
+        command_plot = "NanoPlot --verbose --fastq reads.fastq.gz --outdir {output_plot} --prefix {name}"
         shell(command_stat.format(**args))
 #
 # include run/s that are/were live basecalled or were only available as fastq?
