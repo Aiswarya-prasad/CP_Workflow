@@ -213,7 +213,10 @@ rule sampleQC:
             "output_plot":os.path.join("QC", "NanoPlot", "{samples}"),
             "name":wildcards.samples+'_'
         }
-        os.makedirs(args['output_plot'])
+        try:
+            os.makedirs(args['output_plot'])
+        except FileExistsError:
+            pass
         shell("touch "+args['output_plot'])
         command_stat = "NanoStat --fastq {input} --outdir {output_stat} -n {name}"
         shell(command_stat.format(**args))
