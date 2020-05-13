@@ -217,7 +217,7 @@ rule sampleQC:
             os.makedirs(args['output_plot'])
         except FileExistsError:
             pass
-        shell("touch "+args['output_plot'])
+        shell("touch "+os.path.join("QC", "NanoStat", wildcards.samples))
         command_stat = "NanoStat --fastq {input} --outdir {output_stat} -n {name}"
         shell(command_stat.format(**args))
         command_plot = "NanoPlot --verbose --fastq reads.fastq.gz --outdir {output_plot} --prefix {name}"
