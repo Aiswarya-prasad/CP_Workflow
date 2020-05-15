@@ -99,7 +99,6 @@ rule runQC:
         Nanoplot_LengthvsQualityScatterPlot_dot_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_LengthvsQualityScatterPlot_dot.png"),
         Nanoplot_LengthvsQualityScatterPlot_kde_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_LengthvsQualityScatterPlot_kde.png"),
         Nanoplot_LogTransformed_HistogramReadlength_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_LogTransformed_HistogramReadlength.png"),
-        Nanoplot_NanoPlot_20200515_2130_log = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_NanoPlot_20200515_2130.log"),
         Nanoplot_report_html = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_NanoPlot-report.html"),
         Nanoplot_NanoStats_txt = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_NanoStats.txt"),
         Nanoplot_Weighted_HistogramReadlength_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_Weighted_HistogramReadlength.png"),
