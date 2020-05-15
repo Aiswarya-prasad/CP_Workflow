@@ -214,11 +214,11 @@ rule sampleQC:
             "name":wildcards.samples,
             "prefix":wildcards.samples+'_'
         }
-        try:
-            os.makedirs(args['output_plot'])
-        except FileExistsError:
-            pass
-        shell("touch "+os.path.join("QC", "NanoStat", wildcards.samples))
+        # try:
+        #     os.makedirs(args['output_plot'])
+        # except FileExistsError:
+        #     pass
+        # shell("touch "+os.path.join("QC", "NanoStat", wildcards.samples))
         command_stat = "NanoStat --fastq {input} --outdir {output_stat} -n {name}"
         shell(command_stat.format(**args))
         print("NanoStat done NanoPlot supposed to be next....")
