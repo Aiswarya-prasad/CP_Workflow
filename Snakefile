@@ -23,7 +23,7 @@ def findSampleFastq(sampleID):
         for barcode in sampleDict[runName]:
             if sampleDict[runName][barcode] == sampleID:
                 runBarcodeDict = {'runName': runName, 'barcode': barcode}
-                return os.path.join(runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
+                return os.path.join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
 
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
@@ -206,7 +206,8 @@ rule demultiplex_trim:
 #
 rule collectSamples:
     input:
-        fastqPath=os.path.join(config['ROOT'], "qcat_trimmed", findSampleFastq("{samples}"))
+        # fastqPath=os.path.join(config['ROOT'], "qcat_trimmed", findSampleFastq("{samples}"))
+        findSampleFastq("{samples}")
     output:
         os.path.join("fastq", "samples", "{samples}.fastq.gz")
     run:
