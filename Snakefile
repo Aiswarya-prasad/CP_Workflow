@@ -37,16 +37,16 @@ rule all:
     input:
         #--> for basecalling
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=MY_RUNNAMES),
+        # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=MY_RUNNAMES),
         #--> runQC
-        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC),
+        # expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC),
         #--> demultiplex_trim
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
+        # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
         #--> collectSamples
-        expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
+        # expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
-        expand(os.path.join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples'])
+        # expand(os.path.join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples'])
     threads: 8
 
 
