@@ -49,16 +49,7 @@ rule all:
         # expand(os.path.join("QC", "NanoStat", "{samples}"), samples=config['samples']),
         # expand(os.path.join("QC", "NanoPlot", "{samples}"), samples=config['samples'])
         # expand(os.path.join("QC", "NanoPlot", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples'])
-        expand(os.path.join("QC", "samples", "{samples}", "{samples}_Dynamic_Histogram_Read_length.html"), samples=config['samples),
-        expand(os.path.join("QC", "samples", "{samples}", "{samples}_HistogramReadlength.png"), samples=config['samples),
-        expand(os.path.join("QC", "samples", "{samples}", "{samples}_LengthvsQualityScatterPlot_dot.png"), samples=config['samples),
-        expand(os.path.join("QC", "samples", "{samples}", "{samples}_LengthvsQualityScatterPlot_kde.png"), samples=config['samples),
-        expand(os.path.join("QC", "samples", "{samples}", "{samples}_LogTransformed_HistogramReadlength.png"), samples=config['samples),
-        expand(os.path.join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples),
-        expand(os.path.join("QC", "samples", "{samples}", "{samples}_NanoStats.txt"), samples=config['samples),
-        expand(os.path.join("QC", "samples", "{samples}", "{samples}_Weighted_HistogramReadlength.png"), samples=config['samples),
-        expand(os.path.join("QC", "samples", "{samples}", "{samples}_Weighted_LogTransformed_HistogramReadlength.png"), samples=config['samples),
-        expand(os.path.join("QC", "samples", "{samples}", "{samples}_Yield_By_Length.png"), samples=config['samples)
+        expand(os.path.join("QC", "samples", "{samples}", "{samples}_NanoStats.txt"), samples=config['samples'])
     threads: 8
 
 
