@@ -28,16 +28,7 @@ rule all:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         # expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'])
         # expand(os.path.join("QC", "runs", "MinionQC"))
-        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_Dynamic_Histogram_Read_length.html"), runnames=MY_RUNNAMES_QC),
-        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_HistogramReadlength.png"), runnames=MY_RUNNAMES_QC),
-        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_LengthvsQualityScatterPlot_dot.png"), runnames=MY_RUNNAMES_QC),
-        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_LengthvsQualityScatterPlot_kde.png"), runnames=MY_RUNNAMES_QC),
-        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_LogTransformed_HistogramReadlength.png"), runnames=MY_RUNNAMES_QC),
-        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoPlot-report.html"), runnames=MY_RUNNAMES_QC),
-        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC),
-        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_Weighted_HistogramReadlength.png"), runnames=MY_RUNNAMES_QC),
-        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_Weighted_LogTransformed_HistogramReadlength.png"), runnames=MY_RUNNAMES_QC),
-        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_Yield_By_Length.png"), runnames=MY_RUNNAMES_QC)
+        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC)
     threads: 8
 
 
