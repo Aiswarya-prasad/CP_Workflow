@@ -115,17 +115,17 @@ rule runQC:
         # "outputMin":os.path.join("QC", "runs", "MinionQC"),
         # "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R",
         # "minionQCpath":snakemake.config["minionQCpath"]
-        "outputNanoS":os.path.join("QC", "runs", "NanoStat"),
+        # "outputNanoS":os.path.join("QC", "runs", "NanoStat"),
         "outputNanoP":os.path.join("QC", "runs", "NanoPlot", wildcards.runnames),
-        "name": wildcards.runnames,
+        # "name": wildcards.runnames,
         "prefix": wildcards.runnames+"_"
         }
         # shift minionQCpath to config
         #  -s makes small figures suitable for export rather than optimised for screen
         # command = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
         # shell(command.format(**args))
-        command_nanoS = "NanoStat --summary {input} --outdir {outputNanoS} -n {name} --readtype 1D"
-        shell(command_nanoS.format(**args))
+        # command_nanoS = "NanoStat --summary {input} --outdir {outputNanoS} -n {name} --readtype 1D"
+        # shell(command_nanoS.format(**args))
         command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
         shell(command_nanoP.format(**args))
 #
