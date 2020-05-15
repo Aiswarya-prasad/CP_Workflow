@@ -23,7 +23,7 @@ def findSampleFastq(sampleID):
         for barcode in sampleDict[runName]:
             if sampleDict[runName][barcode] == sampleID:
                 runBarcodeDict = {'runName': runName, 'barcode': barcode}
-                return os.path.join(runName, "barcode"+barcode+".fastq")
+                return os.path.join(runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
 
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
