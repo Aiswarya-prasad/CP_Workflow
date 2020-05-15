@@ -150,7 +150,8 @@ rule runQC:
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 rule demultiplex_trim:
     input:
-        raw_fastq="fastq/{runnames}.fastq"
+        rules.basecalling.run_fastq
+        # raw_fastq="fastq/{runnames}.fastq"
         # raw_fastq="fastq/{qcat_test_name}.fastq"
     output:
         # trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"))
