@@ -221,9 +221,7 @@ rule sampleQC:
         # shell("touch "+os.path.join("QC", "NanoStat", wildcards.samples))
         command_stat = "NanoStat --fastq {input} --outdir {output_stat} -n {name}"
         shell(command_stat.format(**args))
-        print("NanoStat done NanoPlot supposed to be next....")
-        command_plot = "NanoPlot --verbose --fastq reads.fastq.gz --outdir {output_plot} --prefix {prefix}"
-        print(command_plot)
+        command_plot = "NanoPlot --verbose --fastq {input} --outdir {output_plot} --prefix {prefix}"
         shell(command_plot.format(**args))
 #
 # include run/s that are/were live basecalled or were only available as fastq?
