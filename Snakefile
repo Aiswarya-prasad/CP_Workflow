@@ -14,15 +14,16 @@ def checkForGuppyLog(path):
                 return True
     return False
 
-# return run and barcode for given sample ID using
-# nested dictonary where values are sampleIDs and
-# nested keys are run names
+# find run and barcode for given sample ID using
+# returns path to fastq "{runName}/barcode{barcode}.fastq"
 def findSampleFastq(sampleID):
-    sample_dict = config['sample_dict']
-    for runName in sample_dict:
-        for barcode in sample_dict[runName]:
-            if sample_dict[runName][barcode] == sampleID:
-                return {'runName': runName, 'barcode': barcode}
+    sampleDict = config['sample_dict']
+    runBarcodeDict = {}
+    for runName in sampleDict:
+        for barcode in sampleDict[runName]:
+            if sampleDict[runName][barcode] == sampleID:
+                runBarcodeDict = {'runName': runName, 'barcode': barcode}
+                return os.path.join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
 
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
@@ -43,7 +44,9 @@ rule all:
         # expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC),
         #--> demultiplex_trim
         expand(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
+        expand(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}"), runnames=config['runnames']),
         # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}.tsv"), qcat_test_name=MY_RUNNAMES),
+        # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
         #--> collectSamples
         # expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
@@ -195,13 +198,16 @@ rule demultiplex_trim:
 ############################################################################################################
 ############################################################################################################
 # move to config
-# dict of sample name and barcode (called sample_dict) in each run
+# dict of sample name and barcode (called sampleDict) in each run
 # X:
 #  'barcode': 'sample ID'}
 # added to config (X is 0 to 4 for run number)
 #
 #
 rule collectSamples:
+    input:
+        # fastqPath=os.path.join(config['ROOT'], "qcat_trimmed", findSampleFastq("{samples}"))
+        fastqPath=*findSampleFastq("{samples}")
     output:
         os.path.join("fastq", "samples", "{samples}.fastq.gz")
     run:
@@ -209,14 +215,12 @@ rule collectSamples:
             os.makedirs(os.path.join("fastq", "samples"))
         except FileExistsError:
             pass
-        for runName, barcode in findSampleFastq(wildcards.samples).values(), :
-            fastqPath = os.path.join("qcat_trimmed", runName, "barcode"+barcode+".fastq")
-            if os.path.exists(fastqPath):
-                print("\n {} file exists".format(fastqPath))
-                shell("cat "+fastqPath+" > {output}")
-            else:
-                print("\n {} NO file exists".format(fastqPath))
-                shell("touch "+fastqPath)
+        if os.path.exists(input.fastqPath):
+            print("\n {} file exists".format(input.fastqPath))
+            shell("cat "+input.fastqPath+" > {output}")
+        else:
+            print("\n {} NO file exists".format(input.fastqPath))
+            shell("touch "+input.fastqPath)
         # zips all files. Unxip as needed for further use
         shell("gzip fastq/samples/*.fastq")
 #
