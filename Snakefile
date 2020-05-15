@@ -28,6 +28,7 @@ rule all:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         # expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'])
         # expand(os.path.join("QC", "runs", "MinionQC"))
+        expand(os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_NanoPlot-report.html"), runnames=MY_RUNNAMES_QC)
     threads: 8
 
 
@@ -92,14 +93,14 @@ rule runQC:
         seq_summary=os.path.join("guppy_output", "{runnames}", "sequencing_summary.old.txt")
     output:
         # MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
-        NanoStat_out=os.path.join("QC", "runs", "NanoStat", "{runnames}"),
+        # NanoStat_out=os.path.join("QC", "runs", "NanoStat", "{runnames}"),
         Nanoplot_Dynamic_Histogram_Read_length_html = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_Dynamic_Histogram_Read_length.html"),
         Nanoplot_HistogramReadlength_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_HistogramReadlength.png"),
         Nanoplot_LengthvsQualityScatterPlot_dot_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_LengthvsQualityScatterPlot_dot.png"),
         Nanoplot_LengthvsQualityScatterPlot_kde_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_LengthvsQualityScatterPlot_kde.png"),
         Nanoplot_LogTransformed_HistogramReadlength_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_LogTransformed_HistogramReadlength.png"),
         Nanoplot_NanoPlot_20200515_2130_log = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_NanoPlot_20200515_2130.log"),
-        Nanoplotreport_html = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_NanoPlot-report.html"),
+        Nanoplot_report_html = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_NanoPlot-report.html"),
         Nanoplot_NanoStats_txt = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_NanoStats.txt"),
         Nanoplot_Weighted_HistogramReadlength_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_Weighted_HistogramReadlength.png"),
         Nanoplot_Weighted_LogTransformed_HistogramReadlength_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "{runnames}_Weighted_LogTransformed_HistogramReadlength.png"),
