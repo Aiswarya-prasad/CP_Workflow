@@ -46,8 +46,9 @@ rule all:
         # accumulate samples
         expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         # for sample QC
-        expand(os.path.join("QC", "NanoStat", "{samples}"), samples=config['samples']),
-        expand(os.path.join("QC", "NanoPlot", "{samples}"), samples=config['samples'])
+        # expand(os.path.join("QC", "NanoStat", "{samples}"), samples=config['samples']),
+        # expand(os.path.join("QC", "NanoPlot", "{samples}"), samples=config['samples'])
+        expand(os.path.join("QC", "NanoPlot", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples'])
     threads: 8
 
 
@@ -204,12 +205,22 @@ rule sampleQC:
     input:
         sampleFastq=os.path.join("fastq", "samples", "{samples}.fastq.gz")
     output:
-        nanostat=os.path.join("QC", "NanoStat", "{samples}"),
-        nanoplot=directory(os.path.join("QC", "NanoPlot", "{samples}"))
+        # nanostat=os.path.join("QC", "NanoStat", "{samples}"),
+        # nanoplot=directory(os.path.join("QC", "NanoPlot", "{samples}"))
+        Nanoplot_Dynamic_Histogram_Read_length_html = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_Dynamic_Histogram_Read_length.html"),
+        Nanoplot_HistogramReadlength_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_HistogramReadlength.png"),
+        Nanoplot_LengthvsQualityScatterPlot_dot_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_LengthvsQualityScatterPlot_dot.png"),
+        Nanoplot_LengthvsQualityScatterPlot_kde_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_LengthvsQualityScatterPlot_kde.png"),
+        Nanoplot_LogTransformed_HistogramReadlength_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_LogTransformed_HistogramReadlength.png"),
+        Nanoplot_report_html = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_NanoPlot-report.html"),
+        Nanoplot_NanoStats_txt = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_NanoStats.txt"),
+        Nanoplot_Weighted_HistogramReadlength_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_Weighted_HistogramReadlength.png"),
+        Nanoplot_Weighted_LogTransformed_HistogramReadlength_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_Weighted_LogTransformed_HistogramReadlength.png"),
+        Nanoplot_Yield_By_Length_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_Yield_By_Length.png")
     run:
         args = {
             "input":input.sampleFastq,
-            "output_stat":os.path.join("QC", "NanoStat"),
+            # "output_stat":os.path.join("QC", "NanoStat"),
             "output_plot":os.path.join("QC", "NanoPlot", wildcards.samples),
             "name":wildcards.samples,
             "prefix":wildcards.samples+'_'
@@ -219,8 +230,8 @@ rule sampleQC:
         # except FileExistsError:
         #     pass
         # shell("touch "+os.path.join("QC", "NanoStat", wildcards.samples))
-        command_stat = "NanoStat --fastq {input} --outdir {output_stat} -n {name}"
-        shell(command_stat.format(**args))
+        # command_stat = "NanoStat --fastq {input} --outdir {output_stat} -n {name}"
+        # shell(command_stat.format(**args))
         command_plot = "NanoPlot --verbose --fastq {input} --outdir {output_plot} --prefix {prefix}"
         shell(command_plot.format(**args))
 #
