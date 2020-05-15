@@ -27,7 +27,7 @@ rule all:
     input:
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         # expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'])
-        expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=MY_RUNNAMES_QC),
+        expand(os.path.join("QC", "runs", "NanoPlot", "{runnames}"), runnames=MY_RUNNAMES_QC),
         expand(os.path.join("QC", "runs", "NanoStat", "{runnames}"), runnames=MY_RUNNAMES_QC)
         # expand(os.path.join("QC", "runs", "MinionQC"))
     threads: 8
@@ -93,28 +93,31 @@ rule runQC:
         # can also be a directory with multiple for the same input. Use if basecalling was resumed.
         seq_summary=os.path.join("guppy_output", "{runnames}", "sequencing_summary.old.txt")
     output:
-        MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
+        # MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
+        NanoStat_out=os.path.join("QC", "runs", "NanoStat", "{runnames}"),
         NanoPlot_out=directory(os.path.join("QC", "runs", "NanoPlot", "{runnames}"))
     run:
-        try:
-            os.makedirs(os.path.join("QC", "runs", "MinionQC"))
-        except FileExistsError:
-            pass
+        # try:
+        #     os.makedirs(os.path.join("QC", "runs", "MinionQC"))
+        # except FileExistsError:
+        #     pass
         args = {
         "input":input.seq_summary,
-        "outputMin":os.path.join("QC", "runs", "MinionQC"),
-        "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R",
+        # "outputMin":os.path.join("QC", "runs", "MinionQC"),
+        # "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R",
         # "minionQCpath":snakemake.config["minionQCpath"]
-        "outputNano":os.path.join("QC", "runs", "NanoPlot"),
+        "outputNanoS":os.path.join("QC", "runs", "NanoStat"),
+        "outputNanoP":os.path.join("QC", "runs", "NanoPlot"),
         "name": wildcards.runnames
         }
         # shift minionQCpath to config
         #  -s makes small figures suitable for export rather than optimised for screen
         # command = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
         # shell(command.format(**args))
-        command_nano = "NanoPlot --summary {input} --outdir {outputNano} -n {name} --readtype 1D --barcoded"
-        shell(command_nano.format(**args))
-
+        command_nanoS = "NanoStat --summary {input} --outdir {outputNanoS} -n {name} --barcoded --readtype 1D"
+        shell(command_nanoS.format(**args))
+        command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -n {name} --barcoded --readtype 1D"
+        shell(command_nanoP.format(**args))
 #
 # include run/s that are/were live basecalled or were only available as fastq? USE qcat
 #
