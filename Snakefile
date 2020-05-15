@@ -16,12 +16,12 @@ def checkForGuppyLog(path):
 
 # find run and barcode for given sample ID using
 # returns path to fastq "{runName}/barcode{barcode}.fastq"
-def findSampleFastq(sampleID):
+def findSampleFastq(wildcards.samples):
     sampleDict = config['sample_dict']
     runBarcodeDict = {}
     for runName in sampleDict:
         for barcode in sampleDict[runName]:
-            if sampleDict[runName][barcode] == sampleID:
+            if sampleDict[runName][barcode] == wildcards.samples:
                 runBarcodeDict = {'runName': runName, 'barcode': barcode}
                 return os.path.join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
 
@@ -207,7 +207,7 @@ rule demultiplex_trim:
 rule collectSamples:
     input:
         # fastqPath=os.path.join(config['ROOT'], "qcat_trimmed", findSampleFastq("{samples}"))
-        fastqPath = *findSampleFastq(wildcards.samples)
+        fastqPath = *findSampleFastq()
     output:
         os.path.join("fastq", "samples", "{samples}.fastq.gz")
     run:
