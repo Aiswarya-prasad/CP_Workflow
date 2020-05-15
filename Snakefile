@@ -14,17 +14,8 @@ def checkForGuppyLog(path):
                 return True
     return False
 
-# return run and barcode for given sample ID using
-# nested dictonary where values are sampleIDs and
-# nested keys are run names
-def findSampleFastq(sampleID):
-    sample_dict = config['sample_dict']
-    for runName in sample_dict:
-        for barcode in sample_dict[runName]:
-            if sample_dict[runName][barcode] == sampleID:
-                return {'runName': runName, 'barcode': barcode}
 
-# --- Importing Configuration File and Defining Important Lists --- #
+# --- Importing Configuration File --- #
 configfile: "config.yaml"
 # Only for pre-basecalled unfiltered guppy reads
 MY_RUNNAMES = ["Run0", "Run1_pf_mixed", "Run2_mixed", "Run3_mixed", "Run4_mixed"]
@@ -34,79 +25,63 @@ MY_RUNNAMES_QC = ['Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 
 rule all:
     input:
-        # for basecalling
-        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=MY_RUNNAMES),
-        # for runQC
-        # expand(os.path.join("QC", "runs", "MinionQC", "{runnamesQC}"), runnamesQC=MY_RUNNAMES_QC),
-        # for qcat
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
-        # accumulate samples
-        # expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
-        # for sample QC
-        #  ?
         # expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'])
         # expand(os.path.join("QC", "runs", "MinionQC"))
         expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC)
-        expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
-        # for sample QC
-        # expand(os.path.join("QC", "NanoStat", "{samples}"), samples=config['samples']),
-        # expand(os.path.join("QC", "NanoPlot", "{samples}"), samples=config['samples'])
-        # expand(os.path.join("QC", "NanoPlot", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples'])
-        expand(os.path.join("QC", "samples", "{samples}", "{samples}_NanoStats.txt"), samples=config['samples'])
+        expand(os.path.join("QC", "samples", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC)
     threads: 8
 
 
-rule basecalling:
-    input:
-        raw_dir=os.path.join(config['RAWDIR'], "{runnames}/")
-    output:
-        run_fastq=os.path.join("fastq", "{runnames}.fastq")
-    run:
-        # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
-        # conditionally allow for --resume figure out how later
-        # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
-        # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
-        guppy_output_dir = os.path.join(config['ROOT'], "guppy_output", wildcards.runnames)
-        try:
-            os.makedirs(guppy_output_dir)
-        except FileExistsError:
-            flag = checkForGuppyLog(guppy_output_dir)
-            pass
-        else:
-            flag = False
-        args = {
-        "input":input.raw_dir,
-        "output_dir":guppy_output_dir
-        }
-        command = "guppy_basecaller --resume --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
-        command = command.format(**args)
-        if flag:
-           shell(command)
-           for dirpath, dirlist, filenames in os.walk(os.path.join(guppy_output_dir, wildcards.runnames)):
-               for name in filenames:
-                   if name.endswith('.fastq'):
-                       os.rename(os.path.join(dirpath, name), os.path.join(dirpath, wildcards.runnames+".fastq"))
-           try:
-               shell("cat "+guppy_output_dir+"/pass/*.fastq > fastq/"+wildcards.runnames+".fastq")
-           except:
-               print("no basecalling happened")
-               shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
-        else:
-            print("No log file to resume from. Starting fresh instance of basecallig")
-            command = "guppy_basecaller --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
-            command = command.format(**args)
-            shell(command)
-            for dirpath, dirlist, filenames in os.walk(os.path.join(guppy_output_dir, wildcards.runnames)):
-                for name in filenames:
-                    if name.endswith('.fastq'):
-                        os.rename(os.path.join(dirpath, name), os.path.join(dirpath, wildcards.runnames+".fastq"))
-            try:
-                shell("cat "+guppy_output_dir+"/pass/*.fastq > fastq/"+wildcards.runnames+".fastq")
-            except:
-                print("no basecalling happened")
-                shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
+# rule basecalling:
+#     input:
+#         raw_dir=os.path.join(config['RAWDIR'], "{runnames}/")
+#     output:
+#         run_fastq=os.path.join("fastq", "{runnames}.fastq")
+#     run:
+#         # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
+#         # conditionally allow for --resume figure out how later
+#         # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
+#         # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
+#         guppy_output_dir = os.path.join(config['ROOT'], "guppy_output", wildcards.runnames)
+#         try:
+#             os.makedirs(guppy_output_dir)
+#         except FileExistsError:
+#             flag = checkForGuppyLog(guppy_output_dir)
+#             pass
+#         else:
+#             flag = False
+#         args = {
+#         "input":input.raw_dir,
+#         "output_dir":guppy_output_dir
+#         }
+#         command = "guppy_basecaller --resume --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
+#         command = command.format(**args)
+#         if flag:
+#            shell(command)
+#            for dirpath, dirlist, filenames in os.walk(os.path.join(guppy_output_dir, wildcards.runnames)):
+#                for name in filenames:
+#                    if name.endswith('.fastq'):
+#                        os.rename(os.path.join(dirpath, name), os.path.join(dirpath, wildcards.runnames+".fastq"))
+#            try:
+#                shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
+#            except:
+#                print("no basecalling happened")
+#                shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
+#         else:
+#             print("No log file to resume from. Starting fresh instance of basecallig")
+#             command = "guppy_basecaller --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
+#             command = command.format(**args)
+#             shell(command)
+#             for dirpath, dirlist, filenames in os.walk(os.path.join(guppy_output_dir, wildcards.runnames)):
+#                 for name in filenames:
+#                     if name.endswith('.fastq'):
+#                         os.rename(os.path.join(dirpath, name), os.path.join(dirpath, wildcards.runnames+".fastq"))
+#             try:
+#                 shell("rsync -v "+guppy_output_dir+"/pass/"+wildcards.runnames+".fastq fastq/"+wildcards.runnames+".fastq")
+#             except:
+#                 print("no basecalling happened")
+#                 shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
 #
 # remove empty fastq files to avoid errors later
 #
@@ -115,7 +90,8 @@ rule basecalling:
 # find sequencing summary
 rule runQC:
     input:
-        seq_summary=os.path.join("guppy_output", "{runnamesQC}", "sequencing_summary.old.txt")
+        # can also be a directory with multiple for the same input. Use if basecalling was resumed.
+        seq_summary=os.path.join("guppy_output", "{runnames}", "sequencing_summary.old.txt")
     output:
         # MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
         # NanoStat_out=os.path.join("QC", "runs", "NanoStat", "{runnames}"),
@@ -126,7 +102,7 @@ rule runQC:
         Nanoplot_LogTransformed_HistogramReadlength_png = os.path.join("QC", "runs", "{runnames}", "{runnames}_LogTransformed_HistogramReadlength.png"),
         Nanoplot_report_html = os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoPlot-report.html"),
         Nanoplot_NanoStats_txt = os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"),
-        Nanoplot_Weighted_HistogramReadlength_png = os.path.join("QC", "runs", "{runnames}", "{runnames}_Weighted_HistogramReadlength.png"),
+        Nanoplot_Weighted_Histogr   amReadlength_png = os.path.join("QC", "runs", "{runnames}", "{runnames}_Weighted_HistogramReadlength.png"),
         Nanoplot_Weighted_LogTransformed_HistogramReadlength_png = os.path.join("QC", "runs", "{runnames}", "{runnames}_Weighted_LogTransformed_HistogramReadlength.png"),
         Nanoplot_Yield_By_Length_png = os.path.join("QC", "runs", "{runnames}", "{runnames}_Yield_By_Length.png")
     run:
@@ -153,110 +129,36 @@ rule runQC:
         command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
         shell(command_nanoP.format(**args))
 #
-# qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
-rule demultiplex_trim:
-    input:
-        raw_fastq="fastq/{qcat_test_name}.fastq"
-    output:
-        trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"))
-    run:
-        args = {
-        "input":input.raw_fastq,
-        "outputTrimmed":output.trimmed_dir,
-        "kit":config['barcode_kit'],
-        "tsvPath":os.path.join(config['ROOT'], "qcat_trimmed", wildcards.qcat_test_name)
-        }
-        command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
-        command = command.format(**args)
-        shell(command)
-############################################################################################################
-# BELOW RULE DOES NOT WORK AT ALL. IMPLEMENT ONLY IF NEEDED
-############################################################################################################
-# qcat does trimming simultaneaously so uncomment demultiplex_keep_trim
-# if untrimmed files are needed specifically
-# BARCODES=[01,02,...]
-# rule demultiplex_keep_trim:
+# include run/s that are/were live basecalled or were only available as fastq? USE qcat
+#
+# rule demultiplex:
 #     input:
-#         raw_fastq="fastq/{qcat_test_name}.fastq"
+#         raw_fastq=rules.basecalling.output.basecalled_dir
 #     output:
-#         demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{qcat_test_name}")),
-#         trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}"))
+#         demux_dir=directory(os.path.join(config['ROOT'], "qcat_output/demuxd", "{runnames}")),
+#         trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_output/trimmed", "{runnames}"))
 #     run:
 #         args = {
-#         "input":os.path.join(output.demux_dir, {qcat_test_name}),
-#         # "outputDemux":output.demux_dir,
-#         "outputTrimmed":output.trimmed_dir,
+#         "input":input.raw_fastq,
+#         "output.demux_dir":output.demux_dir,
+#         "output.trimmed_dir":output.trimmed_dir,
 #         "kit":config['barcode_kit']
 #         }
-#         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} -k {kit} --detect-middle"
+#         command = "qcat -fastq {input} --barcode_dir {output.demux_dir} --output {output.trimmed_dir} --trim -k {kit} --detect-middle"
 #         command = command.format(**args)
+#         shell(print)
 #         shell(command)
 #
-#         command = "qcat --fastq {input} --trim -k {kit} --detect-middle"
-# Run 0 (sample 01) trimmed in qcat seperately. Will be combined from this point on
-############################################################################################################
-############################################################################################################
-# move to config
-# dict of sample name and barcode (called sample_dict) in each run
-# X:
-#  'barcode': 'sample ID'}
-# added to config (X is 0 to 4 for run number)
-#
-#
-rule collectSamples:
-    output:
-        os.path.join("fastq", "samples", "{samples}.fastq.gz")
-    run:
-        try:
-            os.makedirs(os.path.join("fastq", "samples"))
-        except FileExistsError:
-            pass
-        print(findSampleFastq(wildcards.samples))
-        for runName, barcode in findSampleFastq(wildcards.samples).values(), :
-            fastqPath = os.path.join("qcat_trimmed", runName, "barcode"+barcode+".fastq")
-            if os.path.exists(fastqPath):
-                print("\n {} file exists".format(fastqPath))
-                shell("cat "+fastqPath+" > {output}")
-            else:
-                print("\n {} NO file exists".format(fastqPath))
-                shell("touch "+fastqPath)
-        # zips all files. Unxip as needed for further use
-        shell("gzip fastq/samples/*.fastq")
-#
 # QC of fastq files
-rule sampleQC:
-    input:
-        sampleFastq=os.path.join("fastq", "samples", "{samples}.fastq.gz")
-    output:
-        # nanostat=os.path.join("QC", "NanoStat", "{samples}"),
-        # nanoplot=directory(os.path.join("QC", "NanoPlot", "{samples}"))
-        Nanoplot_Dynamic_Histogram_Read_length_html = os.path.join("QC", "samples", "{samples}", "{samples}_Dynamic_Histogram_Read_length.html"),
-        Nanoplot_HistogramReadlength_png = os.path.join("QC", "samples", "{samples}", "{samples}_HistogramReadlength.png"),
-        Nanoplot_LengthvsQualityScatterPlot_dot_png = os.path.join("QC", "samples", "{samples}", "{samples}_LengthvsQualityScatterPlot_dot.png"),
-        Nanoplot_LengthvsQualityScatterPlot_kde_png = os.path.join("QC", "samples", "{samples}", "{samples}_LengthvsQualityScatterPlot_kde.png"),
-        Nanoplot_LogTransformed_HistogramReadlength_png = os.path.join("QC", "samples", "{samples}", "{samples}_LogTransformed_HistogramReadlength.png"),
-        Nanoplot_report_html = os.path.join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"),
-        Nanoplot_NanoStats_txt = os.path.join("QC", "samples", "{samples}", "{samples}_NanoStats.txt"),
-        Nanoplot_Weighted_HistogramReadlength_png = os.path.join("QC", "samples", "{samples}", "{samples}_Weighted_HistogramReadlength.png"),
-        Nanoplot_Weighted_LogTransformed_HistogramReadlength_png = os.path.join("QC", "samples", "{samples}", "{samples}_Weighted_LogTransformed_HistogramReadlength.png"),
-        Nanoplot_Yield_By_Length_png = os.path.join("QC", "samples", "{samples}", "{samples}_Yield_By_Length.png")
-    run:
-        args = {
-            "input":input.sampleFastq,
-            # "output_stat":os.path.join("QC", "NanoStat"),
-            "output_plot":os.path.join("QC", "samples", wildcards.samples),
-            "name":wildcards.samples,
-            "prefix":wildcards.samples+'_'
-        }
-        # try:
-        #     os.makedirs(args['output_plot'])
-        # except FileExistsError:
-        #     pass
-        # shell("touch "+os.path.join("QC", "NanoStat", wildcards.samples))
-        # command_stat = "NanoStat --fastq {input} --outdir {output_stat} -n {name}"
-        # shell(command_stat.format(**args))
-        command_plot = "NanoPlot --verbose --fastq {input} --outdir {output_plot} --prefix {prefix}"
-        shell(command_plot.format(**args))
+# rule sampleQC:
+#     input:
+#         "each sample fastq"
+#     output:
+#         "reports per sample"
+#     run:
+#         Nanoplot
+#         Nanostat
+#
 #
 # include run/s that are/were live basecalled or were only available as fastq?
 #
