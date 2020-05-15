@@ -48,7 +48,17 @@ rule all:
         # for sample QC
         # expand(os.path.join("QC", "NanoStat", "{samples}"), samples=config['samples']),
         # expand(os.path.join("QC", "NanoPlot", "{samples}"), samples=config['samples'])
-        expand(os.path.join("QC", "NanoPlot", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples'])
+        # expand(os.path.join("QC", "NanoPlot", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples'])
+        expand(os.path.join("QC", "samples", "{samples}", "{samples}_Dynamic_Histogram_Read_length.html"), samples=config['samples),
+        expand(os.path.join("QC", "samples", "{samples}", "{samples}_HistogramReadlength.png"), samples=config['samples),
+        expand(os.path.join("QC", "samples", "{samples}", "{samples}_LengthvsQualityScatterPlot_dot.png"), samples=config['samples),
+        expand(os.path.join("QC", "samples", "{samples}", "{samples}_LengthvsQualityScatterPlot_kde.png"), samples=config['samples),
+        expand(os.path.join("QC", "samples", "{samples}", "{samples}_LogTransformed_HistogramReadlength.png"), samples=config['samples),
+        expand(os.path.join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples),
+        expand(os.path.join("QC", "samples", "{samples}", "{samples}_NanoStats.txt"), samples=config['samples),
+        expand(os.path.join("QC", "samples", "{samples}", "{samples}_Weighted_HistogramReadlength.png"), samples=config['samples),
+        expand(os.path.join("QC", "samples", "{samples}", "{samples}_Weighted_LogTransformed_HistogramReadlength.png"), samples=config['samples),
+        expand(os.path.join("QC", "samples", "{samples}", "{samples}_Yield_By_Length.png"), samples=config['samples)
     threads: 8
 
 
@@ -207,21 +217,21 @@ rule sampleQC:
     output:
         # nanostat=os.path.join("QC", "NanoStat", "{samples}"),
         # nanoplot=directory(os.path.join("QC", "NanoPlot", "{samples}"))
-        Nanoplot_Dynamic_Histogram_Read_length_html = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_Dynamic_Histogram_Read_length.html"),
-        Nanoplot_HistogramReadlength_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_HistogramReadlength.png"),
-        Nanoplot_LengthvsQualityScatterPlot_dot_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_LengthvsQualityScatterPlot_dot.png"),
-        Nanoplot_LengthvsQualityScatterPlot_kde_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_LengthvsQualityScatterPlot_kde.png"),
-        Nanoplot_LogTransformed_HistogramReadlength_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_LogTransformed_HistogramReadlength.png"),
-        Nanoplot_report_html = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_NanoPlot-report.html"),
-        Nanoplot_NanoStats_txt = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_NanoStats.txt"),
-        Nanoplot_Weighted_HistogramReadlength_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_Weighted_HistogramReadlength.png"),
-        Nanoplot_Weighted_LogTransformed_HistogramReadlength_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_Weighted_LogTransformed_HistogramReadlength.png"),
-        Nanoplot_Yield_By_Length_png = os.path.join("QC", "NanoPlot", "{samples}", "{samples}_Yield_By_Length.png")
+        Nanoplot_Dynamic_Histogram_Read_length_html = os.path.join("QC", "samples", "{samples}", "{samples}_Dynamic_Histogram_Read_length.html"),
+        Nanoplot_HistogramReadlength_png = os.path.join("QC", "samples", "{samples}", "{samples}_HistogramReadlength.png"),
+        Nanoplot_LengthvsQualityScatterPlot_dot_png = os.path.join("QC", "samples", "{samples}", "{samples}_LengthvsQualityScatterPlot_dot.png"),
+        Nanoplot_LengthvsQualityScatterPlot_kde_png = os.path.join("QC", "samples", "{samples}", "{samples}_LengthvsQualityScatterPlot_kde.png"),
+        Nanoplot_LogTransformed_HistogramReadlength_png = os.path.join("QC", "samples", "{samples}", "{samples}_LogTransformed_HistogramReadlength.png"),
+        Nanoplot_report_html = os.path.join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"),
+        Nanoplot_NanoStats_txt = os.path.join("QC", "samples", "{samples}", "{samples}_NanoStats.txt"),
+        Nanoplot_Weighted_HistogramReadlength_png = os.path.join("QC", "samples", "{samples}", "{samples}_Weighted_HistogramReadlength.png"),
+        Nanoplot_Weighted_LogTransformed_HistogramReadlength_png = os.path.join("QC", "samples", "{samples}", "{samples}_Weighted_LogTransformed_HistogramReadlength.png"),
+        Nanoplot_Yield_By_Length_png = os.path.join("QC", "samples", "{samples}", "{samples}_Yield_By_Length.png")
     run:
         args = {
             "input":input.sampleFastq,
             # "output_stat":os.path.join("QC", "NanoStat"),
-            "output_plot":os.path.join("QC", "NanoPlot", wildcards.samples),
+            "output_plot":os.path.join("QC", "samples", wildcards.samples),
             "name":wildcards.samples,
             "prefix":wildcards.samples+'_'
         }
