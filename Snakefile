@@ -31,7 +31,7 @@ MY_RUNNAMES = ["Run0", "Run1_pf_mixed", "Run2_mixed", "Run3_mixed", "Run4_mixed"
 MY_RUNNAMES_QC = ['Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 
 
---- Some rules --- #
+# --- Some rules --- #
 
 rule all:
     input:
