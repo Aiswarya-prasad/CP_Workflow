@@ -43,9 +43,8 @@ rule all:
         expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         # expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC),
         #--> demultiplex_trim
-        dynamic(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}","{barcodes}.fastq")),
         expand(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
-        expand(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}"), runnames=config['runnames']),
+        expand(dynamic(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}","{barcodes}.fastq")), runnames=config['runnames']),
         # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}.tsv"), qcat_test_name=MY_RUNNAMES),
         # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
         #--> collectSamples
@@ -157,14 +156,13 @@ rule demultiplex_trim:
         raw_fastq="fastq/{runnames}.fastq"
         # raw_fastq="fastq/{qcat_test_name}.fastq"
     output:
-        # trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"))
-        trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}")),
         tsv=os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv"),
         fastq=dynamic(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}","{barcodes}.fastq"))
     run:
         args = {
         "input":input.raw_fastq,
-        "outputTrimmed":output.trimmed_dir,
+        "outputTrimmed":os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}"),
+        # "outputTrimmed":os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"),
         "kit":config['barcode_kit'],
         # "tsvPath":os.path.join(config['ROOT'], "qcat_trimmed", wildcards.qcat_test_name)
         "tsvPath":os.path.join(config['ROOT'], "qcat_trimmed", wildcards.runnames)
