@@ -154,7 +154,7 @@ rule demultiplex_trim:
         # raw_fastq="fastq/{qcat_test_name}.fastq"
     output:
         # trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"))
-        trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed")),
+        trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}")),
         tsv=os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv")
     run:
         args = {
@@ -202,8 +202,6 @@ rule demultiplex_trim:
 #
 #
 rule collectSamples:
-    input:
-        os.path.join(config['ROOT'], "qcat_trimmed")
     output:
         os.path.join("fastq", "samples", "{samples}.fastq.gz")
     run:
