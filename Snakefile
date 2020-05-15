@@ -202,6 +202,8 @@ rule demultiplex_trim:
 #
 #
 rule collectSamples:
+    input:
+        directory(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}"))
     output:
         os.path.join("fastq", "samples", "{samples}.fastq.gz")
     run:
