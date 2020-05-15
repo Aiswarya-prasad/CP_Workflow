@@ -224,7 +224,7 @@ rule sampleQC:
         print("NanoStat done NanoPlot supposed to be next....")
         command_plot = "NanoPlot --verbose --fastq reads.fastq.gz --outdir {output_plot} --prefix {prefix}"
         print(command_plot)
-        shell(command_stat.format(**args))
+        shell(command_plot.format(**args))
 #
 # include run/s that are/were live basecalled or were only available as fastq?
 #
