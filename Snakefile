@@ -150,7 +150,7 @@ rule runQC:
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 rule demultiplex_trim:
     input:
-        rules.basecalling.run_fastq
+        rules.basecalling.output.run_fastq
         # raw_fastq="fastq/{runnames}.fastq"
         # raw_fastq="fastq/{qcat_test_name}.fastq"
     output:
