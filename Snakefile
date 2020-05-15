@@ -94,7 +94,7 @@ rule runQC:
         seq_summary=os.path.join("guppy_output", "{runnames}", "sequencing_summary.old.txt")
     output:
         MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
-        NanoStat_out=os.path.join("QC", "runs", "NanoStat", "{runnames}"),
+        NanoPlot_out=directory(os.path.join("QC", "runs", "NanoPlot", "{runnames}"))
     run:
         try:
             os.makedirs(os.path.join("QC", "runs", "MinionQC"))
@@ -105,14 +105,14 @@ rule runQC:
         "outputMin":os.path.join("QC", "runs", "MinionQC"),
         "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R",
         # "minionQCpath":snakemake.config["minionQCpath"]
-        "outputNano":os.path.join("QC", "runs", "NanoStat"),
+        "outputNano":os.path.join("QC", "runs", "NanoPlot"),
         "name": wildcards.runnames
         }
         # shift minionQCpath to config
         #  -s makes small figures suitable for export rather than optimised for screen
         # command = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
         # shell(command.format(**args))
-        command_nano = "NanoStat --summary {input} --outdir {outputNano} -n {name} --readtype 1D --barcoded"
+        command_nano = "NanoPlot --summary {input} --outdir {outputNano} -n {name} --readtype 1D --barcoded"
         shell(command_nano.format(**args))
 
 #
