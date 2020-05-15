@@ -95,7 +95,17 @@ rule runQC:
     output:
         # MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
         NanoStat_out=os.path.join("QC", "runs", "NanoStat", "{runnames}"),
-        NanoPlot_out=directory(os.path.join("QC", "runs", "NanoPlot", "{runnames}"))
+        Nanoplot_Dynamic_Histogram_Read_length_html = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "_Dynamic_Histogram_Read_length.html"),
+        Nanoplot_HistogramReadlength_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "_HistogramReadlength.png"),
+        Nanoplot_LengthvsQualityScatterPlot_dot_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "_LengthvsQualityScatterPlot_dot.png"),
+        Nanoplot_LengthvsQualityScatterPlot_kde_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "_LengthvsQualityScatterPlot_kde.png"),
+        Nanoplot_LogTransformed_HistogramReadlength_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "_LogTransformed_HistogramReadlength.png"),
+        Nanoplot_NanoPlot_20200515_2130_log = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "_NanoPlot_20200515_2130.log"),
+        Nanoplotreport_html = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "_NanoPlot-report.html"),
+        Nanoplot_NanoStats_txt = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "_NanoStats.txt"),
+        Nanoplot_Weighted_HistogramReadlength_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "_Weighted_HistogramReadlength.png"),
+        Nanoplot_Weighted_LogTransformed_HistogramReadlength_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "_Weighted_LogTransformed_HistogramReadlength.png"),
+        Nanoplot_Yield_By_Length_png = os.path.join("QC", "runs", "NanoPlot", "{runnames}", "_Yield_By_Length.png")
     run:
         # try:
         #     os.makedirs(os.path.join("QC", "runs", "MinionQC"))
@@ -107,7 +117,7 @@ rule runQC:
         # "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R",
         # "minionQCpath":snakemake.config["minionQCpath"]
         "outputNanoS":os.path.join("QC", "runs", "NanoStat"),
-        "outputNanoP":os.path.join("QC", "runs", "NanoPlot"),
+        "outputNanoP":os.path.join("QC", "runs", "NanoPlot", wildcards.runnames),
         "name": wildcards.runnames,
         "prefix": wildcards.runnames+"_"
         }
@@ -115,9 +125,9 @@ rule runQC:
         #  -s makes small figures suitable for export rather than optimised for screen
         # command = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
         # shell(command.format(**args))
-        command_nanoS = "NanoStat --summary {input} --outdir {outputNanoS} -n {name} --barcoded --readtype 1D"
+        command_nanoS = "NanoStat --summary {input} --outdir {outputNanoS} -n {name} --readtype 1D"
         shell(command_nanoS.format(**args))
-        command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --barcoded --readtype 1D"
+        command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
         shell(command_nanoP.format(**args))
 #
 # include run/s that are/were live basecalled or were only available as fastq? USE qcat
