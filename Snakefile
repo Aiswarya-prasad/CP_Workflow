@@ -150,15 +150,20 @@ rule runQC:
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 rule demultiplex_trim:
     input:
-        raw_fastq="fastq/{qcat_test_name}.fastq"
+        raw_fastq="fastq/{runnames}.fastq"
+        # raw_fastq="fastq/{qcat_test_name}.fastq"
     output:
-        trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"))
+        # trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"))
+        trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}"))
+        # trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"))
+        trimmed_dir=directory(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}"))
     run:
         args = {
         "input":input.raw_fastq,
         "outputTrimmed":output.trimmed_dir,
         "kit":config['barcode_kit'],
-        "tsvPath":os.path.join(config['ROOT'], "qcat_trimmed", wildcards.qcat_test_name)
+        # "tsvPath":os.path.join(config['ROOT'], "qcat_trimmed", wildcards.qcat_test_name)
+        "tsvPath":os.path.join(config['ROOT'], "qcat_trimmed", wildcards.runnames)
         }
         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
         command = command.format(**args)
