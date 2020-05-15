@@ -42,8 +42,8 @@ rule all:
         expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         # expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC),
         #--> demultiplex_trim
-        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
+        expand(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
+        # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}.tsv"), qcat_test_name=MY_RUNNAMES),
         #--> collectSamples
         expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
@@ -202,8 +202,6 @@ rule demultiplex_trim:
 #
 #
 rule collectSamples:
-    input:
-        directory(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}"))
     output:
         os.path.join("fastq", "samples", "{samples}.fastq.gz")
     run:
