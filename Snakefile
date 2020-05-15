@@ -108,7 +108,8 @@ rule runQC:
         # "minionQCpath":snakemake.config["minionQCpath"]
         "outputNanoS":os.path.join("QC", "runs", "NanoStat"),
         "outputNanoP":os.path.join("QC", "runs", "NanoPlot"),
-        "name": wildcards.runnames
+        "name": wildcards.runnames,
+        "prefix": wildcards.runnames+"_"
         }
         # shift minionQCpath to config
         #  -s makes small figures suitable for export rather than optimised for screen
@@ -116,7 +117,7 @@ rule runQC:
         # shell(command.format(**args))
         command_nanoS = "NanoStat --summary {input} --outdir {outputNanoS} -n {name} --barcoded --readtype 1D"
         shell(command_nanoS.format(**args))
-        command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -n {name} --barcoded --readtype 1D"
+        command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --barcoded --readtype 1D"
         shell(command_nanoP.format(**args))
 #
 # include run/s that are/were live basecalled or were only available as fastq? USE qcat
