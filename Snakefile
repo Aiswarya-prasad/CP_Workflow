@@ -16,7 +16,6 @@ def checkForGuppyLog(path):
 
 # find run and barcode for given sample ID using
 # returns path to fastq "{runName}/barcode{barcode}.fastq"
-fastqPath = os.path.join(trimmed_files_path, runName, "barcode"+barcode+".fastq")
 def findSampleFastq(sampleID):
     sampleDict = config['sample_dict']
     runBarcodeDict = {}
