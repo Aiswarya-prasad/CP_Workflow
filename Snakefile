@@ -207,7 +207,7 @@ rule demultiplex_trim:
 rule collectSamples:
     input:
         # fastqPath=os.path.join(config['ROOT'], "qcat_trimmed", findSampleFastq("{samples}"))
-        findSampleFastq("{samples}")
+        fastqPath=findSampleFastq("{samples}")
     output:
         os.path.join("fastq", "samples", "{samples}.fastq.gz")
     run:
@@ -215,12 +215,12 @@ rule collectSamples:
             os.makedirs(os.path.join("fastq", "samples"))
         except FileExistsError:
             pass
-        if os.path.exists(fastqPath):
-            print("\n {} file exists".format(fastqPath))
-            shell("cat "+fastqPath+" > {output}")
+        if os.path.exists(input.fastqPath):
+            print("\n {} file exists".format(input.fastqPath))
+            shell("cat "+input.fastqPath+" > {output}")
         else:
-            print("\n {} NO file exists".format(fastqPath))
-            shell("touch "+fastqPath)
+            print("\n {} NO file exists".format(input.fastqPath))
+            shell("touch "+input.fastqPath)
         # zips all files. Unxip as needed for further use
         shell("gzip fastq/samples/*.fastq")
 #
