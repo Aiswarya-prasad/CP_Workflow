@@ -203,7 +203,7 @@ rule demultiplex_trim:
 #
 rule collectSamples:
     input:
-        os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}"),
+        trimmed_files_path=os.path.join(config['ROOT'], "qcat_trimmed"),
         lambda wildcards: config["samples"][wildcards.samples]
     output:
         os.path.join("fastq", "samples", "{samples}.fastq.gz")
@@ -213,7 +213,7 @@ rule collectSamples:
         except FileExistsError:
             pass
         for runName, barcode in findSampleFastq(wildcards.samples).values(), :
-            fastqPath = os.path.join("qcat_trimmed", runName, "barcode"+barcode+".fastq")
+            fastqPath = os.path.join(trimmed_files_path, runName, "barcode"+barcode+".fastq")
             if os.path.exists(fastqPath):
                 print("\n {} file exists".format(fastqPath))
                 shell("cat "+fastqPath+" > {output}")
