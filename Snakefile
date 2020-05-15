@@ -33,8 +33,8 @@ MY_RUNNAMES_QC = ['Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 
 # --- Some rules --- #
 
-rule all:
-    input:
+# rule all:
+#     input:
         #--> for basecalling
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=MY_RUNNAMES),
@@ -47,7 +47,7 @@ rule all:
         # expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
         # expand(os.path.join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples'])
-    threads: 8
+    # threads: 8
 
 
 rule basecalling:
