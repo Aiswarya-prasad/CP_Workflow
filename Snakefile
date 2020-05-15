@@ -110,8 +110,8 @@ rule runQC:
         }
         # shift minionQCpath to config
         #  -s makes small figures suitable for export rather than optimised for screen
-        command = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
-        shell(command.format(**args))
+        # command = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
+        # shell(command.format(**args))
         command_nano = "NanoStat --summary {input} --outdir {outputNano} -n {name} --readtype 1D --barcoded"
         shell(command_nano.format(**args))
 
