@@ -30,7 +30,6 @@ configfile: "config.yaml"
 MY_RUNNAMES = ["Run0", "Run1_pf_mixed", "Run2_mixed", "Run3_mixed", "Run4_mixed"]
 MY_RUNNAMES_QC = ['Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 
-
 # --- Some rules --- #
 
 rule all:
@@ -42,11 +41,15 @@ rule all:
         # expand(os.path.join("QC", "runs", "MinionQC", "{runnamesQC}"), runnamesQC=MY_RUNNAMES_QC),
         # for qcat
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+=======
         # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
         # accumulate samples
         # expand(os.path.join("fastq", "samples", "{samples}.fastq"), samples=config['samples'])
         # for sample QC
         #  ?
+        # expand(os.path.join("QC", "runs", "MinionQC", "{runnames}"), runnames=config['runnames'])
+        # expand(os.path.join("QC", "runs", "MinionQC"))
+        expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC)
     threads: 8
 
 
@@ -109,24 +112,41 @@ rule runQC:
     input:
         seq_summary=os.path.join("guppy_output", "{runnamesQC}", "sequencing_summary.old.txt")
     output:
-        MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnamesQC}")),
+        # MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
+        # NanoStat_out=os.path.join("QC", "runs", "NanoStat", "{runnames}"),
+        Nanoplot_Dynamic_Histogram_Read_length_html = os.path.join("QC", "runs", "{runnames}", "{runnames}_Dynamic_Histogram_Read_length.html"),
+        Nanoplot_HistogramReadlength_png = os.path.join("QC", "runs", "{runnames}", "{runnames}_HistogramReadlength.png"),
+        Nanoplot_LengthvsQualityScatterPlot_dot_png = os.path.join("QC", "runs", "{runnames}", "{runnames}_LengthvsQualityScatterPlot_dot.png"),
+        Nanoplot_LengthvsQualityScatterPlot_kde_png = os.path.join("QC", "runs", "{runnames}", "{runnames}_LengthvsQualityScatterPlot_kde.png"),
+        Nanoplot_LogTransformed_HistogramReadlength_png = os.path.join("QC", "runs", "{runnames}", "{runnames}_LogTransformed_HistogramReadlength.png"),
+        Nanoplot_report_html = os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoPlot-report.html"),
+        Nanoplot_NanoStats_txt = os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"),
+        Nanoplot_Weighted_HistogramReadlength_png = os.path.join("QC", "runs", "{runnames}", "{runnames}_Weighted_HistogramReadlength.png"),
+        Nanoplot_Weighted_LogTransformed_HistogramReadlength_png = os.path.join("QC", "runs", "{runnames}", "{runnames}_Weighted_LogTransformed_HistogramReadlength.png"),
+        Nanoplot_Yield_By_Length_png = os.path.join("QC", "runs", "{runnames}", "{runnames}_Yield_By_Length.png")
     run:
-        try:
-            os.makedirs(os.path.join("QC", "runs", "MinionQC"))
-        except FileExistsError:
-            pass
+        # try:
+        #     os.makedirs(os.path.join("QC", "runs", "MinionQC"))
+        # except FileExistsError:
+        #     pass
         args = {
         "input":input.seq_summary,
-        "outputMin":os.path.join("QC", "runs", "MinionQC"),
-        # "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R"
-        "minionQCpath":config["minionQCpath"]
-
+        # "outputMin":os.path.join("QC", "runs", "MinionQC"),
+        # "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R",
+        # "minionQCpath":snakemake.config["minionQCpath"]
+        # "outputNanoS":os.path.join("QC", "runs", "NanoStat"),
+        "outputNanoP":os.path.join("QC", "runs", wildcards.runnames),
+        # "name": wildcards.runnames,
+        "prefix": wildcards.runnames+"_"
         }
         # shift minionQCpath to config
         #  -s makes small figures suitable for export rather than optimised for screen
-        command = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
-        command = command.format(**args)
-        shell(command)
+        # command = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
+        # shell(command.format(**args))
+        # command_nanoS = "NanoStat --summary {input} --outdir {outputNanoS} -n {name} --readtype 1D"
+        # shell(command_nanoS.format(**args))
+        command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
+        shell(command_nanoP.format(**args))
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 rule demultiplex_trim:
