@@ -36,7 +36,7 @@ MY_RUNNAMES_QC = ['Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 rule all:
     input:
         #--> for basecalling
-        expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+        # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         # expand(os.path.join("fastq", "{runnames}.fastq"), runnames=MY_RUNNAMES),
         #--> runQC
         expand(os.path.join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
@@ -45,7 +45,7 @@ rule all:
         expand(os.path.join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
         # expand(os.path.join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}.tsv"), qcat_test_name=MY_RUNNAMES),
         #--> collectSamples
-        expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
+        # expand(os.path.join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
         expand(os.path.join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples'])
     threads: 8
@@ -202,6 +202,8 @@ rule demultiplex_trim:
 #
 #
 rule collectSamples:
+    input:
+        directory(os.path.join(config['ROOT'], "qcat_trimmed"))
     output:
         os.path.join("fastq", "samples", "{samples}.fastq.gz")
     run:
@@ -209,7 +211,6 @@ rule collectSamples:
             os.makedirs(os.path.join("fastq", "samples"))
         except FileExistsError:
             pass
-        print(findSampleFastq(wildcards.samples))
         for runName, barcode in findSampleFastq(wildcards.samples).values(), :
             fastqPath = os.path.join("qcat_trimmed", runName, "barcode"+barcode+".fastq")
             if os.path.exists(fastqPath):
