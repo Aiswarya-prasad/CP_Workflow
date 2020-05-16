@@ -1,10 +1,10 @@
-exists# Main Workflow - CP project analysis
+# Main Workflow - CP project analysis
 #
 # Contributors: @aiswaryaprasad
 
 # --- Importing Some Packages --- #
-from os.path import join
 from os import walk, rename, makedirs
+from os.path import join, exists
 from snakemake.shell import shell
 import matplotlib.pyplot as plt
 import numpy as np
@@ -236,7 +236,7 @@ rule collectSamples:
             makedirs(join("fastq", "samples"))
         except FileExistsError:
             pass
-        if os.path.exists(input.fastqPath):
+        if exists(input.fastqPath):
             print("\n {} file exists".format(input.fastqPath))
             shell("cat "+input.fastqPath+" > "+join("fastq", "samples", wildcards.samples+".fastq"))
         else:
