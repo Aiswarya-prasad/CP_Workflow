@@ -68,7 +68,7 @@ rule all:
         expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
         expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
         #--> centrifuge
-        expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples']))
+        expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples'])
     threads: 8
 
 
