@@ -321,7 +321,7 @@ rule bracken:
         args = {
         db: config['kraken_db'],
         input: input.kraken_report,
-        output_reportS: output.reportS
+        output_reportS: output.reportS,
         output_reportG: output.reportG
         }
         commandS = "bracken -d {db} -i {input} -l S -o {output_reportS}"
