@@ -25,6 +25,11 @@ def findSampleFastq(wildcards):
                 runBarcodeDict = {'runName': runName, 'barcode': barcode}
                 return os.path.join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
 
+# can also be a directory with multiple seq summary files for the same input
+# modify function accordingly esp for interrupted basecalling
+def findSeqSummary(wildcards):
+    return os.path.join("guppy_output", wildcards, "sequencing_summary.old.txt")
+
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
 # Only for pre-basecalled unfiltered guppy reads
@@ -111,8 +116,7 @@ rule basecalling:
 # find sequencing summary
 rule runQC:
     input:
-        # can also be a directory with multiple for the same input. Use if basecalling was resumed.
-        seq_summary=os.path.join("guppy_output", "{runnames}", "sequencing_summary.old.txt")
+        seq_summary=lambda wildcards: findSeqSummary(wildcards.runnames)
     output:
         # MinionQC_out=directory(os.path.join("QC", "runs", "MinionQC", "{runnames}")),
         # NanoStat_out=os.path.join("QC", "runs", "NanoStat", "{runnames}"),
