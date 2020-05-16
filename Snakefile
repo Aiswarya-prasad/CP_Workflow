@@ -53,10 +53,12 @@ rule all:
         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         # expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC),
         #--> demultiplex_trim
-        expand(join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
         expand(join(config['ROOT'], "qcat_trimmed", "{runnames}"), runnames=config['runnames']),
+        # expand(join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
         # expand(join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}.tsv"), qcat_test_name=MY_RUNNAMES),
         # expand(join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
+        #--> summary
+        expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
         #--> collectSamples
         # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
