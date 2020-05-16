@@ -318,7 +318,7 @@ rule kraken2:
 #
 rule bracken:
     input:
-        kraken_report=rules.kraken2.output.report
+        kraken_report=rules.kraken2.output.report_kraken
     output:
         reportS=join("classified", "{samples}", "bracken", "species_report"),
         reportG=join("classified", "{samples}", "bracken", "genus_report")
