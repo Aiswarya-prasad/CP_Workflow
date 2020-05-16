@@ -297,17 +297,22 @@ rule kraken2:
     input:
         fastq=join("fastq", "samples", "{samples}.fastq.gz")
     output:
-        report=join("classified", "{samples}", "kraken2", "report"),
-        result=join("classified", "{samples}", "kraken2", "result")
+        report_mpa=join("classified", "{samples}", "kraken2", "report_mpa"),
+        report_kraken=join("classified", "{samples}", "kraken2", "report_mpa"),
+        result=join("classified", "{samples}", "kraken2", "result"),
+
     run:
         args = {
         "db": config['kraken_db'],
         "t": 8,
         "input": input.fastq,
-        "output_report": output.report,
+        "output_reportmpa": output.report_mpa,
+        "output_report": output.report_kraken,
         "output_result": output.result
         }
-        command = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_report}  --report-zero-counts --use-mpa-style --output {output_result}"
+        commandMPA = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_reportmpa}  --report-zero-counts --use-mpa-style --output {output_result}"
+        shell(commandMPA.format(**args))
+        command = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_report}  --report-zero-counts --output {output_result}"
         shell(command.format(**args))
 #
 #
