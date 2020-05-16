@@ -53,4 +53,4 @@ for box in rect:
     if width > 1:
         plt.text(width + 2, box.get_y() + box.get_height()/2, "{}".format(counts[sorted(counts)[barNum]]), ha='left', va='center')
     barNum += 1
-plt.savefig(snakemake.output[1])
+plt.savefig(snakemake.out   put[1])
