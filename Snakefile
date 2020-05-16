@@ -300,13 +300,12 @@ rule kraken2:
         report=join("classified", "{samples}", "kraken2", "report"),
         result=join("classified", "{samples}", "kraken2", "result")
     run:
-        print(config['kraken_db'])
         args = {
-        db: config['kraken_db'],
-        t: 8,
-        input: input.fastq,
-        output_report: output.report,
-        output_result: output.result
+        "db": config['kraken_db'],
+        "t": 8,
+        "input": input.fastq,
+        "output_report": output.report,
+        "output_result": output.result
         }
         command = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_report}  --report-zero-counts --use-mpa-style --output {output_result}"
         shell(command.format(**args))
@@ -320,10 +319,10 @@ rule bracken:
         reportG=join("classified", "{samples}", "bracken", "genus_report")
     run:
         args = {
-        db: config['kraken_db'],
-        input: input.kraken_report,
-        output_reportS: output.reportS,
-        output_reportG: output.reportG
+        "db": config['kraken_db'],
+        "input": input.kraken_report,
+        "output_reportS": output.reportS,
+        "output_reportG": output.reportG
         }
         commandS = "bracken -d {db} -i {input} -l S -o {output_reportS}"
         commandG = "bracken -d {db} -i {input} -l G -o {output_reportG}"
@@ -340,9 +339,9 @@ rule centrifuge:
     run:
         args = {
         input: input.fastq,
-        db: config['centrifuge_db'],
-        output_report: output.report,
-        output_result: output.result
+        "db": config['centrifuge_db'],
+        "output_report": output.report,
+        "output_result": output.result
         }
         # -U - means take from stdin
         command = "gunzip -c {input} | centrifuge -x {db} -q  -U - --report-file {output_report} -S {output_result}"
