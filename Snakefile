@@ -298,8 +298,8 @@ rule kraken2:
         fastq=join("fastq", "samples", "{samples}.fastq.gz")
     output:
         report_mpa=join("classified", "{samples}", "kraken2", "report_mpa"),
-        report_kraken=join("classified", "{samples}", "kraken2", "report_mpa"),
-        result=join("classified", "{samples}", "kraken2", "result"),
+        report_kraken=join("classified", "{samples}", "kraken2", "report"),
+        result=join("classified", "{samples}", "kraken2", "result")
     run:
         args = {
         "db": config['kraken_db'],
