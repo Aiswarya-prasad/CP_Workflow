@@ -148,7 +148,7 @@ rule runQC:
         # command_nanoS = "NanoStat --summary {input} --outdir {outputNanoS} -n {name} --readtype 1D"
         # shell(command_nanoS.format(**args))
         command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
-        shell(command_nanoP.format(**args)+" || true")
+        shell(command_nanoP.format(**args)+" || touch {output}")
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 rule demultiplex_trim:
