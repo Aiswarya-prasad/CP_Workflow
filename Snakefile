@@ -218,12 +218,12 @@ rule collectSamples:
             pass
         if os.path.exists(input.fastqPath):
             print("\n {} file exists".format(input.fastqPath))
-            shell("cat "+input.fastqPath+" > "+os.path.join("fastq", "samples", "{samples}.fastq"))
+            shell("cat "+input.fastqPath+" > "+os.path.join("fastq", "samples", wildcards.samples+".fastq"))
         else:
             print("\n {} NO file exists".format(input.fastqPath))
             shell("touch "+input.fastqPath)
         # zips all files. Unxip as needed for further use
-        shell("gzip fastq/samples/*.fastq")
+        shell("gzip "+os.path.join("fastq", "samples", wildcards.samples+".fastq"))
 #
 # QC of fastq files
 rule sampleQC:
