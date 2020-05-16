@@ -338,7 +338,7 @@ rule centrifuge:
         result=join("classified", "{samples}", "centrifuge", "result")
     run:
         args = {
-        input: input.fastq,
+        "input": input.fastq,
         "db": config['centrifuge_db'],
         "output_report": output.report,
         "output_result": output.result
