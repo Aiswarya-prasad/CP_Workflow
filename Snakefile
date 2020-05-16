@@ -300,6 +300,7 @@ rule kraken2:
         report=join("classified", "{samples}", "kraken2", "report"),
         result=join("classified", "{samples}", "kraken2", "result")
     run:
+        print(config['kraken_db'])
         args = {
         db: config['kraken_db'],
         t: 8,
