@@ -3,7 +3,8 @@ exists# Main Workflow - CP project analysis
 # Contributors: @aiswaryaprasad
 
 # --- Importing Some Packages --- #
-from os.path import join, exists
+from os.path import join
+from os.path import exists
 from os import walk, rename, makedirs
 from snakemake.shell import shell
 import matplotlib.pyplot as plt
