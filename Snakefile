@@ -62,7 +62,7 @@ rule all:
         #--> collectSamples
         # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
-        expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples'])
+        expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
         #--> kraken2
         #--> bracken
         expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
