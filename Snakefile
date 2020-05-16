@@ -63,6 +63,12 @@ rule all:
         # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
         expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples'])
+        #--> kraken2
+        #--> bracken
+        expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
+        expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
+        #--> centrifuge
+        expand(join("classified", "{samples}", "centrifuge", "report", samples=config['samples']))
     threads: 8
 
 
@@ -277,22 +283,68 @@ rule sampleQC:
 #
 # include run/s that are/were live basecalled or were only available as fastq?
 #
-# rule run_kraken2:
-#     input:
-#         "fatq files per sample"
-#     output:
-#         "reports",
-#         "results"
-#     shell:
-#         "call run_kraken2"
+# "C"/"U": a one letter code indicating that the sequence was either classified or unclassified.
+# The sequence ID, obtained from the FASTA/FASTQ header.
+# The taxonomy ID Kraken 2 used to label the sequence; this is 0 if the sequence is unclassified.
+# The length of the sequence in bp. In the case of paired read data, this will be a string containing the lengths of the two sequences in bp, separated by a pipe character, e.g. "98|94".
+# A space-delimited list indicating the LCA mapping of each k-mer in the sequence(s). For example, "562:13 561:4 A:31 0:1 562:3" would indicate that:
+# the first 13 k-mers mapped to taxonomy ID #562
+# the next 4 k-mers mapped to taxonomy ID #561
+# the next 31 k-mers contained an ambiguous nucleotide
+# the next k-mer was not in the database
+# the last 3 k-mers mapped to taxonomy ID #562
+rule kraken2:
+    input:
+        fastq=join("fastq", "samples", "{samples}.fastq.gz")
+    output:
+        report=join("classified", "{samples}", "kraken2", "report"),
+        result=join("classified", "{samples}", "kraken2", "result")
+    run:
+        args = {
+        db: config['kraken_db'],
+        t: 8,
+        input: input.fastq,
+        output_report: output.report,
+        output_result: output.result
+        }
+        command = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_report}  --report-zero-counts --use-mpa-style --output {output_result}"
+        shell(command.format(**args))
 #
-# rule run_centrifuge:
-#     input:
-#         "fatq files per sample"
-#     output:
-#         "reports",
-#         "results"
-#     shell:
-#         "call run_centrifuge"
+#
+rule bracken:
+    input:
+        kraken_report=rules.kraken2.output.report
+    output:
+        reportS=join("classified", "{samples}", "bracken", "species_report"),
+        reportG=join("classified", "{samples}", "bracken", "genus_report")
+    run:
+        args = {
+        db: config['kraken_db'],
+        input: input.kraken_report,
+        output_reportS: output.reportS
+        output_reportG: output.reportG
+        }
+        commandS = "bracken -d {db} -i {input} -l S -o {output_reportS}"
+        commandG = "bracken -d {db} -i {input} -l G -o {output_reportG}"
+        shell(commandS.format(**args))
+        shell(commandG.format(**args))
+#
+#
+rule centrifuge:
+    input:
+        fastq=join("fastq", "samples", "{samples}.fastq.gz")
+    output:
+        report=join("classified", "{samples}", "centrifuge", "report"),
+        result=join("classified", "{samples}", "centrifuge", "result")
+    run:
+        args = {
+        input: input.fastq,
+        db: config['centrifuge_db'],
+        output_report: output.report,
+        output_result: output.result
+        }
+        # -U - means take from stdin
+        command = "gunzip -c {input} | centrifuge -x {db} -q  -U - --report-file {output_report} -S {output_result}"
+        shell(command.format(**args))
 #
 ###########--figure out how to do comparative analysis--##########
