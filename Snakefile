@@ -40,7 +40,7 @@ configfile: "config.yaml"
 # Only for pre-basecalled unfiltered guppy reads
 MY_RUNNAMES = ["Run0", "Run1_pf_mixed", "Run2_mixed", "Run3_mixed", "Run4_mixed"]
 MY_RUNNAMES_QC = ['Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
-
+GUPPY_RUNNAMES = ['Exp1_25Oct', 'Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 
 # --- Some rules --- #
 
@@ -48,7 +48,7 @@ rule all:
     input:
         #--> for basecalling
         # expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        # expand(join("fastq", "{runnames}.fastq"), runnames=MY_RUNNAMES),
+        expand(join("fastq", "{runnames}.fastq"), runnames=GUPPY_RUNNAMES),
         #--> runQC
         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         # expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC),
@@ -297,9 +297,9 @@ rule kraken2:
     input:
         fastq=join("fastq", "samples", "{samples}.fastq.gz")
     output:
-        report_mpa=join("classified", "{samples}", "kraken2", "report_mpa"),
-        report_kraken=join("classified", "{samples}", "kraken2", "report"),
-        result=join("classified", "{samples}", "kraken2", "result")
+        report_mpa=join("classified", "{samples}", "kraken2_customdb", "report_mpa"),
+        report_kraken=join("classified", "{samples}", "kraken2_customdb", "report"),
+        result=join("classified", "{samples}", "kraken2_customdb", "result")
     run:
         args = {
         "db": config['kraken_db'],
@@ -319,8 +319,8 @@ rule bracken:
     input:
         kraken_report=rules.kraken2.output.report_kraken
     output:
-        reportS=join("classified", "{samples}", "bracken", "species_report"),
-        reportG=join("classified", "{samples}", "bracken", "genus_report")
+        reportS=join("classified", "{samples}", "bracken_customdb", "species_report"),
+        reportG=join("classified", "{samples}", "bracken_customdb", "genus_report")
     run:
         args = {
         "db": config['kraken_db'],
