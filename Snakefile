@@ -351,4 +351,12 @@ rule centrifuge:
         command = "gunzip -c {input} | centrifuge -x {db} -q  -U - --report-file {output_report} -S {output_result}"
         shell(command.format(**args))
 #
-###########--figure out how to do comparative analysis--##########
+###########--comparative analysis--##########
+# rule compare:
+#     input:
+#         reports, results
+#     output:
+#         figure
+#     script:
+#         r
+#         py
