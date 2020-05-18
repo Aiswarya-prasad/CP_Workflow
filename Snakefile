@@ -326,7 +326,7 @@ rule kraken2:
     input:
         fastq=join("fastq", "samples", "{samples}.fastq.gz")
     output:
-        report_mpa=join("classified", "{samples}", "kraken2_Minidb", "report_mpa"),
+        # report_mpa=join("classified", "{samples}", "kraken2_Minidb", "report_mpa"),
         report=join("classified", "{samples}", "kraken2_Minidb", "report"),
         result=join("classified", "{samples}", "kraken2_Minidb", "result"),
     run:
