@@ -291,7 +291,8 @@ rule kraken2_human:
         fastq=join("fastq", "samples", "{samples}.fastq.gz")
     output:
         report=join("classified", "{samples}", "kraken2_humandb", "report"),
-        result=join("classified", "{samples}", "kraken2_humandb", "result")
+        result=join("classified", "{samples}", "kraken2_humandb", "result"),
+        unclass=join("classified", "{samples}", "kraken2_humandb", "unclassified")
     run:
         args = {
         "db": "/"+join("media", "utlab", "DATA_HDD1", "Nanopore_metagenomics", "Softwares_for_analysis", "kraken2", "dbs", "db_humanVec_May2020")+"/",
@@ -299,8 +300,9 @@ rule kraken2_human:
         "input": input.fastq,
         "output_report": output.report,
         "output_result": output.result,
+        "output_unclass": output.unclass,
         }
-        command = "kraken2 --db {db} --confidence 0.85 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
+        command = "kraken2 --db {db} --confidence 0.85 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result} --unclassified-out {output_unclass}"
         shell(command.format(**args))
 
 rule kraken2_custom:
