@@ -302,7 +302,7 @@ rule kraken2_human:
         "output_result": output.result,
         "output_unclass": output.unclass,
         }
-        command = "kraken2 --db {db} --confidence 0.9 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result} --unclassified-out {output_unclass}"
+        command = "kraken2 --db {db} --confidence 1 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result} --unclassified-out {output_unclass}"
         shell(command.format(**args))
 
 rule kraken2_custom:
@@ -319,7 +319,7 @@ rule kraken2_custom:
         "output_report": output.report,
         "output_result": output.result
         }
-        command = "kraken2 --db {db} --confidence 0.9 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
+        command = "kraken2 --db {db} --confidence 1 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
         shell(command.format(**args))
 
 rule kraken2:
@@ -339,7 +339,7 @@ rule kraken2:
         "output_result": output.result,
         }
         commandMPA = "kraken2 --db {db} --confidence ? --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style > /dev/null"
-        command = "kraken2 --db {db} --confidence 0.45 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
+        command = "kraken2 --db {db} --confidence 0.5 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
         # shell(commandMPA.format(**args))
         shell(command.format(**args))
 #
