@@ -366,8 +366,8 @@ rule kraken2:
         "t": 8,
         "input": input.fastq,
         "output_reportmpa": output.report_mpa,
-        "output_report": output.report_krakendb,
-        "output_result": output.result_krakendb,
+        "output_report": output.report,
+        "output_result": output.result,
         }
         commandMPA = "kraken2 --db {db} --confidence 0.6 --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style > /dev/null"
         command = "kraken2 --db {db} --confidence 0.6 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
@@ -377,7 +377,7 @@ rule kraken2:
 #
 rule bracken:
     input:
-        kraken_report=rules.kraken2.output.report_krakendb
+        kraken_report=rules.kraken2.output.report
     output:
         reportS=join("classified", "{samples}", "bracken_customdb", "species_report"),
         reportG=join("classified", "{samples}", "bracken_customdb", "genus_report")
