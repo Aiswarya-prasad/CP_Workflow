@@ -284,41 +284,8 @@ rule sampleQC:
         command = "NanoPlot --verbose --fastq {input} --outdir {output_plot} --prefix {prefix}"
         shell(command.format(**args))
 #
-# include run/s that are/were live basecalled or were only available as fastq?
 #
-# "C"/"U": a one letter code indicating that the sequence was either classified or unclassified.
-# The sequence ID, obtained from the FASTA/FASTQ header.
-# The taxonomy ID Kraken 2 used to label the sequence; this is 0 if the sequence is unclassified.
-# The length of the sequence in bp. In the case of paired read data, this will be a string containing the lengths of the two sequences in bp, separated by a pipe character, e.g. "98|94".
-# A space-delimited list indicating the LCA mapping of each k-mer in the sequence(s). For example, "562:13 561:4 A:31 0:1 562:3" would indicate that:
-# the first 13 k-mers mapped to taxonomy ID #562
-# the next 4 k-mers mapped to taxonomy ID #561
-# the next 31 k-mers contained an ambiguous nucleotide
-# the next k-mer was not in the database
-# the last 3 k-mers mapped to taxonomy ID #562
-# rule kraken2_human:
-#     input:
-#         fastq=join("fastq", "samples", "{samples}.fastq.gz")
-#     output:
-#         report_mpa=join("classified", "{samples}", "kraken2_Minidb", "report_mpa"),
-#         report_kraken=join("classified", "{samples}", "kraken2_Minidb", "report"),
-#         result=join("classified", "{samples}", "kraken2_Minidb", "result"),
-#         unclass=join("classified", "{samples}", "humanDB_unclassified")
-#     run:
-#         args = {
-#         "db": config['kraken_db'],
-#         "t": 8,
-#         "input": input.fastq,
-#         "output_reportmpa": output.report_mpa,
-#         "output_report": output.report_kraken,
-#         "output_result": output.result,
-#         "unclass_out": output.unclass
-#         }
-#         commandMPA = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style --output {output_result}"
-#         shell(commandMPA.format(**args))
-#         command = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result} --unclassified-out {unclass_out}"
-#         shell(command.format(**args))
-
+# 
 rule kraken2_human:
     input:
         fastq=join("fastq", "samples", "{samples}.fastq.gz")
