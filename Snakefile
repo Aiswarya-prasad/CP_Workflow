@@ -339,7 +339,7 @@ rule kraken2:
         "output_result": output.result,
         }
         commandMPA = "kraken2 --db {db} --confidence ? --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style > /dev/null"
-        command = "kraken2 --db {db} --confidence 0.0005 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
+        command = "kraken2 --db {db} --confidence 0.00005 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
         # shell(commandMPA.format(**args))
         shell(command.format(**args))
 #
