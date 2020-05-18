@@ -328,7 +328,7 @@ rule kraken2:
         result_krakendb=join("classified", "{samples}", "kraken2_customdb", "result"),
         report_humandb=join("classified", "{samples}", "kraken2_humandb", "report"),
         result_humandb=join("classified", "{samples}", "kraken2_humandb", "result"),
-        report_customdb=join("classified", "{samples}", "kraken2_BacArchViFunProt`", "report"),
+        report_customdb=join("classified", "{samples}", "kraken2_BacArchViFunProt", "report"),
         result_customdb=join("classified", "{samples}", "kraken2_BacArchViFunProt", "result")
     run:
         args = {
@@ -345,10 +345,10 @@ rule kraken2:
         "output_report_custom": output.report_customdb,
         "output_result_custom": output.result_customdb
         }
-        commandMPA = "kraken2 --db {db} --confidence 0.5 --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style > /dev/null"
-        command = "kraken2 --db {db} --confidence 0.5 --threads {t}  --gzip-compressed {input} --report {output_report_krakendb} --report-zero-counts --output {output_result_krakendb}"
-        command_human = "kraken2 --db {db_human} --confidence 0.5 --threads {t}  --gzip-compressed {input} --report {output_report_human} --report-zero-counts --output {output_result_human}"
-        command_custom = "kraken2 --db {db_custom} --confidence 0.5 --threads {t}  --gzip-compressed {input} --report {output_report_custom} --report-zero-counts --output {output_result_custom}"
+        commandMPA = "kraken2 --db {db} --confidence 0.75 --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style > /dev/null"
+        command = "kraken2 --db {db} --confidence 0.75 --threads {t}  --gzip-compressed {input} --report {output_report_krakendb} --report-zero-counts --output {output_result_krakendb}"
+        command_human = "kraken2 --db {db_human} --confidence 0.75 --threads {t}  --gzip-compressed {input} --report {output_report_human} --report-zero-counts --output {output_result_human}"
+        command_custom = "kraken2 --db {db_custom} --confidence 0.75 --threads {t}  --gzip-compressed {input} --report {output_report_custom} --report-zero-counts --output {output_result_custom}"
         shell(commandMPA.format(**args))
         shell(command.format(**args))
         shell(command_human.format(**args))
