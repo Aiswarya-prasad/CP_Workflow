@@ -325,7 +325,7 @@ rule kraken2:
     output:
         report_mpa=join("classified", "{samples}", "kraken2_customdb", "report_mpa"),
         report_krakendb=join("classified", "{samples}", "kraken2_customdb", "report"),
-        result_krakendb=join("classified", "{samples}", "kraken2_customdb", "result")
+        result_krakendb=join("classified", "{samples}", "kraken2_customdb", "result"),
         report_humandb=join("classified", "{samples}", "kraken2_humandb", "report"),
         result_humandb=join("classified", "{samples}", "kraken2_humandb", "result")
         report_customdb=join("classified", "{samples}", "kraken2_BacArchViFunProt`", "report"),
