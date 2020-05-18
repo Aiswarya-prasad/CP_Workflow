@@ -333,8 +333,8 @@ rule kraken2:
     run:
         args = {
         "db": config['kraken_db'],
-        "db_human": join("media", "utlab", "DATA_HDD1", "Nanopore_metagenomics", "Softwares_for_analysis", "kraken2", "dbs", "db_humanVec_May2020"),
-        "db_Bac": join("media", "utlab", "DATA_HDD1", "Nanopore_metagenomics", "Softwares_for_analysis", "kraken2", "dbs", "db_BacArchViFunProt_May2020"),
+        "db_human": join("media", "utlab", "DATA_HDD1", "Nanopore_metagenomics", "Softwares_for_analysis", "kraken2", "dbs", "db_humanVec_May2020")+"/",
+        "db_Bac": join("media", "utlab", "DATA_HDD1", "Nanopore_metagenomics", "Softwares_for_analysis", "kraken2", "dbs", "db_BacArchViFunProt_May2020")+"/",
         "t": 8,
         "input": input.fastq,
         "output_reportmpa": output.report_mpa,
