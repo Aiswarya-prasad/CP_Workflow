@@ -334,7 +334,7 @@ rule kraken2:
         "db": config['kraken_db'],
         "t": 8,
         "input": input.fastq,
-        "output_reportmpa": output.report_mpa,
+        # "output_reportmpa": output.report_mpa,
         "output_report": output.report,
         "output_result": output.result,
         }
