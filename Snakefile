@@ -340,8 +340,8 @@ rule kraken2:
         "output_reportmpa": output.report_mpa,
         "output_report_krakendb": output.report_krakendb,
         "output_result_krakendb": output.result_krakendb,
-        "output_report_human": output.report_human,
-        "output_result_human": output.result_human,
+        "output_report_human": output.report_humandb,
+        "output_result_human": output.result_humandb,
         "output_report_custom": output.report_custom,
         "output_result_custom": output.result_custom
         }
