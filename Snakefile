@@ -319,7 +319,7 @@ rule kraken2_custom:
         "output_report": output.report,
         "output_result": output.result
         }
-        command = "kraken2 --db {db_custom} --confidence 0.9 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
+        command = "kraken2 --db {db} --confidence 0.9 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
         shell(command.format(**args))
 
 rule kraken2:
