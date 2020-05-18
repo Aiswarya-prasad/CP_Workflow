@@ -345,12 +345,14 @@ rule kraken2:
         "output_report_custom": output.report_customdb,
         "output_result_custom": output.result_customdb
         }
-        commandMPA = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style --output {output_result}"
+        commandMPA = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style"
         command = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_report_krakendb} --report-zero-counts --output {output_result_krakendb}"
         command_human = "kraken2 --db {db_human} --threads {t}  --gzip-compressed {input} --report {output_report_human} --report-zero-counts --output {output_result_human}"
         command_custom = "kraken2 --db {db_custom} --threads {t}  --gzip-compressed {input} --report {output_report_custom} --report-zero-counts --output {output_result_custom}"
         shell(commandMPA.format(**args))
         shell(command.format(**args))
+        shell(command_human.format(**args))
+        shell(command_custom.format(**args))
 #
 #
 rule bracken:
