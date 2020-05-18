@@ -342,8 +342,8 @@ rule kraken2:
         "output_result_krakendb": output.result_krakendb,
         "output_report_human": output.report_humandb,
         "output_result_human": output.result_humandb,
-        "output_report_custom": output.report_custom,
-        "output_result_custom": output.result_custom
+        "output_report_custom": output.report_customdb,
+        "output_result_custom": output.result_customdb
         }
         commandMPA = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style --output {output_result}"
         command = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_report_krakendb} --report-zero-counts --output {output_result_krakendb}"
