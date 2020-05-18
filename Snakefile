@@ -302,7 +302,7 @@ rule kraken2_human:
         "output_result": output.result,
         "output_unclass": output.unclass,
         }
-        command = "kraken2 --db {db} --confidence 0.5 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result} --unclassified-out {output_unclass}"
+        command = "kraken2 --db {db} --confidence 0.75 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result} --unclassified-out {output_unclass}"
         shell(command.format(**args))
 
 rule kraken2_custom:
@@ -319,7 +319,7 @@ rule kraken2_custom:
         "output_report": output.report,
         "output_result": output.result
         }
-        command = "kraken2 --db {db} --confidence 0.5 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
+        command = "kraken2 --db {db} --confidence 0.75 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
         shell(command.format(**args))
 
 rule kraken2:
