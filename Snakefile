@@ -285,7 +285,7 @@ rule sampleQC:
         shell(command.format(**args))
 #
 #
-# 
+#
 rule kraken2_human:
     input:
         fastq=join("fastq", "samples", "{samples}.fastq.gz")
@@ -336,9 +336,9 @@ rule kraken2:
         "output_report": output.report,
         "output_result": output.result,
         }
-        commandMPA = "kraken2 --db {db} --confidence 0.6 --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style > /dev/null"
-        command = "kraken2 --db {db} --confidence 0.6 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
-        shell(commandMPA.format(**args))
+        commandMPA = "kraken2 --db {db} --confidence 0.55 --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style > /dev/null"
+        command = "kraken2 --db {db} --confidence 0.55 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
+        # shell(commandMPA.format(**args))
         shell(command.format(**args))
 #
 #
