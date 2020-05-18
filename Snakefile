@@ -64,6 +64,9 @@ rule all:
         #--> sampleQC
         expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
         #--> kraken2
+        expand(join("classified", "{samples}", "kraken2_customdb", "result"), samples=config['samples']),
+        expand(join("classified", "{samples}", "kraken2_humandb", "result"), samples=config['samples']),
+        expand(join("classified", "{samples}", "kraken2_BacArchViFunProt", "result"), samples=config['samples']),
         #--> bracken
         expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
         expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
@@ -293,25 +296,60 @@ rule sampleQC:
 # the next 31 k-mers contained an ambiguous nucleotide
 # the next k-mer was not in the database
 # the last 3 k-mers mapped to taxonomy ID #562
+# rule kraken2_human:
+#     input:
+#         fastq=join("fastq", "samples", "{samples}.fastq.gz")
+#     output:
+#         report_mpa=join("classified", "{samples}", "kraken2_customdb", "report_mpa"),
+#         report_kraken=join("classified", "{samples}", "kraken2_customdb", "report"),
+#         result=join("classified", "{samples}", "kraken2_customdb", "result"),
+#         unclass=join("classified", "{samples}", "humanDB_unclassified")
+#     run:
+#         args = {
+#         "db": config['kraken_db'],
+#         "t": 8,
+#         "input": input.fastq,
+#         "output_reportmpa": output.report_mpa,
+#         "output_report": output.report_kraken,
+#         "output_result": output.result,
+#         "unclass_out": output.unclass
+#         }
+#         commandMPA = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style --output {output_result}"
+#         shell(commandMPA.format(**args))
+#         command = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result} --unclassified-out {unclass_out}"
+#         shell(command.format(**args))
+
 rule kraken2:
     input:
         fastq=join("fastq", "samples", "{samples}.fastq.gz")
     output:
         report_mpa=join("classified", "{samples}", "kraken2_customdb", "report_mpa"),
-        report_kraken=join("classified", "{samples}", "kraken2_customdb", "report"),
-        result=join("classified", "{samples}", "kraken2_customdb", "result")
+        report_krakendb=join("classified", "{samples}", "kraken2_customdb", "report"),
+        result_krakendb=join("classified", "{samples}", "kraken2_customdb", "result")
+        report_humandb=join("classified", "{samples}", "kraken2_humandb", "report"),
+        result_humandb=join("classified", "{samples}", "kraken2_humandb", "result")
+        report_customdb=join("classified", "{samples}", "kraken2_BacArchViFunProt`", "report"),
+        result_customdb=join("classified", "{samples}", "kraken2_BacArchViFunProt", "result")
     run:
         args = {
         "db": config['kraken_db'],
+        "db_human": join("media", "utlab", "DATA_HDD1", "Nanopore_metagenomics", "Softwares_for_analysis", "kraken2", "dbs", "db_humanVec_May2020"),
+        "db_Bac": join("media", "utlab", "DATA_HDD1", "Nanopore_metagenomics", "Softwares_for_analysis", "kraken2", "dbs", "db_BacArchViFunProt_May2020"),
         "t": 8,
         "input": input.fastq,
         "output_reportmpa": output.report_mpa,
-        "output_report": output.report_kraken,
-        "output_result": output.result
+        "output_report_krakendb": output.report_krakendb,
+        "output_result_krakendb": output.result_krakendb,
+        "output_report_human": output.report_human,
+        "output_result_human": output.result_human,
+        "output_report_custom": output.report_custom,
+        "output_result_custom": output.result_custom
         }
-        commandMPA = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_reportmpa}  --report-zero-counts --use-mpa-style --output {output_result}"
+        commandMPA = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_reportmpa} --report-zero-counts --use-mpa-style --output {output_result}"
+        command = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_report_krakendb} --report-zero-counts --output {output_result_krakendb}"
+        command_human = "kraken2 --db {db_human} --threads {t}  --gzip-compressed {input} --report {output_report_human} --report-zero-counts --output {output_result_human}"
+        command_custom = "kraken2 --db {db_custom} --threads {t}  --gzip-compressed {input} --report {output_report_custom} --report-zero-counts --output {output_result_custom}"
         shell(commandMPA.format(**args))
-        command = "kraken2 --db {db} --threads {t}  --gzip-compressed {input} --report {output_report}  --report-zero-counts --output {output_result}"
         shell(command.format(**args))
 #
 #
