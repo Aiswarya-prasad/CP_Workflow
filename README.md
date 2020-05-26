@@ -9,18 +9,18 @@ directory structure of output as a classification<br/>
 classified<br/>
 └── <sample#><br/>
     ├── bracken<br/>
-    │   ├── genus_report<br/>
-    │   └── species_report<br/>
+    ├   ├── genus_report<br/>
+    ├   └── species_report<br/>
     ├── centrifuge<br/>
-    │   ├── report<br/>
-    │   └── result<br/>
+    ├   ├── report<br/>
+    ├   └── result<br/>
     ├── kraken2_BacArchViFunProt<br/>
-    │   ├── report<br/>
-    │   └── result<br/>
+    ├   ├── report<br/>
+    ├   └── result<br/>
     ├── kraken2_humandb<br/>
-    │   ├── report<br/>
-    │   ├── result<br/>
-    │   └── unclassified<br/>
+    ├   ├── report<br/>
+    ├   ├── result<br/>
+    ├   └── unclassified<br/>
     └── kraken2_Minidb<br/>
         ├── report<br/>
         └── result<br/>
