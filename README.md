@@ -24,9 +24,9 @@ If anybody will find this useful if polished, please let me know. Also, if you a
 --------------------------------------------------------------------------------------------------------------------------
 
 
-Information about output and input formats are currently mentioned as comments in the code. (I will eventually add all the relevant information here)
+Most of the information about output and input formats can be found as comments in the code.
 
-directory structure of output as a classification<br/>
+### directory structure of output as a classification<br/>
 classified<br/>
 └── <sample#><br/>
     ├── bracken<br/>
