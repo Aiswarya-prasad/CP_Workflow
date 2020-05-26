@@ -38,8 +38,6 @@ def findSeqSummary(wildcards):
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
 # Only for pre-basecalled unfiltered guppy reads
-MY_RUNNAMES = ["Run0", "Run1_pf_mixed", "Run2_mixed", "Run3_mixed", "Run4_mixed"]
-MY_RUNNAMES_QC = ['Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 GUPPY_RUNNAMES = ['Exp1_25Oct', 'Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 
 # --- Some rules --- #
@@ -47,16 +45,11 @@ GUPPY_RUNNAMES = ['Exp1_25Oct', 'Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
 rule all:
     input:
         #--> for basecalling
-        # expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         expand(join("fastq", "{runnames}.fastq"), runnames=GUPPY_RUNNAMES),
         #--> runQC
         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
-        # expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=MY_RUNNAMES_QC),
         #--> demultiplex_trim
         expand(join(config['ROOT'], "qcat_trimmed", "{runnames}"), runnames=config['runnames']),
-        # expand(join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
-        # expand(join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}.tsv"), qcat_test_name=MY_RUNNAMES),
-        # expand(join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"), qcat_test_name=MY_RUNNAMES),
         #--> summary
         expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
         #--> collectSamples
