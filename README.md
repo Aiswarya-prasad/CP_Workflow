@@ -21,7 +21,7 @@ Below is a list of tools used by this pipeline with a link to their page/repo wh
 If anybody will find this useful if polished, please let me know. Also, if you are a veteran and somehow come across this repo I will be thrilled to hear your sugesstions and more so if someone has the time to help me polish it. Finally, if you find any part of this repo useful for your work, do let me know. I will be very happy to hear!
 
 
-##############################################################################
+#############################################################################################################################
 
 Information about output and input formats are currently mentioned as comments in the code. (I will eventually add all the relevant information here)
 
