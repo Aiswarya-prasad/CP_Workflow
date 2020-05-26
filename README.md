@@ -6,8 +6,21 @@ The pipeline includes, data organization, QC, Basecalling (Guppy for nanopore), 
 
 <img src="rulegraph.png" width="1000" />
 
+Below is a list of tools used by this pipeline with a link to their page/repo where information about installation and usage can be found. 
+
+- ![Guppy](https://denbi-nanopore-training-course.readthedocs.io/en/latest/basecalling/basecalling.html) (you need to be part of the nanopore community for access to official docs and ![download](https://community.nanoporetech.com/downloads))
+- ![NanoPlot](https://github.com/wdecoster/NanoPlot)
+- ![qcat](https://github.com/nanoporetech/qcat)
+- ![Kraken 2](https://ccb.jhu.edu/software/kraken2/index.shtml?t=manual)
+- ![Centrifuge](https://ccb.jhu.edu/software/centrifuge/)
+
 
 If anybody will find this useful if polished, please let me know. Also, if you are a veteran and somehow come across this repo I will be thrilled to hear your sugesstions and more so if someone has the time to help me polish it. Finally, if you find any part of this repo useful for your work, do let me know. I will be very happy to hear!
+
+
+##############################################################################
+
+Information about output and input formats are currently mentioned as comments in the code. (I will eventually add all the relevant information here)
 
 directory structure of output as a classification<br/>
 classified<br/>
