@@ -140,26 +140,11 @@ rule runQC:
         Nanoplot_Weighted_LogTransformed_HistogramReadlength_png = join("QC", "runs", "{runnames}", "{runnames}_Weighted_LogTransformed_HistogramReadlength.png"),
         Nanoplot_Yield_By_Length_png = join("QC", "runs", "{runnames}", "{runnames}_Yield_By_Length.png")
     run:
-        # try:
-        #     makedirs(join("QC", "runs", "MinionQC"))
-        # except FileExistsError:
-        #     pass
         args = {
         "input":input.seq_summary,
-        # "outputMin":join("QC", "runs", "MinionQC"),
-        # "minionQCpath":"/media/utlab/DATA_HDD1/Nanopore_metagenomics/Softwares_for_analysis/minion_qc/MinIONQC.R",
-        # "minionQCpath":snakemake.config["minionQCpath"]
-        # "outputNanoS":join("QC", "runs", "NanoStat"),
         "outputNanoP":join("QC", "runs", wildcards.runnames),
-        # "name": wildcards.runnames,
         "prefix": wildcards.runnames+"_"
         }
-        # shift minionQCpath to config
-        #  -s makes small figures suitable for export rather than optimised for screen
-        # command = "Rscript {minionQCpath} -i {input} -o {outputMin} -s TRUE"
-        # shell(command.format(**args))
-        # command_nanoS = "NanoStat --summary {input} --outdir {outputNanoS} -n {name} --readtype 1D"
-        # shell(command_nanoS.format(**args))
         command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
         shell(command_nanoP.format(**args)+" || touch {output}")
 #
@@ -167,9 +152,7 @@ rule runQC:
 rule demultiplex_trim:
     input:
         raw_fastq="fastq/{runnames}.fastq"
-        # raw_fastq="fastq/{qcat_test_name}.fastq"
     output:
-        # trimmed_dir=directory(join(config['ROOT'], "qcat_trimmed", "{qcat_test_name}"))
         trimmed_dir=directory(join(config['ROOT'], "qcat_trimmed", "{runnames}")),
         tsv=join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv")
     run:
@@ -177,7 +160,6 @@ rule demultiplex_trim:
         "input":input.raw_fastq,
         "outputTrimmed":output.trimmed_dir,
         "kit":config['barcode_kit'],
-        # "tsvPath":join(config['ROOT'], "qcat_trimmed", wildcards.qcat_test_name)
         "tsvPath":join(config['ROOT'], "qcat_trimmed", wildcards.runnames)
         }
         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
@@ -230,10 +212,8 @@ rule demultiplex_summary:
 #
 rule collectSamples:
     input:
-        # fastqPath=join(config['ROOT'], "qcat_trimmed", findSampleFastq("{samples}"))
         fastqPath=lambda wildcards: findSampleFastq(wildcards.samples)
     output:
-        # join("fastq", "samples", "{runnames}_{samples}.fastq.gz")
         join("fastq", "samples", "{samples}.fastq.gz")
     run:
         try:
@@ -254,8 +234,6 @@ rule sampleQC:
     input:
         sampleFastq=join("fastq", "samples", "{samples}.fastq.gz")
     output:
-        # nanostat=join("QC", "NanoStat", "{samples}"),
-        # nanoplot=directory(join("QC", "NanoPlot", "{samples}"))
         Nanoplot_Dynamic_Histogram_Read_length_html = join("QC", "samples", "{samples}", "{samples}_Dynamic_Histogram_Read_length.html"),
         Nanoplot_HistogramReadlength_png = join("QC", "samples", "{samples}", "{samples}_HistogramReadlength.png"),
         Nanoplot_LengthvsQualityScatterPlot_dot_png = join("QC", "samples", "{samples}", "{samples}_LengthvsQualityScatterPlot_dot.png"),
@@ -269,7 +247,6 @@ rule sampleQC:
     run:
         args = {
             "input":input.sampleFastq,
-            # "output_stat":join("QC", "NanoStat"),
             "output_plot":join("QC", "samples", wildcards.samples),
             "name":wildcards.samples,
             "prefix":wildcards.samples+'_'
