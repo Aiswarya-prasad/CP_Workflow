@@ -53,7 +53,7 @@ rule all:
         #--> summary
         expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
         #--> collectSamples
-        # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
+        expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
         expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
         #--> kraken2
@@ -166,10 +166,6 @@ rule demultiplex_trim:
         command = command.format(**args)
         shell(command)
 
-rule flagger:
-    input: rules.demultiplex_trim.output.tsv
-    output: touch("demux.done")
-
 rule demultiplex_summary:
     input:
         tsv=join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv")
@@ -217,7 +213,6 @@ rule demultiplex_summary:
 rule collectSamples:
     input:
         fastqPath=lambda wildcards: findSampleFastq(wildcards.samples),
-        check="demux.done"
     output:
         join("fastq", "samples", "{samples}.fastq.gz")
     run:
