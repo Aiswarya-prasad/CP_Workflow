@@ -5,7 +5,9 @@ This is an experimental snakemake pipeline to carry out the entire analysis of m
 
 The pipeline includes, data organization, QC, Basecalling (Guppy for nanopore), Demultiplexing, Trimming and filtering, Taxonomic classification (using Kraken2 and Centrifuge) and a seperate script for data analysis which can be called by a different rule.
 
-<img src="rulegraph.png" width="500" />
+<p align="center">
+  <img src="rulegraph.png" width="500" />
+</p>
 
 # Tools used
 
