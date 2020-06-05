@@ -213,7 +213,7 @@ rule demultiplex_summary:
 rule collectSamples:
     input:
         fastqPath=lambda wildcards: findSampleFastq(wildcards.samples),
-        checktsv=expand(join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv"), runnames = config['runnames'])
+        checktsv=rules.demultiplex_trim.output.tsv
     output:
         join("fastq", "samples", "{samples}.fastq.gz")
     run:
