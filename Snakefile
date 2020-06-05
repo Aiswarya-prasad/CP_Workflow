@@ -54,7 +54,7 @@ rule all:
         #--> runQC
         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         #--> demultiplex_trim
-        # expand(join(config['ROOT'], "qcat_trimmed", "{runnames}"), runnames=config['runnames']),
+        # expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames']),
         #--> summary
         expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
         #--> collectSamples
@@ -83,7 +83,7 @@ rule basecalling:
         # conditionally allow for --resume figure out how later
         # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
         # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
-        guppy_output_dir = join(config['ROOT'], "guppy_output", wildcards.runnames)
+        guppy_output_dir = join("guppy_output", wildcards.runnames)
         try:
             makedirs(guppy_output_dir)
         except FileExistsError:
@@ -159,7 +159,7 @@ rule demultiplex_trim:
         raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
     output:
         trimmed=ListOfExpectedBarcodes,
-        # tsv=join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv")
+        # tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
         args = {
         "input":input.raw_fastq,
@@ -174,7 +174,7 @@ rule demultiplex_trim:
 rule demultiplex_summary:
     input:
         trimmed=ListOfExpectedBarcodes,
-        # tsv=join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv")
+        # tsv=join("qcat_trimmed", "{runnames}.tsv")
     output:
         txt=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"),
         png=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.png")
