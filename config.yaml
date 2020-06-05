@@ -1,6 +1,6 @@
 #setup
-RAWDIR: '<path to raw data dir>'
-ROOT: '<path to project dir>'
+RAWDIR: '/media/utlab/DATA/'
+ROOT: '/media/utlab/DATA_HDD2/student/Nanopore_Metagenomics/CP_Workflow/'
 runnames: ['Run0', 'Run1', 'Run2', 'Run3', 'Run4']
 # for qcat
 barcode_kit: 'NBD103/NBD104'
