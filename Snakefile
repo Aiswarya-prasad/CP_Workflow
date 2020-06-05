@@ -167,7 +167,7 @@ rule demultiplex_trim:
         shell(command)
 
 rule flagger:
-    input: rules.demultiplex_trim.outputs.tsv
+    input: rules.demultiplex_trim.output.tsv
     output: touch("demux.done")
 
 rule demultiplex_summary:
