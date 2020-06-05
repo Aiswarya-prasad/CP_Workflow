@@ -5,11 +5,11 @@ This is an experimental snakemake pipeline to carry out the entire analysis of m
 
 The pipeline includes, data organization, QC, Basecalling (Guppy for nanopore), Demultiplexing, Trimming and filtering, Taxonomic classification (using Kraken2 and Centrifuge) and a seperate script for data analysis which can be called by a different rule.
 
-<img src="rulegraph.png" width="1000" />
+<img src="rulegraph.png" width="200" />
 
 # Tools used
 
-Below is a list of tools used by this pipeline with a link to their page/repo where information about installation and usage can be found. 
+Below is a list of tools used by this pipeline with a link to their page/repo where information about installation and usage can be found.
 
 - [Guppy](https://denbi-nanopore-training-course.readthedocs.io/en/latest/basecalling/basecalling.html) (you need to be part of the nanopore community for access to official docs and [download](https://community.nanoporetech.com/downloads))
 - [NanoPlot](https://github.com/wdecoster/NanoPlot)
