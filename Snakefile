@@ -263,8 +263,8 @@ rule filterSamples:
         output10=join("fastq", "samples_Q10", "{samples}.fastq.gz")
     run:
         args = {
-        "output7" = output.output7
-        "output10" = output.output10
+        "output7":output.output7,
+        "output10":output.output10
         }
         makedirs(output.output7)
         makedirs(output.output10)
