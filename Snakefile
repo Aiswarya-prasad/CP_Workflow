@@ -155,7 +155,7 @@ rule runQC:
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 # below rule does not use wildcards. Written this way to keep the dag intact
-rule demultiplex_trim:
+rule demultiplexTrim:
     input:
         raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
     output:
@@ -173,7 +173,7 @@ rule demultiplex_trim:
             command = command.format(**args)
             shell(command)
 
-rule demultiplex_summary:
+rule demultiplexSummary:
     input:
         trimmed=ListOfExpectedBarcodes,
         # tsv=join("qcat_trimmed", "{runnames}.tsv")
