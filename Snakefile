@@ -214,7 +214,7 @@ rule demultiplex_summary:
 rule collectSamples:
     input:
         fastqPath=lambda wildcards: findSampleFastq(wildcards.samples),
-        "demux.done"
+        check="demux.done"
     output:
         join("fastq", "samples", "{samples}.fastq.gz")
     run:
