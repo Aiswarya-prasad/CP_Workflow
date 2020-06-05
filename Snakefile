@@ -182,40 +182,6 @@ rule demultiplexSummary:
         png=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.png")
     script:
         "scripts/demultiplex_summarize.py"
-
-
-############################################################################################################
-# BELOW RULE DOES NOT WORK AT ALL. IMPLEMENT ONLY IF NEEDED
-############################################################################################################
-# qcat does trimming simultaneaously so uncomment demultiplex_keep_trim
-# if untrimmed files are needed specifically
-# BARCODES=[01,02,...]
-# rule demultiplex_keep_trim:
-#     input:
-#         raw_fastq="fastq/{qcat_test_name}.fastq"
-#     output:
-#         demux_dir=directory(join(config['ROOT'], "qcat_output/demuxd", "{qcat_test_name}")),
-#         trimmed_dir=directory(join(config['ROOT'], "qcat_output/trimmed", "{qcat_test_name}"))
-#     run:
-#         args = {
-#         "input":join(output.demux_dir, {qcat_test_name}),
-#         # "outputDemux":output.demux_dir,
-#         "outputTrimmed":output.trimmed_dir,
-#         "kit":config['barcode_kit']
-#         }
-#         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} -k {kit} --detect-middle"
-#         command = command.format(**args)
-#         shell(command)
-#
-#         command = "qcat --fastq {input} --trim -k {kit} --detect-middle"
-# Run 0 (sample 01) trimmed in qcat seperately. Will be combined from this point on
-############################################################################################################
-############################################################################################################
-# move to config
-# dict of sample name and barcode (called sampleDict) in each run
-# X:
-#  'barcode': 'sample ID'}
-# added to config (X is 0 to 4 for run number)
 #
 #
 rule collectSamples:
@@ -281,69 +247,6 @@ rule filterSamples:
         command10 = "gunzip -c {input} | NanoFilt --quality 10 | gzip > {output7}"
         shell(command10.format(**args))
 #
-# uncomment if using
-# rule kraken2_human:
-#     input:
-#         fastq=join("fastq", "samples_Q7", "{samples}.fastq.gz")
-#     output:
-#         report=join("classified", "{samples}", "kraken2_humandb", "report"),
-#         result=join("classified", "{samples}", "kraken2_humandb", "result"),
-#         unclass=join("classified", "{samples}", "kraken2_humandb", "unclassified")
-#     run:
-#         args = {
-#         "db": "/"+join("media", "utlab", "DATA_HDD1", "Nanopore_metagenomics", "Softwares_for_analysis", "kraken2", "dbs", "db_humanVec_May2020")+"/",
-#         "t": 8,
-#         "input": input.fastq,
-#         "output_report": output.report,
-#         "output_result": output.result,
-#         "output_unclass": output.unclass,
-#         }
-#         command = "kraken2 --db {db} --confidence 0.75 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result} --unclassified-out {output_unclass}"
-#         shell(command.format(**args))
-#
-############################################################################################################
-############################################################################################################
-# the version of rule kraken2_human that has been commented out can be used
-# when unclassified reads from it need to be used by other rule
-# if using replace input of rule kraken2_custom, kraken2 and Centrifuge with,
-# rules.kraken2_human.output.unclass and change argument inside the rule for command as needed
-# rule kraken2_human:
-#     input:
-#         fastq=join("fastq", "samples", "{samples}.fastq.gz")
-#     output:
-#         report=join("classified", "{samples}", "kraken2_humandb", "report"),
-#         result=join("classified", "{samples}", "kraken2_humandb", "result"),
-#         unclass=join("classified", "{samples}", "kraken2_humandb", "unclassified")
-#     run:
-#         args = {
-#         "db": "/"+join("media", "utlab", "DATA_HDD1", "Nanopore_metagenomics", "Softwares_for_analysis", "kraken2", "dbs", "db_humanVec_May2020")+"/",
-#         "t": 8,
-#         "input": input.fastq,
-#         "output_report": output.report,
-#         "output_result": output.result,
-#         "output_unclass": output.unclass,
-#         }
-#         command = "kraken2 --db {db} --confidence 0.75 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result} --unclassified-out {output_unclass}"
-#         shell(command.format(**args))
-############################################################################################################
-############################################################################################################
-#
-# rule kraken2_custom:
-#     input:
-#         fastq=join("fastq", "samples_Q7", "{samples}.fastq.gz")
-#     output:
-#         report=join("classified", "{samples}", "kraken2_BacArchViFunProt", "report"),
-#         result=join("classified", "{samples}", "kraken2_BacArchViFunProt", "result")
-#     run:
-#         args = {
-#         "db": "/"+join("media", "utlab", "DATA_HDD1", "Nanopore_metagenomics", "Softwares_for_analysis", "kraken2", "dbs", "db_BacArchViFunProt_May2020")+"/",
-#         "t": 8,
-#         "input": input.fastq,
-#         "output_report": output.report,
-#         "output_result": output.result
-#         }
-#         command = "kraken2 --db {db} --confidence 0.75 --threads {t}  --gzip-compressed {input} --report {output_report} --report-zero-counts --output {output_result}"
-#         shell(command.format(**args))
 #
 rule kraken2:
     input:
@@ -403,31 +306,3 @@ rule centrifuge:
         command = "gunzip -c {input} | centrifuge -x {db} -q  -U - --report-file {output_report} -S {output_result}"
         shell(command.format(**args))
 #
-# Dir structure of output of above 4 rules
-# classified
-# └── <sample#>
-#     ├── bracken
-#     │   ├── genus_report
-#     │   └── species_report
-#     ├── centrifuge
-#     │   ├── report
-#     │   └── result
-#     ├── kraken2_BacArchViFunProt
-#     │   ├── report
-#     │   └── result
-#     ├── kraken2_humandb
-#     │   ├── report
-#     │   ├── result
-#     │   └── unclassified
-#     └── kraken2_Minidb
-#         ├── report
-#         └── result
-###########--comparative analysis--##########
-# rule compare:
-#     input:
-#         reports, results
-#     output:
-#         figure
-#     script:
-#         r
-#         py
