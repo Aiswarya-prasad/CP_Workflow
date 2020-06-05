@@ -37,9 +37,14 @@ def findSeqSummary(wildcards):
 
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
+# information to be obtained from config file
+ListOfExpectedBarcodes = []
+confDict = config['sample_dict']
+for RunName in confDict:
+    for barCode in confDict[RunName].keys():
+        ListOfExpectedBarcodes.append(join(config['ROOT'], "qcat_trimmed", RunName, barCode+".fastq"))
 # Only for pre-basecalled unfiltered guppy reads
 GUPPY_RUNNAMES = ['Exp1_25Oct', 'Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
-
 # --- Some rules --- #
 
 rule all:
@@ -148,18 +153,12 @@ rule runQC:
         command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
         shell(command_nanoP.format(**args)+" || touch {output}")
 #
-BARCODES = []
-for mydict in config['sample_dict']:
-    for key in mydict.keys():
-        BARCODES.append(key)
-
-
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 rule demultiplex_trim:
     input:
         raw_fastq="fastq/{runnames}.fastq"
     output:
-        trimmed=expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "{barcodes}.fastq"), barcodes=BARCODES),
+        trimmed=ListOfExpectedBarcodes,
         tsv=join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv")
     run:
         args = {
