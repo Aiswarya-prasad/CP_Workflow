@@ -255,6 +255,23 @@ rule sampleQC:
         shell(command.format(**args))
 #
 #
+rule filterSamples:
+    input:
+        input=join("fastq", "samples", "{samples}.fastq.gz")
+    output:
+        output7=join("fastq", "samples_Q7", "{samples}.fastq.gz")
+        output10=join("fastq", "samples_Q10", "{samples}.fastq.gz")
+    run:
+        args = {
+        "output7" = output.output7
+        "output10" = output.output10
+        }
+        makedirs(output.output7)
+        makedirs(output.output10)
+        command7 = "gunzip -c {input} | NanoFilt --quality 7 | gzip > {output7}"
+        shell(command7.format(**args))
+        command10 = "gunzip -c {input} | NanoFilt --quality 10 | gzip > {output7}"
+        shell(command10.format(**args))
 #
 # the version of rule kraken2_human that has been commented out can be used
 # when unclassified reads from it need to be used by other rule
@@ -262,7 +279,7 @@ rule sampleQC:
 # rules.kraken2_human.output.unclass and change argument inside the rule for command as needed
 rule kraken2_human:
     input:
-        fastq=join("fastq", "samples", "{samples}.fastq.gz")
+        fastq=join("fastq", "samples7", "{samples}.fastq.gz")
     output:
         report=join("classified", "{samples}", "kraken2_humandb", "report"),
         result=join("classified", "{samples}", "kraken2_humandb", "result"),
@@ -300,7 +317,7 @@ rule kraken2_human:
 
 rule kraken2_custom:
     input:
-        fastq=join("fastq", "samples", "{samples}.fastq.gz")
+        fastq=join("fastq", "samples7", "{samples}.fastq.gz")
     output:
         report=join("classified", "{samples}", "kraken2_BacArchViFunProt", "report"),
         result=join("classified", "{samples}", "kraken2_BacArchViFunProt", "result")
@@ -317,7 +334,7 @@ rule kraken2_custom:
 
 rule kraken2:
     input:
-        fastq=join("fastq", "samples", "{samples}.fastq.gz")
+        fastq=join("fastq", "samples7", "{samples}.fastq.gz")
     output:
         # report_mpa=join("classified", "{samples}", "kraken2_Minidb", "report_mpa"),
         report=join("classified", "{samples}", "kraken2_Minidb", "report"),
@@ -358,7 +375,7 @@ rule bracken:
 #
 rule centrifuge:
     input:
-        fastq=join("fastq", "samples", "{samples}.fastq.gz")
+        fastq=join("fastq", "samples7", "{samples}.fastq.gz")
     output:
         report=join("classified", "{samples}", "centrifuge", "report"),
         result=join("classified", "{samples}", "centrifuge", "result")
