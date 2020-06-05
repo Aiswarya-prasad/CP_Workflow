@@ -43,14 +43,13 @@ confDict = config['sample_dict']
 for RunName in confDict:
     for barCode in confDict[RunName].keys():
         ListOfExpectedBarcodes.append(join("qcat_trimmed", RunName, "barcode"+barCode+".fastq"))
-# Only for pre-basecalled unfiltered guppy reads
-GUPPY_RUNNAMES = ['Exp1_25Oct', 'Exp2_15Nov', 'Exp3_12Dec', 'Exp4_14Mar']
-# --- Some rules --- #
+
+# --- The rules --- #
 
 rule all:
     input:
         #--> for basecalling
-        expand(join("fastq", "{runnames}.fastq"), runnames=GUPPY_RUNNAMES),
+        expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         #--> runQC
         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         #--> demultiplex_trim
