@@ -177,7 +177,7 @@ rule demultiplexSummary:
         "scripts/demultiplex_summarize.py"
 #
 #
-checkpoint collectSamples:
+rule collectSamples:
     input:
         demuxDirs=rules.demultiplexTrim.output.outDir
     # output:
@@ -201,7 +201,8 @@ checkpoint collectSamples:
 # QC of fastq files
 rule sampleQC:
     input:
-        sampleFastq=join("fastq", "samples", "{samples}.fastq.gz")
+        sampleFastq=join("fastq", "samples", "{samples}.fastq.gz"),
+        expand(rules.demultiplexTrim.output.outDir)
     output:
         Nanoplot_Dynamic_Histogram_Read_length_html = join("QC", "samples", "{samples}", "{samples}_Dynamic_Histogram_Read_length.html"),
         Nanoplot_HistogramReadlength_png = join("QC", "samples", "{samples}", "{samples}_HistogramReadlength.png"),
