@@ -180,8 +180,8 @@ rule demultiplexSummary:
 rule collectSamples:
     input:
         demuxDirs=rules.demultiplexTrim.output.outDir
-    # output:
-    #     fastq=expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
+    output:
+        fastq=expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
     run:
         try:
             makedirs(join("fastq", "samples"))
@@ -202,7 +202,6 @@ rule collectSamples:
 rule sampleQC:
     input:
         sampleFastq=join("fastq", "samples", "{samples}.fastq.gz"),
-        expand(rules.demultiplexTrim.output.outDir)
     output:
         Nanoplot_Dynamic_Histogram_Read_length_html = join("QC", "samples", "{samples}", "{samples}_Dynamic_Histogram_Read_length.html"),
         Nanoplot_HistogramReadlength_png = join("QC", "samples", "{samples}", "{samples}_HistogramReadlength.png"),
