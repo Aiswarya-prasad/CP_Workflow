@@ -62,7 +62,7 @@ rule all:
 # Also edit config['RAWDIR as needed']
 rule basecalling:
     input:
-        raw_dir=join(config['RAWDIR'], "{runnames}") # remove extra / (depending on Rawdir structure)
+        # raw_dir=join(config['RAWDIR'], "{runnames}") # remove extra / (depending on Rawdir structure)
         # raw_dir=join("RawDir", "{runnames}")
     output:
         run_fastq=join("fastq", "{runnames}.fastq")
@@ -80,7 +80,8 @@ rule basecalling:
         else:
             flag = False
         args = {
-        "input":input.raw_dir,
+        # path to dir containing input w/ wildcard
+        "input":join("RawDir", wildcards.runnames),
         "output_dir":guppy_output_dir
         }
         command = "guppy_basecaller --resume --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
