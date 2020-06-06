@@ -28,9 +28,8 @@ subworkflow RunProcessing:
 
 rule all:
     input:
-        RunProcessing(expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames'])),
         #--> collectSamples (Do not have to specifi because other rules depend on this)
-        # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
+        RunProcessing(expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples'])),
         #--> sampleQC
         expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
         # #--> kraken2
