@@ -4,7 +4,7 @@
 
 # --- Importing Some Packages --- #
 from os import walk, rename, makedirs
-from os.path import join, exists
+from os.path import join, exists, getmtime
 from snakemake.shell import shell
 import matplotlib.pyplot as plt
 import numpy as np
@@ -155,6 +155,7 @@ rule runQC:
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 # below rule does not use wildcards. Written this way to keep the dag intact
+# comparing timestamps to avoid unecessary repeatition
 rule demultiplexTrim:
     input:
         raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
@@ -163,15 +164,20 @@ rule demultiplexTrim:
         # tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
         for Run in config['runnames']:
-            args = {
-            "input":join("fastq", Run+".fastq"),
-            "outputTrimmed":join(config['ROOT'], "qcat_trimmed", Run),
-            "kit":config['barcode_kit'],
-            "tsvPath":join(config['ROOT'], "qcat_trimmed", Run)
-            }
-            command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
-            command = command.format(**args)
-            shell(command)
+            inptime = getmtime(join("fastq", Run+."fastq"))
+            opttime = getmtime(join("qcat_trimmed", Run))
+            if inptime > opttime:
+                args = {
+                "input":join("fastq", Run+".fastq"),
+                "outputTrimmed":join(config['ROOT'], "qcat_trimmed", Run),
+                "kit":config['barcode_kit'],
+                "tsvPath":join(config['ROOT'], "qcat_trimmed", Run)
+                }
+                command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
+                command = command.format(**args)
+                shell(command)
+            else:
+                pass
 
 rule demultiplexSummary:
     input:
