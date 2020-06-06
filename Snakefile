@@ -63,7 +63,7 @@ rule all:
         #--> collectSamples (Do not have to specifi because other rules depend on this)
         # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
-        # expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
+        expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
         # #--> kraken2
         # expand(join("classified", "{samples}", "kraken2_Minidb", "result"), samples=config['samples']),
         # # uncomment if using
