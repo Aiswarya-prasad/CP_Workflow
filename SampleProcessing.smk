@@ -48,6 +48,7 @@ rule all:
 # QC of fastq files
 rule sampleQC:
     input:
+        RunProcessing(expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames'])),
         sampleFastq=join("fastq", "samples", "{samples}.fastq.gz"),
     output:
         Nanoplot_Dynamic_Histogram_Read_length_html = join("QC", "samples", "{samples}", "{samples}_Dynamic_Histogram_Read_length.html"),
