@@ -62,7 +62,7 @@ rule all:
 # Also edit config['RAWDIR as needed']
 rule basecalling:
     input:
-        raw_dir=join(config['RAWDIR'], "{runnames}")+"/" # remove extra / (depending on Rawdir structure)
+        raw_dir=join(config['RAWDIR'], "{runnames}") # remove extra / (depending on Rawdir structure)
         # raw_dir=join("RawDir", "{runnames}")
     output:
         run_fastq=join("fastq", "{runnames}.fastq")
