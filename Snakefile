@@ -76,11 +76,13 @@ rule all:
         # expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples']),
         # expand(join("classified", "{samples}", "centrifuge", "result"), samples=config['samples'])
 
-
+# edit input as needed by guppy. Current method works for input which is a symlink to the
+# directory containing the fast5 directory in its subtree
+# edit config['RAWDIR as needed']
 rule basecalling:
     input:
-        # raw_dir=join(config['RAWDIR'], "{runnames}/")
-        raw_dir=join("RawDir", "{runnames}")
+        raw_dir=join(config['RAWDIR'], "{runnames}/")
+        # raw_dir=join("RawDir", "{runnames}")
     output:
         run_fastq=join("fastq", "{runnames}.fastq")
     run:

@@ -3,7 +3,9 @@ This is an experimental snakemake pipeline to carry out the entire analysis of m
 
 > This is not intended to be a ready to use pipeline and I doubt that I will be revisiing it for updates in the future. I learnt Snakemake from scratch through the course of this project and would have found a repo like this immensely useful. That is the main motivation I had to create this repository. Most of the code can be easily understood and reused.<br/>
 
-The pipeline includes, data organization, QC, Basecalling (Guppy for nanopore), Demultiplexing, Trimming and filtering, Taxonomic classification (using Kraken2 and Centrifuge) and a seperate script for data analysis which can be called by a different rule.
+The pipeline includes, data organization, QC, Basecalling (Guppy for nanopore), Demultiplexing, Trimming and filtering, Taxonomic classification (using Kraken2 and Centrifuge).
+
+Be sure to look through the comments in the Snakefile. (I may add the info there to README later)
 
 <p align="center">
   <img src="rulegraph.png" width="500" />
