@@ -29,6 +29,11 @@ configfile: "config.yaml"
 
 # --- The rules --- #
 
+# EDIT THIS AS NEEDED
+wildcard_constraints:
+    runnames = "^Run*"
+    samples = "\d+"
+
 rule all:
     input:
         #--> for basecalling
@@ -57,6 +62,7 @@ rule all:
         expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples']),
         expand(join("classified", "{samples}", "centrifuge", "result"), samples=config['samples'])
 
+
 # edit input as needed by guppy. Current method works for input which is a symlink to the
 # since --recursive is used it will search subtree of input which needs to be a directory (or link)
 # directory containing the fast5 directory in its subtree
@@ -64,7 +70,7 @@ rule all:
 rule basecalling:
     input:
         # raw_dir=join(config['RAWDIR'], "{runnames}") # remove extra / (depending on Rawdir structure)
-        # raw_dir=join("RawDir", "{runnames}")
+        raw_dir=join("RawDir", "{runnames}")
     output:
         runFastq=join("fastq", "{runnames}.fastq")
     run:
@@ -82,7 +88,7 @@ rule basecalling:
             flag = False
         args = {
         # path to dir containing input w/ wildcard
-        "input":join("RawDir", wildcards.runnames),
+        "input":input.raw_dir,
         "output_dir":guppy_output_dir
         }
         command = "guppy_basecaller --resume --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
