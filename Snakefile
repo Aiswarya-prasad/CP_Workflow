@@ -156,7 +156,7 @@ rule demultiplexTrim:
     output:
         outDir=directory(join("qcat_trimmed", "{runnames}")),
         tsv=join("qcat_trimmed", "{runnames}.tsv"),
-        flag=touch("demux.done")
+        flag=touch("log/{runnames}.demux.done")
     run:
         args = {
             "input":input.raw_fastq,
@@ -180,8 +180,8 @@ rule demultiplexSummary:
 #
 rule collectSamples:
     input:
-        # fastqPath=lambda wildcards: AggregateSampleFastq(wildcards.samples)
-        demuxDirs=expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames'])
+        flag="log/{runnames}.demux.done"
+        # demuxDirs=expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames'])
     output:
         fastq=join("fastq", "samples", "{samples}.fastq.gz"),
     run:
