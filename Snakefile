@@ -183,7 +183,7 @@ rule collectSamples:
     input:
         demuxDirs=expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames'])
     output:
-        fastq=join("fastq", "samples", "{samples}.fastq.gz"),
+        fastq=expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
     run:
         try:
             makedirs(join("fastq", "samples"))
@@ -191,13 +191,14 @@ rule collectSamples:
             pass
         sampleDict = config['sample_dict']
         runBarcodeDict = {}
-        for runName in sampleDict:
+        for runName in rules.demultiplexTrim.wildcards.runnames:
             for barcode in sampleDict[runName]:
-                if sampleDict[runName][barcode] == wildcards.sample:
+                if sampleDict[runName][barcode] in config['sample']:
+                    sampleName = sampleDict[runName][barcode]
                     runBarcodeDict = {'runName': runName, 'barcode': barcode}
                     return join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
                     fastqPath = join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
-                    command = 'cat '+fastqPath+' | gzip > '+output.fastq
+                    command = 'cat '+fastqPath+' | gzip > '+join("fastq", "samples", sampleName+".fastq.gz")
 #
 # QC of fastq files
 rule sampleQC:
