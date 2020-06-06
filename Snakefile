@@ -18,18 +18,6 @@ def checkForGuppyLog(path):
             if name.endswith('.log'):
                 return True
     return False
-
-# find run and barcode for given sample ID using
-# returns path to fastq "{runName}/barcode{barcode}.fastq"
-# def AggregateSampleFastq(sampleName):
-#     sampleDict = config['sample_dict']
-#     runBarcodeDict = {}
-#     for runName in sampleDict:
-#         for barcode in sampleDict[runName]:
-#             if sampleDict[runName][barcode] == sampleName:
-#                 runBarcodeDict = {'runName': runName, 'barcode': barcode}
-#                 return join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
-
 #
 # can also be a directory with multiple seq summary files for the same input
 # modify function accordingly esp for interrupted basecalling
@@ -38,14 +26,6 @@ def findSeqSummary(wildcards):
 
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
-# information to be obtained from config file
-
-# ListOfExpectedBarcodes = []
-# confDict = config['sample_dict']
-# for RunName in confDict:
-#     for barCode in confDict[RunName].keys():
-#         ListOfExpectedBarcodes.append(join("qcat_trimmed", RunName, "barcode"+barCode+".fastq"))
-
 
 # --- The rules --- #
 
@@ -209,16 +189,6 @@ rule collectSamples:
                     return join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
                     fastqPath = join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
                     command = 'cat '+fastqPath+' | gzip > '+output.fastq
-        #
-        #
-        # if exists(input.fastqPath):
-        #     print("\n {} file exists".format(input.fastqPath))
-        #     shell("cat "+input.fastqPath+" > "+join("fastq", "samples", wildcards.samples+".fastq"))
-        # else:
-        #     print("\n {} NO file exists".format(input.fastqPath))
-        #     shell("touch "+input.fastqPath)
-        # # zips all files. Unxip as needed for further use
-        # shell("gzip "+join("fastq", "samples", wildcards.samples+".fastq"))
 #
 # QC of fastq files
 rule sampleQC:
@@ -322,4 +292,5 @@ rule centrifuge:
         # -U - means take from stdin
         command = "gunzip -c {input} | centrifuge -x {db} -q  -U - --report-file {output_report} -S {output_result}"
         shell(command.format(**args))
+#
 #
