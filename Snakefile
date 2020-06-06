@@ -24,7 +24,9 @@ def checkForGuppyLog(path):
 def AggregateSampleFastq(wildcards):
     sampleDict = config['sample_dict']
     runBarcodeDict = {}
-    for runName in checkpoints.demultiplexTrim.get(wildcards.runnames):
+    # using checkpoints object here to establish dependency
+    checkpoint_output = checkpoints.demultiplexTrim.get(**wildcards).output[0]
+    for runName in sampleDict:
         for barcode in sampleDict[runName]:
             if sampleDict[runName][barcode] == wildcards:
                 runBarcodeDict = {'runName': runName, 'barcode': barcode}
@@ -162,8 +164,8 @@ checkpoint demultiplexTrim:
     input:
         raw_fastq="fastq/{runnames}.fastq"
     output:
+        outDir=directory(join("qcat_trimmed", "{runnames}")),
         tsv=join("qcat_trimmed", "{runnames}.tsv"),
-        outDir=directory(join("qcat_trimmed", "{runnames}"))
     run:
         args = {
         "input":input.raw_fastq,
