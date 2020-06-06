@@ -21,17 +21,16 @@ def checkForGuppyLog(path):
 
 # find run and barcode for given sample ID using
 # returns path to fastq "{runName}/barcode{barcode}.fastq"
-def AggregateSampleFastq(wildcards):
-    sampleDict = config['sample_dict']
-    runBarcodeDict = {}
-    # using checkpoints object here to establish dependency
-    for runName in sampleDict:
-        for barcode in sampleDict[runName]:
-            if sampleDict[runName][barcode] == wildcards:
-                runBarcodeDict = {'runName': runName, 'barcode': barcode}
-                return join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
+# def AggregateSampleFastq(sampleName):
+#     sampleDict = config['sample_dict']
+#     runBarcodeDict = {}
+#     for runName in sampleDict:
+#         for barcode in sampleDict[runName]:
+#             if sampleDict[runName][barcode] == sampleName:
+#                 runBarcodeDict = {'runName': runName, 'barcode': barcode}
+#                 return join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
 
-
+#
 # can also be a directory with multiple seq summary files for the same input
 # modify function accordingly esp for interrupted basecalling
 def findSeqSummary(wildcards):
@@ -71,8 +70,8 @@ rule all:
         # # expand(join("classified", "{samples}", "kraken2_humandb", "result"), samples=config['samples']),
         # # expand(join("classified", "{samples}", "kraken2_custom", "result"), samples=config['samples']),
         # #--> bracken (depends on Kraken2 report)
-        expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
-        expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
+        # expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
+        # expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
         # #--> centrifuge
         # expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples']),
         # expand(join("classified", "{samples}", "centrifuge", "result"), samples=config['samples'])
@@ -189,7 +188,8 @@ rule demultiplexSummary:
 #
 rule collectSamples:
     input:
-        fastqPath=lambda wildcards: AggregateSampleFastq(wildcards.samples)
+        # fastqPath=lambda wildcards: AggregateSampleFastq(wildcards.samples)
+        demuxDirs=expand(join("qcat_trimmed", "{runnames}")+"/", runnames=config['runnames'])
     output:
         fastq=join("fastq", "samples", "{samples}.fastq.gz"),
     run:
@@ -197,14 +197,25 @@ rule collectSamples:
             makedirs(join("fastq", "samples"))
         except FileExistsError:
             pass
-        if exists(input.fastqPath):
-            print("\n {} file exists".format(input.fastqPath))
-            shell("cat "+input.fastqPath+" > "+join("fastq", "samples", wildcards.samples+".fastq"))
-        else:
-            print("\n {} NO file exists".format(input.fastqPath))
-            shell("touch "+input.fastqPath)
-        # zips all files. Unxip as needed for further use
-        shell("gzip "+join("fastq", "samples", wildcards.samples+".fastq"))
+        sampleDict = config['sample_dict']
+        runBarcodeDict = {}
+        for runName in sampleDict:
+            for barcode in sampleDict[runName]:
+                if sampleDict[runName][barcode] == wildcards.sample:
+                    runBarcodeDict = {'runName': runName, 'barcode': barcode}
+                    return join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
+                    fastqPath = join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
+                    command = 'cat '+fastqPath+' | gzip > '+output.fastq
+        #
+        #
+        # if exists(input.fastqPath):
+        #     print("\n {} file exists".format(input.fastqPath))
+        #     shell("cat "+input.fastqPath+" > "+join("fastq", "samples", wildcards.samples+".fastq"))
+        # else:
+        #     print("\n {} NO file exists".format(input.fastqPath))
+        #     shell("touch "+input.fastqPath)
+        # # zips all files. Unxip as needed for further use
+        # shell("gzip "+join("fastq", "samples", wildcards.samples+".fastq"))
 #
 # QC of fastq files
 rule sampleQC:
