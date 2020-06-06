@@ -78,8 +78,8 @@ rule ProcessRuns:
         #--> demultiplex_trim
         expand(join("qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
         #--> summary
-        expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
-        expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
+        expand(join("qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
+        expand(join("qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
     output: touch('Demultiplexing Done')
     threads: 8
 
