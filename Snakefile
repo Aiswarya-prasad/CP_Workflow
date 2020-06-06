@@ -31,7 +31,7 @@ configfile: "config.yaml"
 
 # EDIT THIS AS NEEDED
 wildcard_constraints:
-    runnames = "^Run*"
+    runnames = "^Run*",
     samples = "\d+"
 
 rule all:
