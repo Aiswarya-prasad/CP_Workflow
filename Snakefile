@@ -191,7 +191,7 @@ rule runQC:
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 # below rule does not use wildcards. Written this way to keep the dag intact
-checkpoint demultiplexTrim:
+rule demultiplexTrim:
     input:
         raw_fastq="fastq/{runnames}.fastq"
     output:
