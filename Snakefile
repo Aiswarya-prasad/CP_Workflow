@@ -181,7 +181,6 @@ rule demultiplexSummary:
     output:
         txt=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"),
         png=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.png")
-        png=join(config['ROOT'], "qcat_trimmed", pngrunnames}", "summary.png")
     script:
         "scripts/demultiplex_summarize.py"
 #
