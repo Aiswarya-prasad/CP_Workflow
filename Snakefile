@@ -71,8 +71,8 @@ rule all:
         # # expand(join("classified", "{samples}", "kraken2_humandb", "result"), samples=config['samples']),
         # # expand(join("classified", "{samples}", "kraken2_custom", "result"), samples=config['samples']),
         # #--> bracken (depends on Kraken2 report)
-        # expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
-        # expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
+        expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
+        expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
         # #--> centrifuge
         # expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples']),
         # expand(join("classified", "{samples}", "centrifuge", "result"), samples=config['samples'])
