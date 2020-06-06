@@ -181,7 +181,8 @@ rule collectSamples:
     input:
         demuxDirs=rules.demultiplexTrim.output.outDir
     output:
-        fastq=join("fastq", "samples", "{samples}.fastq.gz")
+        fastq=join("fastq", "samples", "{samples}.fastq.gz"),
+        demuxDirs=rules.demultiplexTrim.output.outDir
     run:
         try:
             makedirs(join("fastq", "samples"))
