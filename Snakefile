@@ -185,10 +185,10 @@ checkpoint demultiplexTrim:
 
 rule demultiplexSummary:
     input:
-        tsv=join(config['ROOT'], "qcat_trimmed", "{runnames}.tsv"),
+        tsv=join("qcat_trimmed", "{runnames}.tsv"),
     output:
-        txt=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"),
-        png=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.png")
+        txt=join("qcat_trimmed", "{runnames}", "summary.txt"),
+        png=join("qcat_trimmed", "{runnames}", "summary.png")
     script:
         "scripts/demultiplex_summarize.py"
 #
