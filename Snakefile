@@ -24,7 +24,7 @@ def checkForGuppyLog(path):
 def AggregateSampleFastq(wildcards):
     sampleDict = config['sample_dict']
     runBarcodeDict = {}
-    for runName in checkpoints.demultiplexTrim.get(wildcards):
+    for runName in checkpoints.demultiplexTrim.get(wildcards.runnames):
         for barcode in sampleDict[runName]:
             if sampleDict[runName][barcode] == wildcards:
                 runBarcodeDict = {'runName': runName, 'barcode': barcode}
