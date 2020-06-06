@@ -180,7 +180,8 @@ rule demultiplexSummary:
 rule collectSamples:
     input:
         # fastqPath=lambda wildcards: AggregateSampleFastq(wildcards.samples)
-        demuxDirs=expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames'])
+        # demuxDirs=expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames'])
+        demuxDirs=expand(rules.basecalling.output.runFastq)
     output:
         fastq=join("fastq", "samples", "{samples}.fastq.gz"),
     run:
