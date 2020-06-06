@@ -1,5 +1,5 @@
 #setup
-RAWDIR: '/media/utlab/DATA/'
+RAWDIR: '/media/utlab/DATA_HDD2/student/Nanopore_Metagenomics/CP_Workflow/RawData'
 ROOT: '/media/utlab/DATA_HDD2/student/Nanopore_Metagenomics/CP_Workflow/'
 runnames: ['Run0', 'Run1', 'Run2', 'Run3', 'Run4']
 

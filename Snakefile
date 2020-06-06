@@ -111,8 +111,7 @@ rule all:
 
 rule basecalling:
     input:
-        raw_dir=join("RawData", "{runnames}/")
-        # raw_dir=join(config['RAWDIR'], "{runnames}/")
+        raw_dir=join(config['RAWDIR'], "{runnames}/")
     output:
         run_fastq=join("fastq", "{runnames}.fastq")
     run:
