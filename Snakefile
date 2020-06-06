@@ -18,7 +18,18 @@ def checkForGuppyLog(path):
             if name.endswith('.log'):
                 return True
     return False
-#
+
+# find run and barcode for given sample ID using
+# returns path to fastq "{runName}/barcode{barcode}.fastq"
+def findSampleFastq(wildcards):
+    sampleDict = config['sample_dict']
+    runBarcodeDict = {}
+    for runName in sampleDict:
+        for barcode in sampleDict[runName]:
+            if sampleDict[runName][barcode] == wildcards:
+                runBarcodeDict = {'runName': runName, 'barcode': barcode}
+                return join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
+
 # can also be a directory with multiple seq summary files for the same input
 # modify function accordingly esp for interrupted basecalling
 def findSeqSummary(wildcards):
@@ -26,53 +37,47 @@ def findSeqSummary(wildcards):
 
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
+# information to be obtained from config file
+ListOfExpectedBarcodes = []
+confDict = config['sample_dict']
+for RunName in confDict:
+    for barCode in confDict[RunName].keys():
+        ListOfExpectedBarcodes.append(join("qcat_trimmed", RunName, "barcode"+barCode+".fastq"))
 
 # --- The rules --- #
-
-# EDIT THIS AS NEEDED
-wildcard_constraints:
-    runnames = "^Run*",
-    samples = "\d+"
 
 rule all:
     input:
         #--> for basecalling
-        # expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+        expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         #--> runQC
         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         #--> demultiplex_trim
-        expand(join("qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
-        expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames']),
+        # expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames']),
         #--> summary
-        expand(join("qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
-        expand(join("qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
-#### uncomment after running once with just the targets above ###############################################################
+        expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
+        #--> collectSamples
         # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
-        # #--> sampleQC
-        # expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
-        # # #--> kraken2
-        # expand(join("classified", "{samples}", "kraken2_Minidb", "result"), samples=config['samples']),
-        # # # uncomment if using
-        # # # expand(join("classified", "{samples}", "kraken2_humandb", "result"), samples=config['samples']),
-        # # # expand(join("classified", "{samples}", "kraken2_custom", "result"), samples=config['samples']),
-        # # #--> bracken (depends on Kraken2 report)
-        # expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
-        # expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
-        # # #--> centrifuge
-        # expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples']),
-        # expand(join("classified", "{samples}", "centrifuge", "result"), samples=config['samples'])
-#############################################################################################################################
+        #--> sampleQC
+        expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
+        #--> kraken2
+        expand(join("classified", "{samples}", "kraken2_Minidb", "result"), samples=config['samples']),
+        # uncomment if using
+        # expand(join("classified", "{samples}", "kraken2_humandb", "result"), samples=config['samples']),
+        # expand(join("classified", "{samples}", "kraken2_custom", "result"), samples=config['samples']),
+        #--> bracken
+        expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
+        expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
+        #--> centrifuge
+        expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples'])
+    threads: 8
 
-# edit input as needed by guppy. Current method works for input which is a symlink to the
-# since --recursive is used it will search subtree of input which needs to be a directory (or link)
-# directory containing the fast5 directory in its subtree
-# Also edit config['RAWDIR as needed']
+
 rule basecalling:
     input:
-        # raw_dir=join(config['RAWDIR'], "{runnames}") # remove extra / (depending on Rawdir structure)
-        raw_dir=join("RawDir", "{runnames}")
+        raw_dir=join(config['RAWDIR'], "{runnames}/")
     output:
-        runFastq=join("fastq", "{runnames}.fastq")
+        run_fastq=join("fastq", "{runnames}.fastq")
     run:
         # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
         # conditionally allow for --resume figure out how later
@@ -87,7 +92,6 @@ rule basecalling:
         else:
             flag = False
         args = {
-        # path to dir containing input w/ wildcard
         "input":input.raw_dir,
         "output_dir":guppy_output_dir
         }
@@ -150,36 +154,39 @@ rule runQC:
         shell(command_nanoP.format(**args)+" || touch {output}")
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
+# below rule does not use wildcards. Written this way to keep the dag intact
 rule demultiplexTrim:
     input:
-        raw_fastq=rules.basecalling.output.runFastq
+        raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
     output:
-        outDir=directory(join("qcat_trimmed", "{runnames}")),
-        tsv=join("qcat_trimmed", "{runnames}.tsv")
+        trimmed=ListOfExpectedBarcodes,
+        # tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
-        args = {
-            "input":input.raw_fastq,
-            "outputTrimmed":join(config['ROOT'], "qcat_trimmed", wildcards.runnames),
+        for Run in config['runnames']:
+            args = {
+            "input":join("fastq", Run+".fastq"),
+            "outputTrimmed":join(config['ROOT'], "qcat_trimmed", Run),
             "kit":config['barcode_kit'],
-            "tsvPath":join(config['ROOT'], "qcat_trimmed", wildcards.runnames)
-        }
-        command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
-        command = command.format(**args)
-        shell(command)
+            "tsvPath":join(config['ROOT'], "qcat_trimmed", Run)
+            }
+            command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
+            command = command.format(**args)
+            shell(command)
 
 rule demultiplexSummary:
     input:
-        demuxDirs=rules.demultiplexTrim.output.tsv
+        trimmed=ListOfExpectedBarcodes,
+        # tsv=join("qcat_trimmed", "{runnames}.tsv")
     output:
-        txt=join("qcat_trimmed", "{runnames}", "summary.txt"),
-        png=join("qcat_trimmed", "{runnames}", "summary.png")
+        txt=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"),
+        png=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.png")
     script:
         "scripts/demultiplex_summarize.py"
 #
 #
 rule collectSamples:
-    # input:
-    #     demuxDirs=rules.demultiplexTrim.output.outDir
+    input:
+        fastqPath=lambda wildcards: findSampleFastq(wildcards.samples)
     output:
         fastq=join("fastq", "samples", "{samples}.fastq.gz"),
     run:
@@ -187,21 +194,19 @@ rule collectSamples:
             makedirs(join("fastq", "samples"))
         except FileExistsError:
             pass
-        sampleDict = config['sample_dict']
-        runBarcodeDict = {}
-        for runName in sampleDict.keys():
-            for barcode in sampleDict[runName]:
-                if sampleDict[runName][barcode] in config['sample']:
-                    sampleName = sampleDict[runName][barcode]
-                    runBarcodeDict = {'runName': runName, 'barcode': barcode}
-                    return join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
-                    fastqPath = join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
-                    command = 'cat '+fastqPath+' | gzip > '+join("fastq", "samples", sampleName+".fastq.gz")
+        if exists(input.fastqPath):
+            print("\n {} file exists".format(input.fastqPath))
+            shell("cat "+input.fastqPath+" > "+join("fastq", "samples", wildcards.samples+".fastq"))
+        else:
+            print("\n {} NO file exists".format(input.fastqPath))
+            shell("touch "+input.fastqPath)
+        # zips all files. Unxip as needed for further use
+        shell("gzip "+join("fastq", "samples", wildcards.samples+".fastq"))
 #
 # QC of fastq files
 rule sampleQC:
     input:
-        sampleFastq=join("fastq", "samples", "{samples}.fastq.gz"),
+        sampleFastq=join("fastq", "samples", "{samples}.fastq.gz")
     output:
         Nanoplot_Dynamic_Histogram_Read_length_html = join("QC", "samples", "{samples}", "{samples}_Dynamic_Histogram_Read_length.html"),
         Nanoplot_HistogramReadlength_png = join("QC", "samples", "{samples}", "{samples}_HistogramReadlength.png"),
@@ -228,8 +233,8 @@ rule filterSamples:
     input:
         input=join("fastq", "samples", "{samples}.fastq.gz")
     output:
-        output7=join("fastq", "samplesQ7", "{samples}.fastq.gz"),
-        output10=join("fastq", "samplesQ10", "{samples}.fastq.gz")
+        output7=join("fastq", "samples_Q7", "{samples}.fastq.gz"),
+        output10=join("fastq", "samples_Q10", "{samples}.fastq.gz")
     run:
         args = {
         "output7":output.output7,
@@ -245,7 +250,7 @@ rule filterSamples:
 #
 rule kraken2:
     input:
-        fastq=join("fastq", "samplesQ7", "{samples}.fastq.gz")
+        fastq=join("fastq", "samples_Q7", "{samples}.fastq.gz")
     output:
         # report_mpa=join("classified", "{samples}", "kraken2_Minidb", "report_mpa"),
         report=join("classified", "{samples}", "kraken2_Minidb", "report"),
@@ -286,7 +291,7 @@ rule bracken:
 #
 rule centrifuge:
     input:
-        fastq=join("fastq", "samplesQ7", "{samples}.fastq.gz")
+        fastq=join("fastq", "samples_Q7", "{samples}.fastq.gz")
     output:
         report=join("classified", "{samples}", "centrifuge", "report"),
         result=join("classified", "{samples}", "centrifuge", "result")
@@ -300,5 +305,4 @@ rule centrifuge:
         # -U - means take from stdin
         command = "gunzip -c {input} | centrifuge -x {db} -q  -U - --report-file {output_report} -S {output_result}"
         shell(command.format(**args))
-#
 #
