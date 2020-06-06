@@ -48,36 +48,17 @@ configfile: "config.yaml"
 
 # --- The rules --- #
 
-# rule all:
-#     input:
-#         #--> for basecalling
-#         expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-#         #--> runQC
-#         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
-#         #--> demultiplex_trim
-#         expand(join("qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
-#         #--> summary
-#         expand(join("qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
-#         expand(join("qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
-#         #--> collectSamples (Do not have to specifi because other rules depend on this)
-#         # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
-#         #--> sampleQC
-#         expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
-#         #--> kraken2
-#         expand(join("classified", "{samples}", "kraken2_Minidb", "result"), samples=config['samples']),
-#         # uncomment if using
-#         # expand(join("classified", "{samples}", "kraken2_humandb", "result"), samples=config['samples']),
-#         # expand(join("classified", "{samples}", "kraken2_custom", "result"), samples=config['samples']),
-#         #--> bracken (depends on Kraken2 report)
-#         expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
-#         expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
-#         #--> centrifuge
-#         expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples']),
-#         expand(join("classified", "{samples}", "centrifuge", "result"), samples=config['samples'])
-
-
-rule ProcessSamples:
+rule all:
     input:
+        #--> for basecalling
+        expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+        #--> runQC
+        expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
+        #--> demultiplex_trim
+        expand(join("qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
+        #--> summary
+        expand(join("qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
+        expand(join("qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
         #--> collectSamples (Do not have to specifi because other rules depend on this)
         # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
@@ -93,25 +74,45 @@ rule ProcessSamples:
         #--> centrifuge
         expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples']),
         expand(join("classified", "{samples}", "centrifuge", "result"), samples=config['samples'])
-    threads: 1
 
-rule ProcessRuns:
-    input:
-        #--> for basecalling
-        expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
-        #--> runQC
-        expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
-        #--> demultiplex_trim
-        expand(join("qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
-        #--> summary
-        expand(join("qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
-        expand(join("qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
-    threads: 8
+
+# rule ProcessSamples:
+#     input:
+#         #--> collectSamples (Do not have to specifi because other rules depend on this)
+#         # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
+#         #--> sampleQC
+#         expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
+#         #--> kraken2
+#         expand(join("classified", "{samples}", "kraken2_Minidb", "result"), samples=config['samples']),
+#         # uncomment if using
+#         # expand(join("classified", "{samples}", "kraken2_humandb", "result"), samples=config['samples']),
+#         # expand(join("classified", "{samples}", "kraken2_custom", "result"), samples=config['samples']),
+#         #--> bracken (depends on Kraken2 report)
+#         expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
+#         expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
+#         #--> centrifuge
+#         expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples']),
+#         expand(join("classified", "{samples}", "centrifuge", "result"), samples=config['samples'])
+#     threads: 1
+#
+# rule ProcessRuns:
+#     input:
+#         #--> for basecalling
+#         expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+#         #--> runQC
+#         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
+#         #--> demultiplex_trim
+#         expand(join("qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
+#         #--> summary
+#         expand(join("qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
+#         expand(join("qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
+#     threads: 8
 
 
 rule basecalling:
     input:
-        raw_dir=join(config['RAWDIR'], "{runnames}/")
+        raw_dir=join(RawData, "{runnames}/")
+        # raw_dir=join(config['RAWDIR'], "{runnames}/")
     output:
         run_fastq=join("fastq", "{runnames}.fastq")
     run:
