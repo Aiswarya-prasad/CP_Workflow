@@ -46,22 +46,22 @@ rule all:
         #--> summary
         expand(join("qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
         expand(join("qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
-        #--> collectSamples (Do not have to specifi because other rules depend on this)
-        expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
-        #--> sampleQC
-        expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
-        # #--> kraken2
-        expand(join("classified", "{samples}", "kraken2_Minidb", "result"), samples=config['samples']),
-        # # uncomment if using
-        # # expand(join("classified", "{samples}", "kraken2_humandb", "result"), samples=config['samples']),
-        # # expand(join("classified", "{samples}", "kraken2_custom", "result"), samples=config['samples']),
-        # #--> bracken (depends on Kraken2 report)
-        expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
-        expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
-        # #--> centrifuge
-        expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples']),
-        expand(join("classified", "{samples}", "centrifuge", "result"), samples=config['samples'])
-
+#### uncomment after running once with just the targets above ###############################################################
+        # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
+        # #--> sampleQC
+        # expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
+        # # #--> kraken2
+        # expand(join("classified", "{samples}", "kraken2_Minidb", "result"), samples=config['samples']),
+        # # # uncomment if using
+        # # # expand(join("classified", "{samples}", "kraken2_humandb", "result"), samples=config['samples']),
+        # # # expand(join("classified", "{samples}", "kraken2_custom", "result"), samples=config['samples']),
+        # # #--> bracken (depends on Kraken2 report)
+        # expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
+        # expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
+        # # #--> centrifuge
+        # expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples']),
+        # expand(join("classified", "{samples}", "centrifuge", "result"), samples=config['samples'])
+#############################################################################################################################
 
 # edit input as needed by guppy. Current method works for input which is a symlink to the
 # since --recursive is used it will search subtree of input which needs to be a directory (or link)
@@ -178,11 +178,10 @@ rule demultiplexSummary:
 #
 #
 rule collectSamples:
-    input:
-        demuxDirs=rules.demultiplexTrim.output.outDir
+    # input:
+    #     demuxDirs=rules.demultiplexTrim.output.outDir
     output:
         fastq=join("fastq", "samples", "{samples}.fastq.gz"),
-        demuxDirs=rules.demultiplexTrim.output.outDir
     run:
         try:
             makedirs(join("fastq", "samples"))
@@ -190,7 +189,7 @@ rule collectSamples:
             pass
         sampleDict = config['sample_dict']
         runBarcodeDict = {}
-        for runName in wildcards.runnames:
+        for runName in sampleDict.keys():
             for barcode in sampleDict[runName]:
                 if sampleDict[runName][barcode] in config['sample']:
                     sampleName = sampleDict[runName][barcode]
