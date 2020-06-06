@@ -66,7 +66,7 @@ rule basecalling:
         # raw_dir=join(config['RAWDIR'], "{runnames}") # remove extra / (depending on Rawdir structure)
         # raw_dir=join("RawDir", "{runnames}")
     output:
-        run_fastq=join("fastq", "{runnames}.fastq")
+        runFastq=join("fastq", "{runnames}.fastq")
     run:
         # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
         # conditionally allow for --resume figure out how later
@@ -146,10 +146,10 @@ rule runQC:
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 rule demultiplexTrim:
     input:
-        raw_fastq="fastq/{runnames}.fastq"
+        raw_fastq=rules.basecalling.output.runFastq
     output:
         outDir=directory(join("qcat_trimmed", "{runnames}")),
-        tsv=join("qcat_trimmed", "{runnames}.tsv"),
+        tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
         args = {
         "input":input.raw_fastq,
@@ -163,7 +163,7 @@ rule demultiplexTrim:
 
 rule demultiplexSummary:
     input:
-        demuxDirs=join("qcat_trimmed", "{runnames}"),
+        demuxDirs=rules.demultiplexTrim.output.tsv
     output:
         txt=join("qcat_trimmed", "{runnames}", "summary.txt"),
         png=join("qcat_trimmed", "{runnames}", "summary.png")
