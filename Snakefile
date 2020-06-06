@@ -25,7 +25,7 @@ def AggregateSampleFastq(wildcards):
     sampleDict = config['sample_dict']
     runBarcodeDict = {}
     # using checkpoints object here to establish dependency
-    checkpoint_output = checkpoints.demultiplexTrim.get(**wildcards).output[0]
+    checkpoint_output = checkpoints.demultiplexTrim.get(sample=wildcards.sample).output[0]
     for runName in sampleDict:
         for barcode in sampleDict[runName]:
             if sampleDict[runName][barcode] == wildcards:
