@@ -163,7 +163,7 @@ rule demultiplexTrim:
 
 rule demultiplexSummary:
     input:
-        tsv=join("qcat_trimmed", "{runnames}.tsv"),
+        demuxDirs=join("qcat_trimmed", "{runnames}"),
     output:
         txt=join("qcat_trimmed", "{runnames}", "summary.txt"),
         png=join("qcat_trimmed", "{runnames}", "summary.png")
