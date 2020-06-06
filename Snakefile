@@ -37,6 +37,7 @@ rule all:
         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         #--> demultiplex_trim
         expand(join("qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
+        expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames']),
         #--> summary
         expand(join("qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
         expand(join("qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
