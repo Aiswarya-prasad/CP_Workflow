@@ -156,7 +156,7 @@ rule demultiplexTrim:
     output:
         outDir=directory(join("qcat_trimmed", "{runnames}")),
         tsv=join("qcat_trimmed", "{runnames}.tsv"),
-        touch("demux.done")
+        flag=touch("demux.done")
     run:
         args = {
             "input":input.raw_fastq,
