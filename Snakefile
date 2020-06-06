@@ -31,6 +31,7 @@ def AggregateSampleFastq(wildcards):
                 runBarcodeDict = {'runName': runName, 'barcode': barcode}
                 return join("qcat_trimmed", runBarcodeDict['runName'], "barcode"+runBarcodeDict['barcode']+".fastq")
 
+
 # can also be a directory with multiple seq summary files for the same input
 # modify function accordingly esp for interrupted basecalling
 def findSeqSummary(wildcards):
@@ -79,7 +80,8 @@ rule all:
 
 rule basecalling:
     input:
-        raw_dir=join(config['RAWDIR'], "{runnames}/")
+        # raw_dir=join(config['RAWDIR'], "{runnames}/")
+        raw_dir=join("RawDir", "{runnames}/")
     output:
         run_fastq=join("fastq", "{runnames}.fastq")
     run:
