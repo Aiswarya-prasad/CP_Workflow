@@ -43,7 +43,6 @@ rule all:
         #--> demultiplex_trim
         expand(join("qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
         expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames']),
-        "demux.done",
         #--> summary
         expand(join("qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
         expand(join("qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
@@ -160,10 +159,10 @@ rule demultiplexTrim:
         touch("demux.done")
     run:
         args = {
-        "input":input.raw_fastq,
-        "outputTrimmed":join(config['ROOT'], "qcat_trimmed", wildcards.runnames),
-        "kit":config['barcode_kit'],
-        "tsvPath":join(config['ROOT'], "qcat_trimmed", wildcards.runnames)
+            "input":input.raw_fastq,
+            "outputTrimmed":join(config['ROOT'], "qcat_trimmed", wildcards.runnames),
+            "kit":config['barcode_kit'],
+            "tsvPath":join(config['ROOT'], "qcat_trimmed", wildcards.runnames)
         }
         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
         command = command.format(**args)
