@@ -177,7 +177,7 @@ rule demultiplexSummary:
         "scripts/demultiplex_summarize.py"
 #
 #
-rule collectSamples:
+checkpoint collectSamples:
     input:
         demuxDirs=rules.demultiplexTrim.output.outDir
     # output:
