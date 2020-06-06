@@ -38,11 +38,13 @@ def findSeqSummary(wildcards):
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
 # information to be obtained from config file
-ListOfExpectedBarcodes = []
-confDict = config['sample_dict']
-for RunName in confDict:
-    for barCode in confDict[RunName].keys():
-        ListOfExpectedBarcodes.append(join("qcat_trimmed", RunName, "barcode"+barCode+".fastq"))
+
+# def ExpectedBarcodes(runnames):
+#     confDict = config['sample_dict']
+#     ListOfExpectedBarcodes = []
+#     for RunName in confDict:
+#         for barCode in confDict[RunName].keys():
+#             ListOfExpectedBarcodes.append(join("qcat_trimmed", RunName, "barcode"+barCode+".fastq"))
 
 # --- The rules --- #
 
@@ -54,7 +56,8 @@ rule all:
         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         #--> demultiplex_trim
         # expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames']),
-        ListOfExpectedBarcodes,
+        dynamic(join("qcat_trimmed", "{runnames}", "{barcodes}.fastq")),
+        # ListOfExpectedBarcodes,
         #--> summary
         expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
         expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
@@ -159,21 +162,21 @@ rule runQC:
 # below rule does not use wildcards. Written this way to keep the dag intact
 rule demultiplexTrim:
     input:
-        raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
+        raw_fastq="fastq/{runnames}.fastq"
     output:
-        trimmed=touch(ListOfExpectedBarcodes),
-        tsv=join("qcat_trimmed", "{runnames}.tsv")
+        trimmed=dynamic(join("qcat_trimmed", "{runnames}", "{barcodes}.fastq")),
+        # tsv=join("qcat_trimmed", "{runnames}.tsv"),
+        # outDir=directory(join("qcat_trimmed", "{runnames}"))
     run:
-        for Run in config['runnames']:
-            args = {
-            "input":join("fastq", Run+".fastq"),
-            "outputTrimmed":join(config['ROOT'], "qcat_trimmed", Run),
-            "kit":config['barcode_kit'],
-            "tsvPath":join(config['ROOT'], "qcat_trimmed", Run)
-            }
-            command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
-            command = command.format(**args)
-            shell(command)
+        args = {
+        "input":input.raw_fastq,
+        "outputTrimmed":join(config['ROOT'], "qcat_trimmed", wildcards.runnames),
+        "kit":config['barcode_kit'],
+        "tsvPath":join(config['ROOT'], "qcat_trimmed", wildcards.runnames)
+        }
+        command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
+        command = command.format(**args)
+        shell(command)
 
 rule demultiplexSummary:
     input:
