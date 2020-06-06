@@ -175,8 +175,8 @@ rule demultiplexTrim:
 
 rule demultiplexSummary:
     input:
-    tsv=join("qcat_trimmed", "{runnames}.tsv"),
-    trimmed=ListOfExpectedBarcodes
+        tsv=join("qcat_trimmed", "{runnames}.tsv"),
+        trimmed=ListOfExpectedBarcodes
     output:
         txt=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"),
         png=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.png")
