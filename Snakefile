@@ -59,11 +59,11 @@ rule all:
 # edit input as needed by guppy. Current method works for input which is a symlink to the
 # since --recursive is used it will search subtree of input which needs to be a directory (or link)
 # directory containing the fast5 directory in its subtree
-# edit config['RAWDIR as needed']
+# Also edit config['RAWDIR as needed']
 rule basecalling:
     input:
-        raw_dir=join(config['RAWDIR'], "{runnames}")
-        # raw_dir=join("RawDir", "{runnames}/")
+        raw_dir=join(config['RAWDIR'], "{runnames}")+"/" # remove extra / (depending on Rawdir structure)
+        # raw_dir=join("RawDir", "{runnames}")
     output:
         run_fastq=join("fastq", "{runnames}.fastq")
     run:
