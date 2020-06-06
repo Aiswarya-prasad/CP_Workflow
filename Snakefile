@@ -21,10 +21,10 @@ def checkForGuppyLog(path):
 
 # find run and barcode for given sample ID using
 # returns path to fastq "{runName}/barcode{barcode}.fastq"
-def findSampleFastq(wildcards):
+def AggregateSampleFastq(wildcards):
     sampleDict = config['sample_dict']
     runBarcodeDict = {}
-    for runName in sampleDict:
+    for runName in checkpoints.demultiplexTrim.get(wildcards.runnames):
         for barcode in sampleDict[runName]:
             if sampleDict[runName][barcode] == wildcards:
                 runBarcodeDict = {'runName': runName, 'barcode': barcode}
@@ -55,9 +55,7 @@ rule all:
         #--> runQC
         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         #--> demultiplex_trim
-        # expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames']),
-        dynamic(join("qcat_trimmed", "{runnames}", "{barcodes}.fastq")),
-        # ListOfExpectedBarcodes,
+        expand(join("qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
         #--> summary
         expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
         expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
@@ -160,13 +158,12 @@ rule runQC:
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 # below rule does not use wildcards. Written this way to keep the dag intact
-rule demultiplexTrim:
+checkpoint demultiplexTrim:
     input:
         raw_fastq="fastq/{runnames}.fastq"
     output:
-        trimmed=dynamic(join("qcat_trimmed", "{runnames}", "{barcodes}.fastq")),
-        # tsv=join("qcat_trimmed", "{runnames}.tsv"),
-        # outDir=directory(join("qcat_trimmed", "{runnames}"))
+        tsv=join("qcat_trimmed", "{runnames}.tsv"),
+        outDir=directory(join("qcat_trimmed", "{runnames}"))
     run:
         args = {
         "input":input.raw_fastq,
@@ -190,7 +187,7 @@ rule demultiplexSummary:
 #
 rule collectSamples:
     input:
-        fastqPath=lambda wildcards: findSampleFastq(wildcards.samples)
+        fastqPath=lambda wildcards: AggregateSampleFastq(wildcards.samples)
     output:
         fastq=join("fastq", "samples", "{samples}.fastq.gz"),
     run:
