@@ -32,7 +32,7 @@ configfile: "config.yaml"
 rule all:
     input:
         #--> for basecalling
-        expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+        # expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         #--> runQC
         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         #--> demultiplex_trim
