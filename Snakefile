@@ -109,57 +109,56 @@ rule all:
 #     threads: 8
 
 
-rule basecalling:
-    input:
-        raw_dir=join(config['RAWDIR'], "{runnames}/")
-    output:
-        run_fastq=join("fastq", "{runnames}.fastq")
-    run:
-        # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
-        # conditionally allow for --resume figure out how later
-        # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
-        # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
-        guppy_output_dir = join("guppy_output", wildcards.runnames)
-        try:
-            makedirs(guppy_output_dir)
-        except FileExistsError:
-            flag = checkForGuppyLog(guppy_output_dir)
-            pass
-        else:
-            flag = False
-        args = {
-        "input":input.raw_dir,
-        "output_dir":guppy_output_dir
-        }
-        command = "guppy_basecaller --resume --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
-        command = command.format(**args)
-        if flag:
-           shell(command)
-           for dirpath, dirlist, filenames in walk(join(guppy_output_dir, wildcards.runnames)):
-               for name in filenames:
-                   if name.endswith('.fastq'):
-                       rename(join(dirpath, name), join(dirpath, wildcards.runnames+".fastq"))
-           try:
-               shell("cat "+guppy_output_dir+"/pass/*.fastq > fastq/"+wildcards.runnames+".fastq")
-           except:
-               print("no basecalling happened")
-               shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
-        else:
-            print("No log file to resume from. Starting fresh instance of basecallig")
-            command = "guppy_basecaller --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
-            command = command.format(**args)
-            shell(command)
-            for dirpath, dirlist, filenames in walk(join(guppy_output_dir, wildcards.runnames)):
-                for name in filenames:
-                    if name.endswith('.fastq'):
-                        rename(join(dirpath, name), join(dirpath, wildcards.runnames+".fastq"))
-            try:
-                shell("cat "+guppy_output_dir+"/pass/*.fastq > fastq/"+wildcards.runnames+".fastq")
-            except:
-                print("no basecalling happened")
-                shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
+# rule basecalling:
+#     input:
+#         raw_dir=join(config['RAWDIR'], "{runnames}/")
+#     output:
+#         run_fastq=join("fastq", "{runnames}.fastq")
+#     run:
+#         # if recursive is enabled, I can give the run dir which has sub runs..(Expt 4) (--min_qscore 7 is already default)
+#         # conditionally allow for --resume figure out how later
+#         # there is a recent issue April2020 with barcode trimming in guppy_basecaller so use qcat for demult
+#         # dna_r9.4.1_450bps_hac.cgf for FLO-MIN106 and SQK-LSK109 combination
+#         guppy_output_dir = join("guppy_output", wildcards.runnames)
+#         try:
+#             makedirs(guppy_output_dir)
+#         except FileExistsError:
+#             flag = checkForGuppyLog(guppy_output_dir)
+#             pass
+#         else:
+#             flag = False
+#         args = {
+#         "input":input.raw_dir,
+#         "output_dir":guppy_output_dir
+#         }
+#         command = "guppy_basecaller --resume --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
+#         command = command.format(**args)
+#         if flag:
+#            shell(command)
+#            for dirpath, dirlist, filenames in walk(join(guppy_output_dir, wildcards.runnames)):
+#                for name in filenames:
+#                    if name.endswith('.fastq'):
+#                        rename(join(dirpath, name), join(dirpath, wildcards.runnames+".fastq"))
+#            try:
+#                shell("cat "+guppy_output_dir+"/pass/*.fastq > fastq/"+wildcards.runnames+".fastq")
+#            except:
+#                print("no basecalling happened")
+#                shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
+#         else:
+#             print("No log file to resume from. Starting fresh instance of basecallig")
+#             command = "guppy_basecaller --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
+#             command = command.format(**args)
+#             shell(command)
+#             for dirpath, dirlist, filenames in walk(join(guppy_output_dir, wildcards.runnames)):
+#                 for name in filenames:
+#                     if name.endswith('.fastq'):
+#                         rename(join(dirpath, name), join(dirpath, wildcards.runnames+".fastq"))
+#             try:
+#                 shell("cat "+guppy_output_dir+"/pass/*.fastq > fastq/"+wildcards.runnames+".fastq")
+#             except:
+#                 print("no basecalling happened")
+#                 shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
 #
-# remove empty fastq files to avoid errors later
 #
 # For run1 no seq summary into output dir copying MinionQC results. Skip Nanocomp QC.
 # For run4 considering only first section (> 1/2 of the data) of run other section basecalled as seperate set
