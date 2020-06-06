@@ -43,7 +43,6 @@ rule all:
         #--> demultiplex_trim
         expand(join("qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
         expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames']),
-        expand("log/{runnames}.demux.done", runnames=config['runnames']),
         #--> summary
         expand(join("qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
         expand(join("qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
@@ -156,8 +155,7 @@ rule demultiplexTrim:
         raw_fastq=rules.basecalling.output.runFastq
     output:
         outDir=directory(join("qcat_trimmed", "{runnames}")),
-        tsv=join("qcat_trimmed", "{runnames}.tsv"),
-        flag=touch("log/{runnames}.demux.done")
+        tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
         args = {
             "input":input.raw_fastq,
@@ -181,7 +179,7 @@ rule demultiplexSummary:
 #
 rule collectSamples:
     input:
-        demuxDirs=expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames'])
+        demuxDirs=rules.demultiplexTrim.output.outDir
     output:
         fastq=expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
     run:
@@ -191,7 +189,7 @@ rule collectSamples:
             pass
         sampleDict = config['sample_dict']
         runBarcodeDict = {}
-        for runName in rules.demultiplexTrim.wildcards.runnames:
+        for runName in wildcards.runnames:
             for barcode in sampleDict[runName]:
                 if sampleDict[runName][barcode] in config['sample']:
                     sampleName = sampleDict[runName][barcode]
