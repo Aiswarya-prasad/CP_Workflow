@@ -54,8 +54,10 @@ rule all:
         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         #--> demultiplex_trim
         # expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames']),
+        ListOfExpectedBarcodes,
         #--> summary
         expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
+        expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.png"), runnames=config['runnames']),
         #--> collectSamples
         # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
@@ -179,6 +181,7 @@ rule demultiplexSummary:
     output:
         txt=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"),
         png=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.png")
+        png=join(config['ROOT'], "qcat_trimmed", pngrunnames}", "summary.png")
     script:
         "scripts/demultiplex_summarize.py"
 #
@@ -232,8 +235,8 @@ rule filterSamples:
     input:
         input=join("fastq", "samples", "{samples}.fastq.gz")
     output:
-        output7=join("fastq", "samples_Q7", "{samples}.fastq.gz"),
-        output10=join("fastq", "samples_Q10", "{samples}.fastq.gz")
+        output7=join("fastq", "samplesQ7", "{samples}.fastq.gz"),
+        output10=join("fastq", "samplesQ10", "{samples}.fastq.gz")
     run:
         args = {
         "output7":output.output7,
@@ -249,7 +252,7 @@ rule filterSamples:
 #
 rule kraken2:
     input:
-        fastq=join("fastq", "samples_Q7", "{samples}.fastq.gz")
+        fastq=join("fastq", "samplesQ7", "{samples}.fastq.gz")
     output:
         # report_mpa=join("classified", "{samples}", "kraken2_Minidb", "report_mpa"),
         report=join("classified", "{samples}", "kraken2_Minidb", "report"),
@@ -290,7 +293,7 @@ rule bracken:
 #
 rule centrifuge:
     input:
-        fastq=join("fastq", "samples_Q7", "{samples}.fastq.gz")
+        fastq=join("fastq", "samplesQ7", "{samples}.fastq.gz")
     output:
         report=join("classified", "{samples}", "centrifuge", "report"),
         result=join("classified", "{samples}", "centrifuge", "result")
