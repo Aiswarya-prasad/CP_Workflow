@@ -164,7 +164,7 @@ rule demultiplexTrim:
         # tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
         for Run in config['runnames']:
-            inptime = getmtime(join("fastq", Run+."fastq"))
+            inptime = getmtime(join("fastq", Run+".fastq"))
             opttime = getmtime(join("qcat_trimmed", Run))
             if (inptime > opttime):
                 args = {
