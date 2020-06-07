@@ -145,19 +145,19 @@ rule runQC:
         Nanoplot_Weighted_LogTransformed_HistogramReadlength_png = join("QC", "runs", "{runnames}", "{runnames}_Weighted_LogTransformed_HistogramReadlength.png"),
         Nanoplot_Yield_By_Length_png = join("QC", "runs", "{runnames}", "{runnames}_Yield_By_Length.png")
     run:
+        args = {
+        "input":input.seq_summary,
+        "outputNanoP":join("QC", "runs", wildcards.runnames),
+        "prefix": wildcards.runnames+"_"
+        }
+        command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
         try:
             inptime = getmtime(input.seq_summary)
             opttime = getmtime(output.Nanoplot_NanoStats_txt)
             if (inptime > opttime):
-                args = {
-                "input":input.seq_summary,
-                "outputNanoP":join("QC", "runs", wildcards.runnames),
-                "prefix": wildcards.runnames+"_"
-                }
-                command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
                 shell(command_nanoP.format(**args)+" || touch {output}")
         except:
-            pass
+            shell(command_nanoP.format(**args)+" || touch {output}")
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 # below rule does not use wildcards. Written this way to keep the dag intact
