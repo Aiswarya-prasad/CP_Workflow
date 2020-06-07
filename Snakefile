@@ -166,7 +166,7 @@ rule demultiplexTrim:
         for Run in config['runnames']:
             inptime = getmtime(join("fastq", Run+."fastq"))
             opttime = getmtime(join("qcat_trimmed", Run))
-            if inptime > opttime:
+            if (inptime > opttime):
                 args = {
                 "input":join("fastq", Run+".fastq"),
                 "outputTrimmed":join(config['ROOT'], "qcat_trimmed", Run),
