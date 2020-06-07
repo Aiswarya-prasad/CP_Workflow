@@ -145,13 +145,18 @@ rule runQC:
         Nanoplot_Weighted_LogTransformed_HistogramReadlength_png = join("QC", "runs", "{runnames}", "{runnames}_Weighted_LogTransformed_HistogramReadlength.png"),
         Nanoplot_Yield_By_Length_png = join("QC", "runs", "{runnames}", "{runnames}_Yield_By_Length.png")
     run:
-        args = {
-        "input":input.seq_summary,
-        "outputNanoP":join("QC", "runs", wildcards.runnames),
-        "prefix": wildcards.runnames+"_"
-        }
-        command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
-        shell(command_nanoP.format(**args)+" || touch {output}")
+        inptime = getmtime(input.seq_summary)
+        opttime = getmtime(output.Nanoplot_NanoStats_txt)
+        if (inptime > opttime):
+            args = {
+            "input":input.seq_summary,
+            "outputNanoP":join("QC", "runs", wildcards.runnames),
+            "prefix": wildcards.runnames+"_"
+            }
+            command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
+            shell(command_nanoP.format(**args)+" || touch {output}")
+        else:
+            pass
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 # below rule does not use wildcards. Written this way to keep the dag intact
@@ -176,8 +181,8 @@ rule demultiplexTrim:
                 command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
                 command = command.format(**args)
                 shell(command)
-            else:
-                pass
+            # else:
+            #     pass
 
 rule demultiplexSummary:
     input:
