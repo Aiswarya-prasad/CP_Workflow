@@ -151,16 +151,17 @@ rule runQC:
         "prefix": wildcards.runnames+"_"
         }
         command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
-        try:
-            inptime = getmtime(input.seq_summary)
-            opttime = getmtime(output.Nanoplot_NanoStats_txt)
+        inptime = getmtime(input.seq_summary)
+        opttime = getmtime(output.Nanoplot_NanoStats_txt)
+        if exists(opttime):
             if (inptime > opttime):
-                print("input file was recently modified")
-                # shell(command_nanoP.format(**args)+" || touch {output}")
-        except:
-            print("executing for the first time")
-            shell('touch {output}')
-            # shell(command_nanoP.format(**args)+" || touch {output}")
+                print("executing for the first time")
+                shell(command_nanoP.format(**args)+" || touch {output}")
+            else:
+                pass
+        else:
+            print("input file was recently modified")
+            shell(command_nanoP.format(**args)+" || touch {output}")
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 # below rule does not use wildcards. Written this way to keep the dag intact
@@ -184,7 +185,7 @@ rule demultiplexTrim:
                 }
                 command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
                 command = command.format(**args)
-                # shell(command)
+                shell(command)
             # else:
             #     pass
 
