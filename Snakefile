@@ -155,8 +155,10 @@ rule runQC:
             inptime = getmtime(input.seq_summary)
             opttime = getmtime(output.Nanoplot_NanoStats_txt)
             if (inptime > opttime):
+                print("input file was recently modified")
                 shell(command_nanoP.format(**args)+" || touch {output}")
         except:
+            print("executing for the first time")
             shell(command_nanoP.format(**args)+" || touch {output}")
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
