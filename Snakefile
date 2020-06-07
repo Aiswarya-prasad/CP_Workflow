@@ -104,10 +104,10 @@ rule basecalling:
                    if name.endswith('.fastq'):
                        rename(join(dirpath, name), join(dirpath, wildcards.runnames+".fastq"))
            try:
-               # shell("cat "+guppy_output_dir+"/pass/*.fastq > fastq/"+wildcards.runnames+".fastq")
+               shell("cat "+guppy_output_dir+"/pass/*.fastq > fastq/"+wildcards.runnames+".fastq")
            except:
                print("no basecalling happened")
-               # shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
+               shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
         else:
             print("No log file to resume from. Starting fresh instance of basecallig")
             command = "guppy_basecaller --input_path {input} --save_path {output_dir} --flowcell FLO-MIN106 --kit SQK-LSK109 --recursive --records_per_fastq 0 --calib_detect --qscore_filtering"
@@ -118,10 +118,10 @@ rule basecalling:
                     if name.endswith('.fastq'):
                         rename(join(dirpath, name), join(dirpath, wildcards.runnames+".fastq"))
             try:
-                # shell("cat "+guppy_output_dir+"/pass/*.fastq > fastq/"+wildcards.runnames+".fastq")
+                shell("cat "+guppy_output_dir+"/pass/*.fastq > fastq/"+wildcards.runnames+".fastq")
             except:
                 print("no basecalling happened")
-                # shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
+                shell("touch "+"fastq"+"/"+wildcards.runnames+".fastq")
 #
 # remove empty fastq files to avoid errors later
 #
