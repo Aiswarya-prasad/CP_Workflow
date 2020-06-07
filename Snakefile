@@ -175,7 +175,6 @@ rule demultiplexTrim:
     run:
         for Run in config['runnames']:
             makedirs(join("qcat_trimmed", Run))
-            shell('touch ', join("qcat_trimmed", Run+'.tsv'))
             inptime = getmtime(join("fastq", Run+".fastq"))
             opttime = getmtime(join("qcat_trimmed", Run))
             if (inptime > opttime):
