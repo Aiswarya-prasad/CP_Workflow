@@ -174,7 +174,10 @@ rule demultiplexTrim:
         # tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
         for Run in config['runnames']:
-            makedirs(join("qcat_trimmed", Run))
+            try:
+                makedirs(join("qcat_trimmed", Run))
+            except:
+                print('redoing demultiplexing for {}'.format(Run))                
             inptime = getmtime(join("fastq", Run+".fastq"))
             opttime = getmtime(join("qcat_trimmed", Run))
             if (inptime > opttime):
