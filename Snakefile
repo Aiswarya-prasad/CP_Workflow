@@ -166,28 +166,30 @@ rule runQC:
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 # below rule does not use wildcards. Written this way to keep the dag intact
 # comparing timestamps to avoid unecessary repeatition
-# rule demultiplexTrim:
-#     input:
-#         raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
-#     output:
-#         trimmed=ListOfExpectedBarcodes,
-#         # tsv=join("qcat_trimmed", "{runnames}.tsv")
-#     run:
-#         for Run in config['runnames']:
-#             inptime = getmtime(join("fastq", Run+".fastq"))
-#             opttime = getmtime(join("qcat_trimmed", Run))
-#             if (inptime > opttime):
-#                 args = {
-#                 "input":join("fastq", Run+".fastq"),
-#                 "outputTrimmed":join(config['ROOT'], "qcat_trimmed", Run),
-#                 "kit":config['barcode_kit'],
-#                 "tsvPath":join(config['ROOT'], "qcat_trimmed", Run)
-#                 }
-#                 command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
-#                 command = command.format(**args)
-#                 shell(command)
-#             else:
-#                 pass
+rule demultiplexTrim:
+    input:
+        raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
+    output:
+        trimmed=ListOfExpectedBarcodes,
+        # tsv=join("qcat_trimmed", "{runnames}.tsv")
+    run:
+        for Run in config['runnames']:
+            makedirs(join("qcat_trimmed", Run))
+            shell('touch ', join("qcat_trimmed", Run+'.tsv'))
+            inptime = getmtime(join("fastq", Run+".fastq"))
+            opttime = getmtime(join("qcat_trimmed", Run))
+            if (inptime > opttime):
+                args = {
+                "input":join("fastq", Run+".fastq"),
+                "outputTrimmed":join(config['ROOT'], "qcat_trimmed", Run),
+                "kit":config['barcode_kit'],
+                "tsvPath":join(config['ROOT'], "qcat_trimmed", Run)
+                }
+                command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
+                command = command.format(**args)
+                shell(command)
+            else:
+                pass
 
 rule demultiplexSummary:
     input:
