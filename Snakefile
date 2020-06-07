@@ -159,6 +159,7 @@ rule runQC:
                 # shell(command_nanoP.format(**args)+" || touch {output}")
         except:
             print("executing for the first time")
+            shell('touch {output}')
             # shell(command_nanoP.format(**args)+" || touch {output}")
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
