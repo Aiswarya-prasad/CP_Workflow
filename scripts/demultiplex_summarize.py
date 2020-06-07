@@ -3,10 +3,11 @@ matplotlib.use('Agg') # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import os
 
 counts = {}
 total = 0
-with open(snakemake.input[0], 'r') as tsv, open(snakemake.output[0], 'w') as out:
+with open(os.path.join("qcat_trimmed", snakemake.wildcards.runnames+".tsv"), 'r') as tsv, open(snakemake.output[0], 'w') as out:
     header = tsv.readline().split()
     for line in tsv.readlines():
         s = line.strip().split()
