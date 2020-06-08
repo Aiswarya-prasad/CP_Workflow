@@ -172,14 +172,14 @@ rule demultiplexTrim:
         tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
         try:
-            makedirs(join("qcat_trimmed", "{runnames}"))
+            makedirs(join("qcat_trimmed", wildcards.runnames))
         except:
-            print('redoing demultiplexing for {}'.format("{runnames}"))
+            print('redoing demultiplexing for {}'.format(wildcards.runnames))
         args = {
-        "input":join("fastq", "{runnames}"+".fastq"),
-        "outputTrimmed":join(config['ROOT'], "qcat_trimmed", "{runnames}"),
+        "input":join("fastq", wildcards.runnames+".fastq"),
+        "outputTrimmed":join(config['ROOT'], "qcat_trimmed", wildcards.runnames),
         "kit":config['barcode_kit'],
-        "tsvPath":join(config['ROOT'], "qcat_trimmed", "{runnames}")
+        "tsvPath":join(config['ROOT'], "qcat_trimmed", wildcards.runnames)
         }
         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
         command = command.format(**args)

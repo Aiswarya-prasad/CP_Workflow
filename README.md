@@ -8,11 +8,6 @@ This is an experimental snakemake pipeline to carry out the entire analysis of m
   <img src="rulegraph.png" width="500" />
 </p>
 
-# Usage
-The pipeline includes, data organization, QC, Basecalling (Guppy for nanopore), Demultiplexing, Trimming and filtering, Taxonomic classification (using Kraken2 and Centrifuge).
-
-Be sure to look through the comments in the Snakefile to choose which parts to use and what to edit out. (I may add the info there to README later). Currently it is written to handle a case where one has multiplexed different samples across multiple runs. In such a case, the wildcards change from sample aggregation onwards. So, the workflow will have to be run for the first time with the targets using the sample wildcards commented out. Once that is done, the sample collectSamples rules and onwards can be run. Otherwise, a missing output exception will be thrown. Also, if the upstream run fastq file is edited make sure that the first part of the workflow is redone as needed.
-
 
 # Tools used
 
