@@ -37,12 +37,9 @@ def findSeqSummary(wildcards):
 
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
-# information to be obtained from config file
-ListOfExpectedBarcodes = []
-confDict = config['sample_dict']
-for RunName in confDict:
-    for barCode in confDict[RunName].keys():
-        ListOfExpectedBarcodes.append(join("qcat_trimmed", RunName, "barcode"+barCode+".fastq"))
+
+# depends on type of barcode kit used
+BARCODES = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
 
 # --- The rules --- #
 
@@ -167,11 +164,15 @@ rule runQC:
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 # below rule does not use wildcards. Written this way to keep the dag intact
 # comparing timestamps to avoid unecessary repeatition
+# qcat only creates outputs for barcodes discovered.
+# Here all 12 are created with those not touched by qcat left empty
+#
 rule demultiplexTrim:
     input:
         raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
     output:
-        tsv=join("qcat_trimmed", "{runnames}.tsv")
+        tsv=join("qcat_trimmed", "{runnames}.tsv"),
+        expand(join("qcat_trimmed", "{runnames}", "barcode{barcodes}.fastq"), barcodes=BARCODES, allow_missing=True)
     run:
         try:
             makedirs(join("qcat_trimmed", "{runnames}"))
@@ -186,6 +187,14 @@ rule demultiplexTrim:
         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
         command = command.format(**args)
         shell(command)
+        # touch empty files for those barcodes (out of 12) not dicovered by qcat
+        for dirpath, dirlist, filenames in walk("qcat_trimmed/{runnames}"):
+            for barcode in BARCODES:
+                if 'barcode'+barcode+'.fastq' in filenames:
+                    pass
+                else:
+                    shell("touch "+join(dirpath, 'barcode'+barcode+'.fastq'))
+
 
 rule demultiplexSummary:
     input:
