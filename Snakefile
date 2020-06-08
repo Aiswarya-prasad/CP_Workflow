@@ -35,6 +35,12 @@ def findSampleFastq(wildcards):
 def findSeqSummary(wildcards):
     return join("guppy_output", wildcards, "sequencing_summary.old.txt")
 
+def findBarcodes(runName):
+    sampleDict = config['sample_dict']
+    for key in sampleDict:
+        if key == runName:
+            return(list(sampleDict[key].keys()))
+
 # --- Importing Configuration File and Defining Important Lists --- #
 configfile: "config.yaml"
 
@@ -164,14 +170,14 @@ rule runQC:
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 # below rule does not use wildcards. Written this way to keep the dag intact
 # comparing timestamps to avoid unecessary repeatition
-# qcat only creates outputs for barcodes discovered.
-# Here all 12 are created with those not touched by qcat left empty
+# # qcat only creates outputs for barcodes discovered.
+# # Here all 12 are created with those not touched by qcat left empty
 #
 rule demultiplexTrim:
     input:
         raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
     output:
-        expand(join("qcat_trimmed", "{runnames}", "barcode{barcodes}.fastq"), barcodes=BARCODES, runnames = "{runnames}"),
+        expand(join("qcat_trimmed", "{runnames}", "barcode{barcodes}.fastq"), barcodes=findBarcodes("{runnames}"), runnames = "{runnames}"),
         tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
         try:
@@ -188,12 +194,12 @@ rule demultiplexTrim:
         command = command.format(**args)
         shell(command)
         # touch empty files for those barcodes (out of 12) not dicovered by qcat
-        for dirpath, dirlist, filenames in walk("qcat_trimmed/{runnames}"):
-            for barcode in BARCODES:
-                if 'barcode'+barcode+'.fastq' in filenames:
-                    pass
-                else:
-                    shell("touch "+join(dirpath, 'barcode'+barcode+'.fastq'))
+        # for dirpath, dirlist, filenames in walk("qcat_trimmed/{runnames}"):
+        #     for barcode in BARCODES:
+        #         if 'barcode'+barcode+'.fastq' in filenames:
+        #             pass
+        #         else:
+        #             shell("touch "+join(dirpath, 'barcode'+barcode+'.fastq'))
 
 
 rule demultiplexSummary:
