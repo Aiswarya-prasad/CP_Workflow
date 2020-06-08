@@ -171,8 +171,8 @@ rule demultiplexTrim:
     input:
         raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
     output:
-        tsv=join("qcat_trimmed", "{runnames}.tsv"),
-        expand(join("qcat_trimmed", "{runnames}", "barcode{barcodes}.fastq"), barcodes=BARCODES, allow_missing=True)
+        expand(join("qcat_trimmed", "{runnames}", "barcode{barcodes}.fastq"), barcodes=BARCODES, allow_missing=True),
+        tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
         try:
             makedirs(join("qcat_trimmed", "{runnames}"))
