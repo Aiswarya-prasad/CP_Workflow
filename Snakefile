@@ -176,7 +176,7 @@ rule runQC:
 #
 rule demultiplexTrim:
     input:
-        raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
+        raw_fastq="fastq/{runnames}.fastq"
     output:
         expand(join("qcat_trimmed", "{{runnames}}", "barcode{barcodes}.fastq"), barcodes=BARCODES, allow_missing=True),
         tsv=join("qcat_trimmed", "{runnames}.tsv")
