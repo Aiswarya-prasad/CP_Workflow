@@ -130,7 +130,8 @@ rule basecalling:
 # find sequencing summary
 rule runQC:
     input:
-        seq_summary=lambda wildcards: findSeqSummary(wildcards.runnames)
+        seq_summary=lambda wildcards: findSeqSummary(wildcards.runnames),
+        run_fastq=join("fastq", "{runnames}.fastq")
     output:
         # MinionQC_out=directory(join("QC", "runs", "MinionQC", "{runnames}")),
         # NanoStat_out=join("QC", "runs", "NanoStat", "{runnames}"),
