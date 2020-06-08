@@ -61,7 +61,7 @@ rule all:
         #--> summary
         expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
         #--> collectSamples
-        # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
+        expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
         # expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
         # #--> kraken2
