@@ -177,7 +177,7 @@ rule demultiplexTrim:
     input:
         raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
     output:
-        expand(join("qcat_trimmed", "{runnames}", "barcode{barcodes}.fastq"), barcodes=findBarcodes({runnames}), runnames = "{runnames}"),
+        expand(join("qcat_trimmed", "{runnames}", "barcode{barcodes}.fastq"), barcodes=findBarcodes(wildcards.runnames), runnames = "{runnames}"),
         tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
         try:
