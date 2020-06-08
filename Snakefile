@@ -59,7 +59,7 @@ rule all:
         #--> collectSamples
         # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
-        expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
+        # expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
         #--> kraken2
         # expand(join("classified", "{samples}", "kraken2_Minidb", "result"), samples=config['samples']),
         # # uncomment if using
@@ -206,7 +206,7 @@ rule collectSamples:
     input:
         fastqPath=lambda wildcards: findSampleFastq(wildcards.samples)
     output:
-        fastq=join("fastq", "samples", "{samples}.fastq.gz"),
+        fastq=join("fastq", "samples", "{samples}.fastq.gz")
     run:
         try:
             makedirs(join("fastq", "samples"))
