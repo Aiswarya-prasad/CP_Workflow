@@ -170,14 +170,13 @@ rule demultiplexTrim:
     input:
         raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
     output:
-        trimmed=ListOfExpectedBarcodes,
-        # tsv=join("qcat_trimmed", "{runnames}.tsv")
+        tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
         for Run in config['runnames']:
             try:
                 makedirs(join("qcat_trimmed", Run))
             except:
-                print('redoing demultiplexing for {}'.format(Run))                
+                print('redoing demultiplexing for {}'.format(Run))
             inptime = getmtime(join("fastq", Run+".fastq"))
             opttime = getmtime(join("qcat_trimmed", Run))
             if (inptime > opttime):
@@ -195,8 +194,7 @@ rule demultiplexTrim:
 
 rule demultiplexSummary:
     input:
-        trimmed=ListOfExpectedBarcodes,
-        # tsv=join("qcat_trimmed", "{runnames}.tsv")
+        tsv=join("qcat_trimmed", "{runnames}.tsv")
     output:
         txt=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"),
         png=join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.png")
