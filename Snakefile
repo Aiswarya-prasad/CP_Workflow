@@ -178,7 +178,7 @@ rule demultiplexTrim:
     input:
         raw_fastq=expand("fastq/{runnames}.fastq", runnames=config['runnames'])
     output:
-        expand(join("qcat_trimmed", "{{runnames}}", "barcode{barcodes}.fastq"), barcodes=BARCODES),
+        expand(join("qcat_trimmed", "{runnames}", "barcode{barcodes}.fastq"), barcodes=BARCODES, allow_missing=True),
         tsv=join("qcat_trimmed", "{runnames}.tsv")
     run:
         try:
@@ -195,7 +195,7 @@ rule demultiplexTrim:
         command = command.format(**args)
         shell(command)
         # touch empty files for those barcodes (out of 12) not dicovered by qcat
-        for dirpath, dirlist, filenames in walk("qcat_trimmed/{runnames}"):
+        for dirpath, dirlist, filenames in walk("qcat_trimmed/"+wildcards.runnames):
             for barcode in BARCODES:
                 if 'barcode'+barcode+'.fastq' in filenames:
                     pass
