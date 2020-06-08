@@ -194,7 +194,7 @@ rule demultiplexTrim:
         command = "qcat --fastq {input} --barcode_dir {outputTrimmed} --trim -k {kit} --detect-middle --tsv > {tsvPath}.tsv"
         command = command.format(**args)
         shell(command)
-        touch empty files for those barcodes (out of 12) not dicovered by qcat
+        # touch empty files for those barcodes (out of 12) not dicovered by qcat
         for dirpath, dirlist, filenames in walk("qcat_trimmed/{runnames}"):
             for barcode in BARCODES:
                 if 'barcode'+barcode+'.fastq' in filenames:
@@ -215,6 +215,7 @@ rule demultiplexSummary:
 #
 rule collectSamples:
     input:
+        # expand(join("qcat_trimmed", "{runnames}", "barcode{barcodes}.fastq"), barcodes=BARCODES, runnames = config['runnames']),
         fastqPath=lambda wildcards: findSampleFastq(wildcards.samples)
     output:
         fastq=join("fastq", "samples", "{samples}.fastq.gz")
