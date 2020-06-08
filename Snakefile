@@ -215,7 +215,7 @@ rule demultiplexSummary:
 #
 rule collectSamples:
     input:
-        # expand(join("qcat_trimmed", "{runnames}", "barcode{barcodes}.fastq"), barcodes=BARCODES, runnames = config['runnames']),
+        expand(join("qcat_trimmed", "{runnames}", "barcode{barcodes}.fastq"), barcodes=BARCODES, runnames = config['runnames']),
         fastqPath=lambda wildcards: findSampleFastq(wildcards.samples)
     output:
         fastq=join("fastq", "samples", "{samples}.fastq.gz")
