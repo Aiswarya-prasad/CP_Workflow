@@ -156,17 +156,7 @@ rule runQC:
         "prefix": wildcards.runnames+"_"
         }
         command_nanoP = "NanoPlot --summary {input} --outdir {outputNanoP} -p {prefix} --readtype 1D"
-        inptime = getmtime(input.seq_summary)
-        opttime = getmtime(output.Nanoplot_NanoStats_txt)
-        if exists(opttime):
-            if (inptime > opttime):
-                print("executing for the first time")
-                shell(command_nanoP.format(**args)+" || touch {output}")
-            else:
-                pass
-        else:
-            print("input file was recently modified")
-            shell(command_nanoP.format(**args)+" || touch {output}")
+        shell(command_nanoP.format(**args)+" || touch {output}")
 #
 # qcat does trimming simultaneaously if untrimmed files are needed specifically, edit demultiplex_keep_trim
 # below rule does not use wildcards. Written this way to keep the dag intact
