@@ -59,17 +59,17 @@ rule all:
         #--> collectSamples
         # expand(join("fastq", "samples", "{samples}.fastq.gz"), samples=config['samples']),
         #--> sampleQC
-        # expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
+        expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
         #--> kraken2
-        # expand(join("classified", "{samples}", "kraken2_Minidb", "result"), samples=config['samples']),
+        expand(join("classified", "{samples}", "kraken2_Minidb", "result"), samples=config['samples']),
         # # uncomment if using
         # # expand(join("classified", "{samples}", "kraken2_humandb", "result"), samples=config['samples']),
         # # expand(join("classified", "{samples}", "kraken2_custom", "result"), samples=config['samples']),
         # #--> bracken
-        # expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
-        # expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
+        expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
+        expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
         # #--> centrifuge
-        # expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples'])
+        expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples'])
     threads: 8
 
 # uncomment basecalling later
