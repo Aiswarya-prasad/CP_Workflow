@@ -50,14 +50,17 @@ BARCODES = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "1
 
 # --- The rules --- #
 
-rule all:
+rule complete:
     input:
+        # The targets that are not commented out are more or less the minimum set of targets to get
+        # all the rules in the pipeline to be run
         #--> for basecalling
-        expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
+        # expand(join("fastq", "{runnames}.fastq"), runnames=config['runnames']),
         #--> runQC
         expand(join("QC", "runs", "{runnames}", "{runnames}_NanoStats.txt"), runnames=config['runnames']),
         #--> demultiplex_trim
-        # expand(join("qcat_trimmed", "{runnames}"), runnames=config['runnames']),
+        # expand(join("qcat_trimmed", "{{runnames}}", "barcode{barcodes}.fastq"), barcodes=BARCODES, allow_missing=True),
+        # expand(join("qcat_trimmed", "{runnames}.tsv"), runnames=config['runnames']),
         #--> summary
         expand(join(config['ROOT'], "qcat_trimmed", "{runnames}", "summary.txt"), runnames=config['runnames']),
         #--> collectSamples
@@ -72,8 +75,14 @@ rule all:
         # #--> bracken
         expand(join("classified", "{samples}", "bracken", "species_report"), samples=config['samples']),
         expand(join("classified", "{samples}", "bracken", "genus_report"), samples=config['samples']),
-        # #--> centrifuge
-        expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples'])
+        #--> centrifuge
+        expand(join("classified", "{samples}", "centrifuge", "report"), samples=config['samples']),
+        #--> zip run fastq files
+        expand(join("fastq", "{samples}.fastq.gz"), samples=config['samples']),
+        #--> unzip and keep fastq
+        expand(join("fastq", "samples", "{samples}.fastq"), samples=config['samples']),
+        expand(join("fastq", "samples_Q7", "{samples}.fastq"), samples=config['samples']),
+        expand(join("fastq", "samples_Q10", "{samples}.fastq"), samples=config['samples'])
     threads: 8
 
 # uncomment basecalling later
@@ -272,6 +281,32 @@ rule filterSamples:
         shell(command7.format(**args))
         command10 = "gunzip -c {input} | NanoFilt --quality 10 | gzip > {output10}"
         shell(command10.format(**args))
+#
+#
+rule zipUnzip:
+  input:
+    rfq=join("fastq", "{runnames}.fastq"),
+    gz=join("fastq", "samples", "{samples}.fastq.gz"),
+    gz7=join("fastq", "samples_Q7", "{samples}.fastq.gz"),
+    gz10=join("fastq", "samples_Q10", "{samples}.fastq.gz")
+  output:
+    rgz=join("fastq", "{runnames}.fastq.qz"),
+    fq=join("fastq", "samples", "{samples}.fastq"),
+    fq7=join("fastq", "samples_Q7", "{samples}.fastq"),
+    fq10=join("fastq", "samples_Q10", "{samples}.fastq")
+  run:
+    shell("gzip -c "+input.rfq+" > "+output.rgz)
+    # uncoment below line if you want to remove the fastq file
+    # shell("rm "+input.rfq)
+    shell("gunzip -c "+input.gz+" > "+output.fq)
+    # uncoment below line if you want to remove the zipped
+    # shell("rm -rf "+input.gz)
+    shell("gunzip -c "+input.gz7+" > "+output.fq7)
+    # uncoment below line if you want to remove the zipped
+    # shell("rm -rf "+input.gz)
+    shell("gunzip -c "+input.gz10+" > "+output.fq10)
+    # uncoment below line if you want to remove the zipped
+    # shell("rm -rf "+input.gz)
 #
 #
 rule kraken2:

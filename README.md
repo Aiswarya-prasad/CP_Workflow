@@ -72,17 +72,7 @@ Make sure that these programs are installed and configured properly (eg. added t
 
 
 ## I/O file format <br/>
-At the moment, most of the information about output and input formats can be found as comments in the code. All the rules read and write fastq files as zipped files (.fastq.gz). If this is not preferred the code will have to be edited in multiple places. Alternatively, the following line could be added as a rule or used directly in the terminal. For example,
-
-```python
-rule unzipAll:
-  input:
-    join("fastq", "samples", "{samples}.fastq.gz")
-  output:
-    join("fastq", "samples", "{samples}.fastq")
-  run:
-    shell("gunzip -c "wildcards.samples".fastq.gz > "wildcards.samples+".fastq")
-```
+At the moment, most of the information about output and input formats can be found in the code or as **comments in the code**. Rules handling runs read and write fastq files which can be zipped by including zipped files in the target rule. All the rules handling samples read and write fastq files as zipped files (.fastq.gz). They can be unzipped by including fastq files in the target rule. rule zipUnzip does this and can be edited as needed (see comments in the code).
 
 ## Note about NanoFilt<br/>
 input to rule running kraken2 and centrifuge can be edited depending on which fastq files (filtered Q > 7, Q > 10 or unfiltered) are to be used for downstream analysis. Edit this rule (filterSamples) as needed. Refere to the NanoFilt repository for more details.
