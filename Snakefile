@@ -262,8 +262,10 @@ rule filterSamples:
         "output10":output.output10
         }
         try:
-            makedirs(output.output7)
-            makedirs(output.output10)
+            makedirs(join("fastq", "samples_Q7"))
+            makedirs(join("fastq", "samples_Q7"))
+            makedirs(join("fastq", "samples_Q10"))
+            makedirs(join("fastq", "samples_Q10"))
         except:
             pass
         command7 = "gunzip -c {input} | NanoFilt --quality 7 | gzip > {output7}"
