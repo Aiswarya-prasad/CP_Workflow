@@ -308,7 +308,7 @@ rule zip:
     input:
         rfq=join("fastq", "{runnames}.fastq")
     output:
-        rgz=join("fastq", "{runnames}.fastq.qz"),
+        rgz=join("fastq", "{runnames}.fastq.gz"),
     run:
         shell("gzip -c "+input.rfq+" > "+output.rgz)
         # uncoment below line if you want to remove the fastq file
