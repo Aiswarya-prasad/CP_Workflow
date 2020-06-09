@@ -1,8 +1,9 @@
 
-This is an experimental snakemake pipeline to carry out the entire analysis of my Chronic Pancreatitis (CP) microbiome data and obtained by nanopore sequencing.
+This is an experimental snakemake pipeline that can be used to carry out pre-processing and taxonomic classification of nanopore sequencing data (from fast5 to figures) without assembly and using limited resources.
 
 > This is not (yet) intended to be a ready-to-use pipeline. I learnt Snakemake from scratch through the course of this project and would have found a repo like this immensely useful. That is the main motivation I had to create this repository. Most of the code can be easily understood and reused.<br/>
 
+## Rulegraph (DAG) for this pipeline
 
 <p align="center">
   <img src="rulegraph.png" width="500" />
