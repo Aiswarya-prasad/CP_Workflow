@@ -37,29 +37,29 @@ In the config.yaml file, make sure to configure the following:</br>
 -barcode_kit: 'NBD103/NBD104' parameter used by qcat</br>
 samples: List of sample IDs eg. \['01', '03', '06', '07', '10', '11', '12', '13', '14', '15', '17', '18', '19', '20', '21', '22'\]</br>
 -sample_dict: a nested dictionary mapping runs to barcodes and sample IDs. ie. the first level of keys are run names, within each dict which is a value for the key run name, is a dictonary where keys are barcode numbers and values are sample ID associated with each barcode in that particular run. *This is useful for demultiplexing each run and separating out the files based on sample ID rather than barcode as barcodes may not be unique unless coupled with run names leading to long messy names.* **leave this out and edit Snakefile accordingly if this is not desired**
-eg.</br>
-sample_dict:</br>
-    'Run0':</br>
-        '04': '01'</br>
-    'Run1':</br>
-        '02': '03'</br>
-        '03': '13'</br>
+eg. (written in yaml format will be read by snakemake as a python style nested dictionary)</br>
+sample_dict:
+    'Run0':
+        '04': '01'
+    'Run1':
+        '02': '03'
+        '03': '13'
     'Run2':</br>
-        '04': '06'</br>
-        '05': '07'</br>
-        '06': '10'</br>
-        '07': '14'</br>
+        '04': '06'
+        '05': '07'
+        '06': '10'
+        '07': '14'
     'Run3':</br>
-        '08': '11'</br>
-        '09': '12'</br>
-        '10': '15'</br>
-        '11': '17'</br>
-        '12': '18'</br>
+        '08': '11'
+        '09': '12'
+        '10': '15'
+        '11': '17'
+        '12': '18'
     'Run4':</br>
-        '01': '19'</br>
-        '02': '20'</br>
-        '03': '21'</br>
-        '04': '22'</br>
+        '01': '19'
+        '02': '20'
+        '03': '21'
+        '04': '22'
 -kraken_db: '$MINIKRAKEN_DB' environment varaible if it is configured in ~/.bashrc. If not, write the path to the kraken database here.</br>
 -centrifuge_db: path to the centrifuge database</br>
 
