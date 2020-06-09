@@ -283,21 +283,16 @@ rule filterSamples:
         shell(command10.format(**args))
 #
 #
-rule zipUnzip:
+rule unzip:
   input:
-    rfq=join("fastq", "{runnames}.fastq"),
     gz=join("fastq", "samples", "{samples}.fastq.gz"),
     gz7=join("fastq", "samples_Q7", "{samples}.fastq.gz"),
     gz10=join("fastq", "samples_Q10", "{samples}.fastq.gz")
   output:
-    rgz=join("fastq", "{runnames}.fastq.qz"),
     fq=join("fastq", "samples", "{samples}.fastq"),
     fq7=join("fastq", "samples_Q7", "{samples}.fastq"),
     fq10=join("fastq", "samples_Q10", "{samples}.fastq")
   run:
-    shell("gzip -c "+input.rfq+" > "+output.rgz)
-    # uncoment below line if you want to remove the fastq file
-    # shell("rm "+input.rfq)
     shell("gunzip -c "+input.gz+" > "+output.fq)
     # uncoment below line if you want to remove the zipped
     # shell("rm -rf "+input.gz)
@@ -307,6 +302,17 @@ rule zipUnzip:
     shell("gunzip -c "+input.gz10+" > "+output.fq10)
     # uncoment below line if you want to remove the zipped
     # shell("rm -rf "+input.gz)
+#
+#
+rule zip:
+    input:
+        rfq=join("fastq", "{runnames}.fastq")
+    output:
+        rgz=join("fastq", "{runnames}.fastq.qz"),
+    run:
+        shell("gzip -c "+input.rfq+" > "+output.rgz)
+        # uncoment below line if you want to remove the fastq file
+        # shell("rm "+input.rfq)
 #
 #
 rule kraken2:
