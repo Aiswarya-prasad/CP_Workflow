@@ -38,10 +38,10 @@ In the config.yaml file, make sure to configure the following:</br>
 samples: List of sample IDs eg. \['01', '03', '06', '07', '10', '11', '12', '13', '14', '15', '17', '18', '19', '20', '21', '22'\]</br>
 - sample_dict: a nested dictionary mapping runs to barcodes and sample IDs. ie. the first level of keys are run names, within each dict which is a value for the key run name, is a dictonary where keys are barcode numbers and values are sample ID associated with each barcode in that particular run. *This is useful for demultiplexing each run and separating out the files based on sample ID rather than barcode as barcodes may not be unique unless coupled with run names leading to long messy names.* **leave this out and edit Snakefile accordingly if this is not desired**
 eg. (written in yaml format will be read by snakemake as a python style nested dictionary)</br>
-sample_dict:
-    'Run0':
+sample_dict:</br>
+    'Run0':</br>
         '04': '01'
-    'Run1':
+    'Run1':</br>
         '02': '03'
         '03': '13'
     'Run2':</br>
