@@ -72,7 +72,7 @@ Make sure that these programs are installed and configured properly (eg. added t
 
 
 ## I/O file format <br/>
-At the moment, most of the information about output and input formats can be found in the code or as **comments in the code**. Rules handling runs read and write fastq files which can be zipped by including zipped files in the target rule. All the rules handling samples read and write fastq files as zipped files (.fastq.gz). They can be unzipped by including fastq files in the target rule. rule zipUnzip does this and can be edited as needed (see comments in the code).
+At the moment, most of the information about output and input formats can be found in the code or as **comments in the code**. Rules handling runs read and write fastq files which can be zipped by including zipped files in the target rule. All the rules handling samples read and write fastq files as zipped files (.fastq.gz). They can be unzipped by including fastq files in the target rule and run fastq files can be zipped and stored elsewhere. rule zip and unzip do take care of this and can be edited as needed (see comments in the code).
 
 ## Note about NanoFilt<br/>
 input to rule running kraken2 and centrifuge can be edited depending on which fastq files (filtered Q > 7, Q > 10 or unfiltered) are to be used for downstream analysis. Edit this rule (filterSamples) as needed. Refere to the NanoFilt repository for more details.
