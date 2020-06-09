@@ -3,7 +3,7 @@ This is an experimental snakemake pipeline that can be used to carry out pre-pro
 
 > This is not (yet) intended to be a ready-to-use pipeline. I learnt Snakemake from scratch through the course of this project and would have found a repo like this immensely useful. That is the main motivation I had to create this repository. Most of the code can be easily understood and reused.<br/>
 
-The pipeline combines a set of existing tools for which there are multiple alternatives available in and outside of GitHub. These particular tools were chosen such that they were easy to set up and use and could run on limited resources.
+The pipeline combines a set of existing tools for which there are multiple alternatives available in and outside of GitHub. These particular tools were chosen such that they were easy to set up and use and could run on limited resources. This pipeline was written and tested in snakemake version 5.5.4.
 
 ## Rulegraph (DAG) for this pipeline
 
