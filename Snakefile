@@ -261,11 +261,14 @@ rule filterSamples:
         "output7":output.output7,
         "output10":output.output10
         }
-        makedirs(output.output7)
-        makedirs(output.output10)
+        try:
+            makedirs(output.output7)
+            makedirs(output.output10)
+        except:
+            pass
         command7 = "gunzip -c {input} | NanoFilt --quality 7 | gzip > {output7}"
         shell(command7.format(**args))
-        command10 = "gunzip -c {input} | NanoFilt --quality 10 | gzip > {output7}"
+        command10 = "gunzip -c {input} | NanoFilt --quality 10 | gzip > {output10}"
         shell(command10.format(**args))
 #
 #
