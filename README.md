@@ -3,6 +3,8 @@ This is an experimental snakemake pipeline that can be used to carry out pre-pro
 
 > This is not (yet) intended to be a ready-to-use pipeline. I learnt Snakemake from scratch through the course of this project and would have found a repo like this immensely useful. That is the main motivation I had to create this repository. Most of the code can be easily understood and reused.<br/>
 
+The pipeline combines a set of existing tools for which there are multiple alternatives available in and outside of GitHub. These particular tools were chosen such that they were easy to set up and use and could run on limited resources.
+
 ## Rulegraph (DAG) for this pipeline
 
 <p align="center">
@@ -38,26 +40,26 @@ samples: List of sample IDs eg. \['01', '03', '06', '07', '10', '11', '12', '13'
 eg.</br>
 sample_dict:</br>
     'Run0':</br>
-      '04': '01'</br>
+        '04': '01'</br>
     'Run1':</br>
-      '02': '03'</br>
-      '03': '13'</br>
+        '02': '03'</br>
+        '03': '13'</br>
     'Run2':</br>
-      '04': '06'</br>
-      '05': '07'</br>
-      '06': '10'</br>
-      '07': '14'</br>
+        '04': '06'</br>
+        '05': '07'</br>
+        '06': '10'</br>
+        '07': '14'</br>
     'Run3':</br>
-      '08': '11'</br>
-      '09': '12'</br>
-      '10': '15'</br>
-      '11': '17'</br>
-      '12': '18'</br>
+        '08': '11'</br>
+        '09': '12'</br>
+        '10': '15'</br>
+        '11': '17'</br>
+        '12': '18'</br>
     'Run4':</br>
-      '01': '19'</br>
-      '02': '20'</br>
-      '03': '21'</br>
-      '04': '22'</br>
+        '01': '19'</br>
+        '02': '20'</br>
+        '03': '21'</br>
+        '04': '22'</br>
 -kraken_db: '$MINIKRAKEN_DB' environment varaible if it is configured in ~/.bashrc. If not, write the path to the kraken database here.</br>
 -centrifuge_db: path to the centrifuge database</br>
 
@@ -68,7 +70,10 @@ Make sure that these programs are installed and configured properly (eg. added t
 
 At the moment, most of the information about output and input formats can be found as comments in the code.
 
-### directory structure of output after classification<br/>
+## Note about NanoFilt<br/>
+input to rule running kraken2 and centrifuge can be edited depending on which fastq files (filtered Q > 7, Q > 10 or unfiltered) are to be used for downstream analysis. Edit this rule (filterSamples) as needed. Refere to the NanoFilt repository for more details.
+
+## directory structure of output after classification<br/>
 classified<br/>
 └── <sample#><br/>
     ├── bracken<br/>
@@ -80,6 +85,3 @@ classified<br/>
     └── kraken2_Minidb<br/>
         ├── report<br/>
         └── result<br/>
-
-### NanoFilt added<br/>
-input to rule running kraken2 and centrifuge can be edited depending on which fastq files (filtered Q > 7, Q > 10 or unfiltered) are to be used for downstream analysis. Edit this rule (filterSamples) as needed. Refere to the NanoFilt repository for more details.
