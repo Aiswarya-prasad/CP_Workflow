@@ -80,9 +80,9 @@ rule complete:
         #--> zip run fastq files
         expand(join("fastq", "runs", "{runnames}.fastq.gz"), runnames=config['runnames']),
         #--> unzip and keep fastq
-        # expand(join("fastq", "samples", "{samples}.fastq"), samples=config['samples']),
-        # expand(join("fastq", "samples_Q7", "{samples}.fastq"), samples=config['samples']),
-        # expand(join("fastq", "samples_Q10", "{samples}.fastq"), samples=config['samples'])
+        expand(join("fastq", "samples", "{samples}.fastq"), samples=config['samples']),
+        expand(join("fastq", "samples_Q7", "{samples}.fastq"), samples=config['samples']),
+        expand(join("fastq", "samples_Q10", "{samples}.fastq"), samples=config['samples'])
     threads: 8
 
 # uncomment basecalling later
