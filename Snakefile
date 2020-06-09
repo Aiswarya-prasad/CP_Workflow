@@ -251,12 +251,13 @@ rule sampleQC:
 #
 rule filterSamples:
     input:
-        input=join("fastq", "samples", "{samples}.fastq.gz")
+        fastq=join("fastq", "samples", "{samples}.fastq.gz")
     output:
         output7=join("fastq", "samples_Q7", "{samples}.fastq.gz"),
         output10=join("fastq", "samples_Q10", "{samples}.fastq.gz")
     run:
         args = {
+        "input": input.fastq
         "output7":output.output7,
         "output10":output.output10
         }
