@@ -23,11 +23,11 @@ Below is a list of tools used by this pipeline with a link to their page/repo wh
 - [Kraken 2](https://ccb.jhu.edu/software/kraken2/index.shtml?t=manual)
 - [Centrifuge](https://ccb.jhu.edu/software/centrifuge/)
 
-If anybody will find this useful if polished, please let me know. Also, if you are a veteran and somehow come across this repo I will be thrilled to hear your sugesstions and more so if someone has the time to help me polish it. Finally, if you find any part of this repo useful for your work, do let me know. I will be very happy to hear!
+If you will find this repo useful if improved (in terms of documentation, error handling, features etc.), please let me know. Also, if you are a veteran and somehow come across this repo I will be thrilled to hear your sugesstions and more so if you have the time to help me polish it. Finally, if you find any part of this repo useful for your work, do let me know. I will be very happy to hear!
 
 # Setup and use</br>
 
-Firstly, all these tools need to be installed and working. Some of this are possible to install through conda. Snakemake can handle this and I will soon add the conda environment set up for this. For now, they need to be installed and set up manually.
+Firstly, all these tools need to be installed and working. Some of this can be installed through conda. Snakemake can handle this and I will soon add the conda environment set up for this. For now, they need to be installed and set up manually.
 
 In the config.yaml file, make sure to configure the following:</br>
 
