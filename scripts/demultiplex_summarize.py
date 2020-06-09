@@ -20,7 +20,7 @@ with open(os.path.join(snakemake.input[0]), 'r') as tsv, open(snakemake.output[0
             if int(barcode) < 10:
                 barcode = "0" + barcode
             # barcode = "barcode" + barcode
-        if barcode in counts.keys():
+        if barcode in sorted(counts.keys()):
             counts[barcode] += 1
         else:
             counts.__setitem__(barcode, 0)
