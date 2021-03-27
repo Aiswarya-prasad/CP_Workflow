@@ -142,8 +142,10 @@ dmypy.json
 *.fastq
 *.fasta
 *.fastq.gz
+*.fastq.gz.original
 
 test/
-RawData/
+00_RawData/
+01_Assembly
 log/
 
