@@ -33,7 +33,7 @@ rule complete:
         expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
         #
         expand(join("03_Assembly", "{samples}", "assembly.fasta"), samples=config['samples'])
-    threads: 8
+    # threads: 8
 
 
 rule fastq_clean:
@@ -122,10 +122,11 @@ rule assemble:
         fastq=join("02_FilteredReads", "samples_Q7", "{samples}.fastq.gz")
     output:
         assembly=join("03_Assembly", "{samples}", "assembly.fasta")
+    threads: 20
     run:
         args = {
         "out": join("03_Assembly", wildcards.samples),
-        "threads": "10",
+        "threads": "20",
         "input": input.fastq
         }
         command = "flye --nano-raw {input} --meta --out-dir {out} --threads {threads}"
