@@ -43,7 +43,7 @@ rule fastq_clean:
         fastq=join("01_CleanDup", "{samples}.fastq.gz")
     run:
         shell("echo -e \"{wildcards.samples}:\t\" >> cleaning.log")
-        shell("zcat {wildcards.samples}.fastq.gz | seqkit rmdup -n -o {wildcards.samples}.fastq.gz.original >> cleaning.log")
+        shell("zcat {input.sampleFastq} | seqkit rmdup -n -o {output.fastq} >> cleaning.log")
 
 #
 rule sampleQC:
