@@ -124,7 +124,7 @@ rule assemble:
         assembly=join("03_Assembly", "{samples}", "assembly.fasta")
     run:
         args = {
-        "out": join("02_Assembly", wildcards.samples),
+        "out": join("03_Assembly", wildcards.samples),
         "threads": "10",
         "input": input.fastq
         }
