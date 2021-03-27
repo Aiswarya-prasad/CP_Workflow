@@ -40,7 +40,7 @@ rule fastq_clean:
     input:
         sampleFastq=join("00_RawData", "{samples}.fastq.gz")
     output:
-        fastq=join("01_CleanDup", "samples", "{samples}.fastq.gz")
+        fastq=join("01_CleanDup", "{samples}.fastq.gz")
     run:
         shell("echo -e \"{samples}:\t\" >> cleaning.log")
         shell("zcat {samples}.fastq.gz | seqkit rmdup -n -o {samples}.fastq.gz.original >> cleaning.log")
