@@ -113,5 +113,5 @@ rule assemble:
         "threads": "10",
         "input": input.fastq
         }
-        command = "flye --nano-raw --meta {input} --out-dir {out} --threads {threads}"
+        command = "flye --nano-raw {input} --meta --out-dir {out} --threads {threads}"
         shell(command.format(**args))
