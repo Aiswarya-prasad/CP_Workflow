@@ -110,7 +110,7 @@ rule assemble:
     run:
         args = {
         "out": join("01_Assembly", wildcards.samples),
-        "threads": "10"
+        "threads": "10",
         "input": input.fastq
         }
         command = "flye --nano-raw --meta {input} --out-dir {out} --threads {threads}"
