@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import rc
 import pandas as pd
+from Bio import SeqIO
+import gzip
 
 # --- Defining Some Functions --- #
 
@@ -24,16 +26,31 @@ configfile: "config.yaml"
 
 rule complete:
     input:
+        expand(join("00_RawData", "{samples}.fastq.gz"), samples=config['samples']),
+        expand(join("01_CleanDup", "{samples}.fastq.gz"), samples=config['samples']),
+        expand(join("02_FilteredReads", "samples_Q7", "{samples}.fastq.gz"), samples=config['samples']),
+        expand(join("02_FilteredReads", "samples_Q10", "{samples}.fastq.gz"), samples=config['samples']),
         expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
-        expand(join("00_RawData", "samples_Q7", "{samples}.fastq.gz"), samples=config['samples']),
-        expand(join("00_RawData", "samples_Q10", "{samples}.fastq.gz"), samples=config['samples']),
+        join("00_RawData", "samples", "cleaning.log"),
         #
-        expand(join("01_Assembly", "{samples}", "assembly.fasta"), samples=config['samples'])
+        expand(join("02_Assembly", "{samples}", "assembly.fasta"), samples=config['samples'])
     threads: 8
 
-rule sampleQC:
+
+rule fastq_clean:
     input:
         sampleFastq=join("00_RawData", "samples", "{samples}.fastq.gz")
+    output:
+        fastq=join("01_CleanDup", "samples", "{samples}.fastq.gz"),
+        log=join("01_CleanDup", "samples", "cleaning.log")
+    run:
+        shell("echo -e \"{samples}:\t\" >> cleaning.log")
+        shell("zcat {samples}.fastq.gz | seqkit rmdup -n -o {samples}.fastq.gz.original >> cleaning.log")
+
+#
+rule sampleQC:
+    input:
+        sampleFastq=join("01_CleanDup", "{samples}.fastq.gz")
     output:
         # Nanoplot_Dynamic_Histogram_Read_length_html = join("QC", "samples", "{samples}", "{samples}_Dynamic_Histogram_Read_length.html"),
         Nanoplot_HistogramReadlength_png = join("QC", "samples", "{samples}", "{samples}_HistogramReadlength.png"),
@@ -58,10 +75,10 @@ rule sampleQC:
 #
 rule filterSamples:
     input:
-        fastq=join("00_RawData", "samples", "{samples}.fastq.gz")
+        fastq=join("01_CleanDup", "samples", "{samples}.fastq.gz")
     output:
-        output7=join("00_RawData", "samples_Q7", "{samples}.fastq.gz"),
-        output10=join("00_RawData", "samples_Q10", "{samples}.fastq.gz")
+        output7=join("02_FilteredReads", "samples_Q7", "{samples}.fastq.gz"),
+        output10=join("02_FilteredReads", "samples_Q10", "{samples}.fastq.gz")
     run:
         args = {
         "input": input.fastq,
@@ -83,13 +100,13 @@ rule filterSamples:
 #
 rule unzip:
   input:
-    gz=join("00_RawData", "samples", "{samples}.fastq.gz"),
-    gz7=join("00_RawData", "samples_Q7", "{samples}.fastq.gz"),
-    gz10=join("00_RawData", "samples_Q10", "{samples}.fastq.gz")
+    gz=join("01_CleanDup", "samples", "{samples}.fastq.gz"),
+    gz7=join("02_FilteredReads", "samples_Q7", "{samples}.fastq.gz"),
+    gz10=join("02_FilteredReads", "samples_Q10", "{samples}.fastq.gz")
   output:
-    fq=join("00_RawData", "samples", "{samples}.fastq"),
-    fq7=join("00_RawData", "samples_Q7", "{samples}.fastq"),
-    fq10=join("00_RawData", "samples_Q10", "{samples}.fastq")
+    fq=join("01_CleanDup", "samples", "{samples}.fastq"),
+    fq7=join("02_FilteredReads", "samples_Q7", "{samples}.fastq"),
+    fq10=join("02_FilteredReads", "samples_Q10", "{samples}.fastq")
   run:
     shell("gunzip -c "+input.gz+" > "+output.fq)
     # uncoment below line if you want to remove the zipped
@@ -104,12 +121,12 @@ rule unzip:
 #
 rule assemble:
     input:
-        fastq=join("00_RawData", "samples_Q7", "{samples}.fastq.gz")
+        fastq=join("02_FilteredReads", "samples_Q7", "{samples}.fastq.gz")
     output:
-        assembly=join("01_Assembly", "{samples}", "assembly.fasta")
+        assembly=join("03_Assembly", "{samples}", "assembly.fasta")
     run:
         args = {
-        "out": join("01_Assembly", wildcards.samples),
+        "out": join("02_Assembly", wildcards.samples),
         "threads": "10",
         "input": input.fastq
         }
