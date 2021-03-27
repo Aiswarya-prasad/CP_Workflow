@@ -142,7 +142,7 @@ rule mapping:
     threads:10
     run:
         shell("bwa index {input.contigs}")
-        shell("bwa mem -t 10 -x ont2d {input.contigs} {rules.filterSamples.output.output7} | samtools view - -Sb | samtools sort - -@10 > {output.bam})
+        shell("bwa mem -t 10 -x ont2d {input.contigs} {rules.filterSamples.output.output7} | samtools view - -Sb | samtools sort - -@10 > {output.bam}")
         shell("samtools index {output.bam}")
 #
 # shell("switch to anvio conda environment
