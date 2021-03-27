@@ -32,7 +32,9 @@ rule complete:
         expand(join("02_FilteredReads", "samples_Q10", "{samples}.fastq.gz"), samples=config['samples']),
         expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
         #
-        expand(join("03_Assembly", "{samples}", "assembly.fasta"), samples=config['samples'])
+        expand(join("03_Assembly", "{samples}", "assembly.fasta"), samples=config['samples']),
+        #
+        expand(join("04_mapping", "{samples}", "{samples}.sorted.bam"), samples=config['samples'])
     # threads: 8
 
 
@@ -131,3 +133,15 @@ rule assemble:
         }
         command = "flye --nano-raw {input} --meta --out-dir {out} --threads {threads}"
         shell(command.format(**args))
+#
+rule mapping:
+    input:
+        contigs=join("03_Assembly", "{samples}", "assembly.fasta")
+    output:
+        bam=join("04_mapping", "{samples}", "{samples}.sorted.bam")
+    threads:10
+    run:
+        shell("mkdir -p 04_mapping")
+        shell("bwa index {input.contigs}")
+        shell("bwa mem -t 10 -x ont2d {input.contigs} {rules.filterSamples.output.output7} | samtools view - -Sb | samtools sort - -@10 > bwa mem -t 14 -x ont2d ~/workdir/assembly/assembly.contigs.fasta ~/workdir/basecall/ONT.fastq.gz | samtools view - -Sb | samtools sort - -@14 > {output.bam})
+        shell("samtools index {output.bam}")
