@@ -31,7 +31,6 @@ rule complete:
         expand(join("02_FilteredReads", "samples_Q7", "{samples}.fastq.gz"), samples=config['samples']),
         expand(join("02_FilteredReads", "samples_Q10", "{samples}.fastq.gz"), samples=config['samples']),
         expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
-        join("00_RawData", "samples", "cleaning.log"),
         #
         expand(join("02_Assembly", "{samples}", "assembly.fasta"), samples=config['samples'])
     threads: 8
@@ -41,8 +40,7 @@ rule fastq_clean:
     input:
         sampleFastq=join("00_RawData", "samples", "{samples}.fastq.gz")
     output:
-        fastq=join("01_CleanDup", "samples", "{samples}.fastq.gz"),
-        log=join("01_CleanDup", "samples", "cleaning.log")
+        fastq=join("01_CleanDup", "samples", "{samples}.fastq.gz")
     run:
         shell("echo -e \"{samples}:\t\" >> cleaning.log")
         shell("zcat {samples}.fastq.gz | seqkit rmdup -n -o {samples}.fastq.gz.original >> cleaning.log")
