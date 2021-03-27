@@ -141,7 +141,10 @@ rule mapping:
         bam=join("04_mapping", "{samples}", "{samples}.sorted.bam")
     threads:10
     run:
-        shell("mkdir -p 04_mapping")
         shell("bwa index {input.contigs}")
-        shell("bwa mem -t 10 -x ont2d {input.contigs} {rules.filterSamples.output.output7} | samtools view - -Sb | samtools sort - -@10 > bwa mem -t 14 -x ont2d ~/workdir/assembly/assembly.contigs.fasta ~/workdir/basecall/ONT.fastq.gz | samtools view - -Sb | samtools sort - -@14 > {output.bam})
+        shell("bwa mem -t 10 -x ont2d {input.contigs} {rules.filterSamples.output.output7} | samtools view - -Sb | samtools sort - -@10 > {output.bam})
         shell("samtools index {output.bam}")
+#
+# shell("switch to anvio conda environment
+# anvi-gen-contigs-database -T 10 -f 03_Assembly/22/assembly.fasta -o 05_Anvio/22_contigs.db -n 'Sample 22 databases of contigs')"
+# anvi-run-hmms -c contigs.db
