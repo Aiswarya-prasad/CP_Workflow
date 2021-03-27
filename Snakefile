@@ -26,7 +26,9 @@ rule complete:
     input:
         expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
         expand(join("00_RawData", "samples_Q7", "{samples}.fastq.gz"), samples=config['samples']),
-        expand(join("00_RawData", "samples_Q10", "{samples}.fastq.gz"), samples=config['samples'])
+        expand(join("00_RawData", "samples_Q10", "{samples}.fastq.gz"), samples=config['samples']),
+        #
+        expand(join("01_Assembly", "{samples}", "assembly.fasta"), samples=config['samples'])
     threads: 8
 
 rule sampleQC:
@@ -100,10 +102,16 @@ rule unzip:
     # shell("rm -rf "+input.gz)
 #
 #
-# rule assemble:
-#     input:
-#         fastq=("fastq", "{runnames}.fastq")
-#     output:
-#         findout
-#     run:
-#         flye
+rule assemble:
+    input:
+        fastq=join("00_RawData", "samples_Q7", "{samples}.fastq.gz")
+    output:
+        assembly=join("01_Assembly", "{samples}", "assembly.fasta")
+    run:
+        args = {
+        "out": join("01_Assembly", wildcards.samples),
+        "threads": "10"
+        "input": input.fastq
+        }
+        command = "flye --nano-raw --meta {input} --out-dir {out} --threads {threads}"
+        shell(command.format(**args))
