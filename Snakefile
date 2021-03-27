@@ -32,7 +32,7 @@ rule complete:
         expand(join("02_FilteredReads", "samples_Q10", "{samples}.fastq.gz"), samples=config['samples']),
         expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
         #
-        expand(join("02_Assembly", "{samples}", "assembly.fasta"), samples=config['samples'])
+        expand(join("03_Assembly", "{samples}", "assembly.fasta"), samples=config['samples'])
     threads: 8
 
 
