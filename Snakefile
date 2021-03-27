@@ -24,8 +24,9 @@ configfile: "config.yaml"
 
 rule complete:
     input:
-        expand(join("00_RawData", "samples", "{samples}.fastq.gz"), samples=config['samples']),
-        expand(join("00_RawData", "samples", "{samples}.fastq.gz"), samples=config['samples'])
+        expand(join("QC", "samples", "{samples}", "{samples}_NanoPlot-report.html"), samples=config['samples']),
+        expand(join("00_RawData", "samples_Q7", "{samples}.fastq.gz"), samples=config['samples']),
+        expand(join("00_RawData", "samples_Q10", "{samples}.fastq.gz"), samples=config['samples'])
     threads: 8
 
 rule sampleQC:
