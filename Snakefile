@@ -38,7 +38,7 @@ rule complete:
 
 rule fastq_clean:
     input:
-        sampleFastq=join("00_RawData", "samples", "{samples}.fastq.gz")
+        sampleFastq=join("00_RawData", "{samples}.fastq.gz")
     output:
         fastq=join("01_CleanDup", "samples", "{samples}.fastq.gz")
     run:
