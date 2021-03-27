@@ -73,7 +73,7 @@ rule sampleQC:
 #
 rule filterSamples:
     input:
-        fastq=join("01_CleanDup", "samples", "{samples}.fastq.gz")
+        fastq=join("01_CleanDup", "{samples}.fastq.gz")
     output:
         output7=join("02_FilteredReads", "samples_Q7", "{samples}.fastq.gz"),
         output10=join("02_FilteredReads", "samples_Q10", "{samples}.fastq.gz")
@@ -98,11 +98,11 @@ rule filterSamples:
 #
 rule unzip:
   input:
-    gz=join("01_CleanDup", "samples", "{samples}.fastq.gz"),
+    gz=join("01_CleanDup", "{samples}.fastq.gz"),
     gz7=join("02_FilteredReads", "samples_Q7", "{samples}.fastq.gz"),
     gz10=join("02_FilteredReads", "samples_Q10", "{samples}.fastq.gz")
   output:
-    fq=join("01_CleanDup", "samples", "{samples}.fastq"),
+    fq=join("01_CleanDup", "{samples}.fastq"),
     fq7=join("02_FilteredReads", "samples_Q7", "{samples}.fastq"),
     fq10=join("02_FilteredReads", "samples_Q10", "{samples}.fastq")
   run:
