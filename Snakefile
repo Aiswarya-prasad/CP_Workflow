@@ -15,7 +15,7 @@ import pandas as pd
 
 
 # --- Importing Configuration File and Defining Important Lists --- #
-# configfile: "config.yaml"
+configfile: "config.yaml"
 
 # depends on type of barcode kit used
 # BARCODES = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
@@ -24,7 +24,8 @@ import pandas as pd
 
 rule complete:
     input:
-        expand(join("00_RawData", "samples_Q10", "{samples}.fastq"), samples=config['samples'])
+        expand(join("00_RawData", "samples", "{samples}.fastq.gz"), samples=config['samples']),
+        expand(join("00_RawData", "samples", "{samples}.fastq.gz"), samples=config['samples'])
     threads: 8
 
 rule sampleQC:
