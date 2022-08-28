@@ -138,7 +138,17 @@ dmypy.json
 
 # Do not want data to be uploaded (or even outputs)
 *.fast5
+*.fast5
 *.fastq
+*.fasta
+*.fastq.gz
+*.fastq.gz.original
+
 test/
-RawData/
+00_RawData/
+01_CleanDup/
+02_FilteredReads/
+03_Assembly/
+04_mapping/
+06_motus_profiling/
 log/
