@@ -146,6 +146,9 @@ dmypy.json
 
 test/
 00_RawData/
-01_Assembly
+01_CleanDup/
+02_FilteredReads/
+03_Assembly/
+04_mapping/
+06_motus_profiling/
 log/
-
