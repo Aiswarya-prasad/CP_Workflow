@@ -1,3 +1,4 @@
+UPDATE: The Bracken, Kraken approach is not suitable for nanopore data. This repository may be updated at a later point in time with more appropriate tools.
 
 This is an experimental snakemake pipeline that can be used to carry out pre-processing and taxonomic classification of nanopore sequencing data (from fast5 to figures) without assembly and using limited resources.
 
